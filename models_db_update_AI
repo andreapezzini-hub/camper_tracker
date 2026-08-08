@@ -1,0 +1,210 @@
+import os
+import json
+import requests
+import sqlite3
+import re
+from datetime import datetime
+
+DB_FILE = "camper_tracker.db"
+
+def _pulisci_json_ai(risposta_testo):
+    """Estrae in modo sicuro il JSON dalla risposta discorsiva dell'AI."""
+    match = re.search(r'\{.*\}', risposta_testo, re.DOTALL)
+    if match:
+        try:
+            return json.loads(match.group(0))
+        except json.JSONDecodeError:
+            pass
+    return None
+
+def chiama_ai_estrazione_modello(testo_annuncio):
+    """
+    Invia il testo all'AI (Ollama) per l'estrazione strutturata dei dati del veicolo,
+    richiedendo un JSON forzato con i campi per il catalogo principale.
+    """
+    prompt = f"""
+Sei un esperto di Camper. Analizza il seguente testo estratto da un annuncio e identifica con precisione i dati del veicolo.
+Spesso i concessionari fanno errori di battitura o usano abbreviazioni. Correggi le abbreviazioni palesi se conosci il modello.
+
+Testo annuncio:
+"{testo_annuncio}"
+
+Restituisci ESCLUSIVAMENTE un oggetto JSON con questa struttura esatta, senza markdown e senza testo extra. 
+Usa stringa vuota "" se un dato non è presente:
+{{
+    "marca": "Nome Marca (es. Hymer, Adria)",
+    "modello": "Nome Modello (es. B-Class, Matrix)",
+    "allestimento": "Dettaglio Allestimento (es. 644, Plus 670)",
+    "base": "Meccanica di base (es. Fiat Ducato, Ford Transit)",
+    "dimensioni": "Lunghezza/Larghezza (es. 6.99m)",
+    "posti": "Posti letto/omologati (es. 4)",
+    "disposizione": "Tipologia interna (es. Letti gemelli, Letto basculante)",
+    "ragionamento": "Breve spiegazione sul perché hai estratto questi dati"
+}}
+"""
+    
+    ollama_url = os.environ.get("OLLAMA_URL", "http://localhost:11434").rstrip('/') + "/api/generate"
+    ollama_model = os.environ.get("OLLAMA_MODEL", "llama3.2")
+    
+    payload = {
+        "model": ollama_model,
+        "prompt": prompt,
+        "format": "json", 
+        "stream": False,
+        "options": {
+            "temperature": 0.0
+        }
+    }
+    
+    try:
+        response = requests.post(ollama_url, json=payload, timeout=60)
+        if response.status_code == 200:
+            dati = response.json()
+            raw_response = dati.get('response', '{}').strip()
+            
+            try:
+                return json.loads(raw_response)
+            except json.JSONDecodeError:
+                return _pulisci_json_ai(raw_response)
+    except requests.exceptions.RequestException as e:
+        print(f"[-] Errore di connessione con Ollama AI: {e}")
+    
+    return None
+
+def analizza_e_proponi_interattivo():
+    """
+    Cicla gli annunci con testo_originale non ancora validati, chiama l'AI, e 
+    propone a terminale l'inserimento nel catalogo confrontandoli con i modelli esistenti.
+    """
+    print(f"[*] Avvio analisi interattiva annunci per arricchimento catalogo...")
+    
+    try:
+        conn = sqlite3.connect(DB_FILE)
+        cursor = conn.cursor()
+    except sqlite3.Error as e:
+        print(f"[-] Errore apertura database: {e}")
+        return
+
+    # Seleziona annunci che hanno testo ma di cui non abbiamo ancora processato una proposta (evita loop continui)
+    cursor.execute("""
+        SELECT a.url, a.testo_originale 
+        FROM annunci a
+        LEFT JOIN proposte_catalogo p ON a.url = p.url_annuncio
+        WHERE a.testo_originale IS NOT NULL 
+          AND a.testo_originale != '' 
+          AND p.id IS NULL
+    """)
+    annunci = cursor.fetchall()
+    
+    if not annunci:
+        print("[+] Nessun nuovo annuncio da analizzare per il catalogo.")
+        conn.close()
+        return
+
+    for url, testo_originale in annunci:
+        print(f"\n{'='*70}")
+        print(f"[*] Analisi URL: {url}")
+        
+        risultato_ai = chiama_ai_estrazione_modello(testo_originale)
+        
+        if not risultato_ai:
+            print("[-] L'AI non ha restituito dati validi. Salto.")
+            continue
+            
+        marca_prop = str(risultato_ai.get("marca", "")).strip()
+        modello_prop = str(risultato_ai.get("modello", "")).strip()
+        allestimento_prop = str(risultato_ai.get("allestimento", "")).strip()
+        base_prop = str(risultato_ai.get("base", "")).strip()
+        dimensioni_prop = str(risultato_ai.get("dimensioni", "")).strip()
+        posti_prop = str(risultato_ai.get("posti", "")).strip()
+        disposizione_prop = str(risultato_ai.get("disposizione", "")).strip()
+        motivo = str(risultato_ai.get("ragionamento", "")).strip()
+
+        if not marca_prop or marca_prop.lower() in ["ignota", "sconosciuta", ""]:
+            print("[-] Nessuna Marca identificata dall'AI. Salto.")
+            continue
+
+        # Verifichiamo se il modello è GIA' nel catalogo principale
+        cursor.execute('''
+            SELECT id FROM catalogo_modelli 
+            WHERE lower(marca) = ? AND lower(modello) = ? AND lower(allestimento) = ?
+        ''', (marca_prop.lower(), modello_prop.lower(), allestimento_prop.lower()))
+        
+        gia_in_catalogo = cursor.fetchone()
+        
+        if not gia_in_catalogo:
+            print(f"\n" + "+" * 70)
+            print(f"| NUOVA PROPOSTA MODELLO DA INSERIRE IN CATALOGO")
+            print(f"+" * 70)
+            print(f"| [IDENTIFICAZIONE VEICOLO]")
+            print(f"| -> Marca:        {marca_prop.upper()}")
+            print(f"| -> Modello:      {modello_prop}")
+            print(f"| -> Allestimento: {allestimento_prop}")
+            print(f"|")
+            print(f"| [ALTRI DATI TECNICI DA INSERIRE]")
+            print(f"| -> Base Mecc.:   {base_prop}")
+            print(f"| -> Dimensioni:   {dimensioni_prop}")
+            print(f"| -> Posti:        {posti_prop}")
+            print(f"| -> Disposizione: {disposizione_prop}")
+            print(f"|")
+            print(f"| [RAGIONAMENTO AI]")
+            print(f"| -> {motivo}")
+            print(f"+" * 70 + "\n")
+            
+            # Mostra i modelli/allestimenti già esistenti per quella marca per confronto visuale
+            cursor.execute("SELECT modello, allestimento FROM catalogo_modelli WHERE lower(marca) = ?", (marca_prop.lower(),))
+            esistenti = cursor.fetchall()
+            
+            if esistenti:
+                print(f"[*] ATTENZIONE - Modelli già presenti in DB per '{marca_prop.upper()}':")
+                for m, a in esistenti:
+                    print(f"    - {m} | {a}")
+            else:
+                print(f"[*] Nessun modello attualmente presente in DB per la marca '{marca_prop.upper()}'.")
+            
+            print("\n")
+            scelta = input(f"Vuoi AGGIUNGERE {marca_prop} {modello_prop} {allestimento_prop} (e i relativi dati tecnici) al CATALOGO PRINCIPALE? (s/n/i=ignora): ").strip().lower()
+            
+            oggi = datetime.now().strftime("%Y-%m-%d")
+            
+            if scelta == 's':
+                # Inserisci in catalogo principale
+                cursor.execute('''
+                    INSERT INTO catalogo_modelli (marca, modello, allestimento, base, dimensioni, posti, disposizione, data_aggiornamento)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                ''', (marca_prop, modello_prop, allestimento_prop, base_prop, dimensioni_prop, posti_prop, disposizione_prop, oggi))
+                
+                # Registra anche in proposte come APPROVATO per non riprocessare
+                cursor.execute('''
+                    INSERT INTO proposte_catalogo (url_annuncio, marca_proposta, modello_proposto, allestimento_proposto, base_proposta, dimensioni_proposta, posti_proposta, disposizione_proposta, motivazione_ai, stato)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'APPROVATO')
+                ''', (url, marca_prop, modello_prop, allestimento_prop, base_prop, dimensioni_prop, posti_prop, disposizione_prop, motivo))
+                
+                conn.commit()
+                print("[+] SUCCESSO: Modello e parametri inseriti nel Catalogo Ufficiale!")
+                
+            elif scelta == 'n':
+                # Registra come SCARTATO
+                cursor.execute('''
+                    INSERT INTO proposte_catalogo (url_annuncio, marca_proposta, modello_proposto, allestimento_proposto, base_proposta, dimensioni_proposta, posti_proposta, disposizione_proposta, motivazione_ai, stato)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'SCARTATO')
+                ''', (url, marca_prop, modello_prop, allestimento_prop, base_prop, dimensioni_prop, posti_prop, disposizione_prop, motivo))
+                conn.commit()
+                print("[-] Proposta scartata.")
+            else:
+                print("[*] Proposta ignorata, riapparirà alla prossima esecuzione.")
+                
+        else:
+            # Modello già noto, segnamolo in proposte_catalogo come GIA_NOTO per non rianalizzarlo inutilmente
+            cursor.execute('''
+                INSERT INTO proposte_catalogo (url_annuncio, marca_proposta, modello_proposto, allestimento_proposto, base_proposta, dimensioni_proposta, posti_proposta, disposizione_proposta, stato)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'GIA_NOTO_IGNORATO')
+            ''', (url, marca_prop, modello_prop, allestimento_prop, base_prop, dimensioni_prop, posti_prop, disposizione_prop))
+            conn.commit()
+            print("[*] Questo modello è già presente nel catalogo ufficiale, passo al prossimo.")
+
+    conn.close()
+    print(f"\n[+] Analisi interattiva completata.")
+
+if __name__ == "__main__":
+    analizza_e_proponi_interattivo()

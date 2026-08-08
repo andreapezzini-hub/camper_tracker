@@ -1,0 +1,73 @@
+{
+"description": "Tabella pesi per la classificazione dei camper, basata su categorie e attributi pesati.",
+"categories": {
+"telaio": {
+"weight": 0.30,
+"attributes": {
+"telaio_alko": { "type": "boolean", "weight": 0.10, "true_score": 100, "false_score": 0 },
+"tipo_mansardato": { "type": "boolean", "weight": 0.15, "true_score": 100, "false_score": 0 },
+"tipo_motorhome": { "type": "boolean", "weight": 0.15, "true_score": 100, "false_score": 0 },
+"tipo_semintegrale": { "type": "boolean", "weight": 0.05, "true_score": 100, "false_score": 0 },
+"doppio_pavimento": { "type": "boolean", "weight": 0.20, "true_score": 100, "false_score": 0 },
+"lunghezza_sotto_7_5": { "type": "condition", "operator": "<", "target": 7.5, "weight": 0.15, "true_score": 100, "false_score": 0 },
+"lunghezza_sopra_6": { "type": "condition", "operator": ">", "target": 6.0, "weight": 0.20, "true_score": 100, "false_score": 0 }
+}
+},
+"meccanica": {
+"weight": 0.20,
+"attributes": {
+"peso_sotto_3500": { "type": "condition", "operator": "<=", "target": 3500, "weight": 0.50, "true_score": 100, "false_score": 0 },
+"cambio_automatico": { "type": "boolean", "weight": 0.10, "true_score": 100, "false_score": 0 },
+"emissioni_euro6": { "type": "boolean", "weight": 0.20, "true_score": 100, "false_score": 0 },
+"potenza_min_140": { "type": "condition", "operator": ">=", "target": 140, "weight": 0.05, "true_score": 100, "false_score": 0 },
+"riscaldamento_gasolio": { "type": "boolean", "weight": 0.10, "true_score": 100, "false_score": 0 },
+"riscaldamento_alde": { "type": "boolean", "weight": 0.05, "true_score": 100, "false_score": 0 }
+}
+},
+"stato": {
+"weight": 0.10,
+"attributes": {
+"nuovo": { "type": "boolean", "weight": 1.0, "true_score": 100, "false_score": 0 }
+}
+},
+"interni": {
+"weight": 0.15,
+"attributes": {
+"letti_gemelli": { "type": "boolean", "weight": 0.25, "true_score": 100, "false_score": 0 },
+"letto_nautico": { "type": "boolean", "weight": 0.30, "true_score": 100, "false_score": 0 },
+"letti_a_castello": { "type": "boolean", "weight": 0.05, "true_score": 100, "false_score": 0 },
+"posti_omologati_min_4": { "type": "condition", "operator": ">=", "target": 4, "weight": 0.40, "true_score": 100, "false_score": -9999, "is_veto": true }
+}
+},
+"accessori": {
+"weight": 0.15,
+"attributes": {
+"pannelli_solari": { "type": "boolean", "weight": 0.15, "true_score": 100, "false_score": 0 },
+"batterie_litio": { "type": "boolean", "weight": 0.05, "true_score": 100, "false_score": 0 },
+"sospensioni_aria": { "type": "boolean", "weight": 0.15, "true_score": 100, "false_score": 0 },
+"predisposizione_invernale": { "type": "boolean", "weight": 0.30, "true_score": 100, "false_score": 0, "exclude_if": { "attribute": "doppio_pavimento", "value": true } },
+"doppia_batteria": { "type": "boolean", "weight": 0.05, "true_score": 100, "false_score": 0 },
+"aria_condizionata": { "type": "boolean", "weight": 0.10, "true_score": 100, "false_score": 0 },
+"riscaldatore_gasolio": { "type": "boolean", "weight": 0.15, "true_score": 100, "false_score": 0, "exclude_if": { "attribute": "riscaldamento_gasolio", "value": true } },
+"piedini_autolivellanti": { "type": "boolean", "weight": 0.05, "true_score": 100, "false_score": 0 }
+}
+},
+"prezzo": {
+"weight": 0.10,
+"attributes": {
+"valutazione_prezzo": {
+"type": "price_brackets",
+"weight": 1.0,
+"brackets": [
+{ "max": 49999, "score": 30 },
+{ "min": 50000, "max": 59999, "score": 25 },
+{ "min": 60000, "max": 74999, "score": 20 },
+{ "min": 75000, "max": 89999, "score": 15 },
+{ "min": 90000, "max": 109999, "score": 10 },
+{ "min": 110000, "score": -9999, "is_veto": true }
+]
+}
+}
+}
+}
+}

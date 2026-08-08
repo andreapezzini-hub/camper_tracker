@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CamperTracker AI - Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.8.0/sql-wasm.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: {
+                        brand: { 50: '#eff6ff', 100: '#dbeafe', 500: '#3b82f6', 600: '#2563eb', 900: '#1e3a8a' }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
+        .card-hover { transition: transform 0.2s ease, box-shadow 0.2s ease; }
+        .card-hover:hover { transform: translateY(-4px); box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1); }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        .modal-scrollbar::-webkit-scrollbar { width: 6px; }
+        .modal-scrollbar::-webkit-scrollbar-track { background: #f8fafc; border-radius: 4px; }
+        .modal-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        
+        .raw-text-box { white-space: pre-line; line-height: 1.6; }
+
+        /* Custom range slider styling */
+        input[type=range] {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            background: transparent;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 16px;
+            width: 16px;
+            border-radius: 50%;
+            background: #2563eb;
+            cursor: pointer;
+            margin-top: -6px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+        }
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 4px;
+            cursor: pointer;
+            background: #e2e8f0;
+            border-radius: 2px;
+        }
+    </style>
+</head>
+<body class="text-slate-800 antialiased">
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <i class="fa-solid fa-caravan text-brand-600 text-3xl"></i>
+                <h1 class="text-2xl font-bold tracking-tight text-slate-900">CamperTracker AI</h1>
+            </div>
+            <div class="text-sm text-slate-500 font-medium hidden sm:block">
+                <i class="fa-solid fa-location-dot mr-1 text-red-500"></i> Punto zero: Seregno (MB)
+            </div>
+        </div>
+    </header>
+
+   <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div id="alert-box" class="hidden mb-6 bg-amber-50 border-l-4 border-amber-500 p-4 rounded text-amber-800 shadow-sm">
+            <div class="flex items-center">
+                <i class="fa-solid fa-triangle-exclamation text-xl mr-3"></i>
+                <p><strong>Attenzione:</strong> Impossibile leggere il database SQLite (camper_tracker.db) locale a causa delle protezioni del browser (CORS). Avvia un server locale Python: <code class="bg-amber-100 px-2 py-0.5 rounded font-mono text-sm ml-1">python -m http.server</code>.</p>
+            </div>
+        </div>
+
+        <div class="sticky top-[68px] z-40 bg-[#f8fafc] pt-2 pb-4 px-2 -mx-2 max-h-[calc(100vh-68px)] overflow-y-auto modal-scrollbar shadow-[0_15px_15px_-15px_rgba(0,0,0,0.05)] mb-6 border-b border-transparent">
+    
+            <!-- Controls Bar Aggiornata -->
+            <div class="bg-white p-4 rounded-xl shadow-sm mb-4 border border-slate-100 flex flex-col gap-4">
+                
+                <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
+                    <div class="text-slate-600 font-medium whitespace-nowrap w-full lg:w-auto">
+                        Trovati <span id="results-count" class="font-bold text-brand-600">0</span> annunci
+                    </div>
+                    
+                    <!-- Ricerca per Marca/Modello -->
+                    <div class="w-full lg:w-1/3">
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fa-solid fa-magnifying-glass text-slate-400"></i>
+                            </div>
+                            <input type="text" id="search-marca" oninput="updateSearchMarca()" class="bg-slate-50 border border-slate-200 text-slate-700 text-sm rounded-lg focus:ring-brand-500 focus:border-brand-500 block w-full pl-10 p-2.5 outline-none font-medium transition-colors" placeholder="Cerca marca o modello...">
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-2 w-full lg:w-auto justify-between lg:justify-start">
+                        <label for="sort-select" class="text-sm font-semibold text-slate-600 whitespace-nowrap"><i class="fa-solid fa-arrow-down-a-z mr-1"></i> Ordina:</label>
+                        <select id="sort-select" onchange="applyFiltersAndSort()" class="w-full sm:w-auto bg-slate-50 border border-slate-200 text-slate-700 text-sm rounded-lg focus:ring-brand-500 focus:border-brand-500 block p-2 outline-none font-medium cursor-pointer">
+                            <option value="score_desc">🏆 Punteggio (Più alto)</option>
+                            <option value="price_asc">💰 Prezzo (Più basso)</option>
+                            <option value="distance_asc">📍 Distanza (Più vicino)</option>
+                            <option value="km_asc">🛣️ Chilometri (Meno usati)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Pillole Base -->
+                <div class="flex flex-col sm:flex-row items-start sm:items-center gap-6 border-t border-slate-100 pt-4">
+                    <div class="flex items-center gap-2 flex-wrap">
+                        <span class="text-sm font-semibold text-slate-600 mr-1"><i class="fa-solid fa-filter mr-1"></i> Tipo:</span>
+                        <div id="type-filters-container" class="flex flex-wrap gap-2"></div>
+                    </div>
+
+                    <div class="flex items-center gap-2 flex-wrap sm:border-l border-slate-200 sm:pl-4">
+                        <span class="text-sm font-semibold text-slate-600 mr-1"><i class="fa-solid fa-tag mr-1"></i> Stato:</span>
+                        <div id="status-filters-container" class="flex flex-wrap gap-2"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pannello Filtri Avanzati - Collassabile -->
+            <div class="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden">
+                <button onclick="toggleAdvancedFilters()" class="w-full px-5 py-4 flex justify-between items-center bg-white hover:bg-slate-50 transition-colors focus:outline-none cursor-pointer">
+                    <div class="text-sm font-bold text-slate-800 flex items-center">
+                        <i class="fa-solid fa-sliders text-brand-500 mr-2"></i> Filtri Avanzati Dettagliati
+                    </div>
+                    <i id="advanced-filters-chevron" class="fa-solid fa-chevron-up text-slate-400 transition-transform duration-300"></i>
+                </button>
+                
+                <div id="advanced-filters-content" class="px-5 pb-5 block">
+                    <!-- Sliders Container -->
+                    <div id="sliders-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-6 gap-y-5 mb-6 pb-6 border-b border-slate-100">
+                        <!-- Generato da JS -->
+                    </div>
+
+                    <!-- Booleans Container -->
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <div>
+                            <h5 class="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-3">Meccanica & Telaio</h5>
+                            <div id="bool-meccanica-container" class="flex flex-wrap gap-2"></div>
+                        </div>
+                        <div>
+                            <h5 class="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-3">Struttura & Letti</h5>
+                            <div id="bool-struttura-container" class="flex flex-wrap gap-2"></div>
+                        </div>
+                        <div>
+                            <h5 class="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-3">Impianti & Energia</h5>
+                            <div id="bool-impianti-container" class="flex flex-wrap gap-2"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div id="camper-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div class="col-span-full text-center py-16">
+                <i class="fa-solid fa-spinner fa-spin text-4xl text-slate-300"></i>
+                <p class="mt-4 text-slate-500">Caricamento database...</p>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Modal per Dettagli -->
+    <div id="detail-modal" class="fixed inset-0 z-[100] hidden">
+        <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity" onclick="closeModal()"></div>
+        <div class="fixed inset-0 z-10 overflow-y-auto">
+            <div class="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
+                <div class="relative transform overflow-hidden rounded-2xl bg-white text-left shadow-2xl transition-all sm:my-8 w-full max-w-5xl border border-slate-200" onclick="event.stopPropagation()">
+                    <div id="modal-content" class="flex flex-col w-full">
+                        <!-- Generato da JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentData = [];
+        
+        // Filtri Base
+        const allTypes = ["Motorhome", "Mansardato", "Semintegrale"];
+        let activeTypes = new Set(allTypes);
+        const allStatuses = ["Nuovo", "Usato"];
+        let activeStatuses = new Set(allStatuses);
+
+        // Filtri Avanzati State
+        let searchMarcaText = "";
+        let searchAIText = ""; // Nuovo stato per la ricerca testuale IA
+        let filterBounds = {}; // Valori min e max calcolati dai dati reali
+        let currentFilterValues = {}; // Stato corrente degli slider
+        let activeBooleans = new Set();
+
+        // Configurazione campi numerici per slider
+        const numericFields = [
+            { key: 'prezzo', label: 'Prezzo Max (€)', type: 'max', isDt: false },
+            { key: 'chilometri', label: 'Km Max', type: 'max', isDt: false },
+            { key: 'anno', label: 'Anno Min', type: 'min', isDt: false },
+            { key: 'distanza_seregno', label: 'Distanza Max (km)', type: 'max', isDt: false },
+            { key: 'posti_letto', label: 'Letti Min', type: 'min', isDt: true },
+            { key: 'posti_omologati', label: 'Omologati Min', type: 'min', isDt: true },
+            { key: 'lunghezza', label: 'Lunghezza Max (m)', type: 'max', isDt: true },
+            { key: 'peso', label: 'Peso Max (kg)', type: 'max', isDt: true },
+            { key: 'potenza', label: 'Potenza Min (CV)', type: 'min', isDt: true }
+        ];
+
+        // Configurazione campi booleani categorizzati
+        const booleanCategories = {
+            meccanica: [
+                { key: 'telaio_alko', label: 'Telaio AL-KO' },
+                { key: 'cambio_automatico', label: 'Cambio Auto' },
+                { key: 'sospensioni_aria', label: 'Sospensioni Aria' },
+                { key: 'piedini_autolivellanti', label: 'Piedini Autolivel.' },
+                { key: 'emissioni_euro6', label: 'Euro 6' }
+            ],
+            struttura: [
+                { key: 'doppio_pavimento', label: 'Doppio Pavim.' },
+                { key: 'predisposizione_invernale', label: 'Predisp. Inverno' },
+                { key: 'letti_gemelli', label: 'Letti Gemelli' },
+                { key: 'letto_nautico', label: 'Letto Nautico' },
+                { key: 'letti_a_castello', label: 'Letti Castello' }
+            ],
+            impianti: [
+                { key: 'pannelli_solari', label: 'Pannelli Solari' },
+                { key: 'batterie_litio', label: 'Batterie Litio' },
+                { key: 'doppia_batteria', label: 'Doppia Batteria' },
+                { key: 'aria_condizionata', label: 'Climatizzatore' },
+                { key: 'riscaldamento_gasolio', label: 'Risc. Gasolio', altKey: 'riscaldatore_gasolio' },
+                { key: 'riscaldamento_alde', label: 'Risc. Alde' }
+            ]
+        };
+
+         const formatNumber = (num) => new Intl.NumberFormat('it-IT').format(num);
+
+        async function loadDatabaseLive() {
+            try {
+                // Inizializza sql.js caricando il modulo WebAssembly
+                const SQL = await initSqlJs({
+                    locateFile: file => `https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.8.0/${file}`
+                });
+
+                // Scarica il file binario SQLite
+                const response = await fetch('camper_tracker.db?t=' + new Date().getTime());
+                if (!response.ok) throw new Error("File DB inaccessibile.");
+                
+                const buffer = await response.arrayBuffer();
+                const db = new SQL.Database(new Uint8Array(buffer));
+                
+                const parsedData = [];
+                let idCounter = 1;
+                
+                // 1. Carica lo storico prezzi per associarlo agli annunci
+                const priceHistoryMap = {};
+                try {
+                    const stmtPrezzi = db.prepare("SELECT url_annuncio, data, prezzo FROM storico_prezzi ORDER BY data ASC");
+                    while (stmtPrezzi.step()) {
+                        const row = stmtPrezzi.getAsObject();
+                        if (!priceHistoryMap[row.url_annuncio]) priceHistoryMap[row.url_annuncio] = [];
+                        priceHistoryMap[row.url_annuncio].push(row);
+                    }
+                    stmtPrezzi.free();
+                } catch(e) {
+                    console.warn("Tabella storico_prezzi mancante o errore nell'estrazione.", e);
+                }
+
+                // 2. Interroga la tabella annunci ignorando gli scartati
+                const stmt = db.prepare("SELECT * FROM annunci WHERE status != 'SCARTATO'");
+                
+                while (stmt.step()) {
+                    const row = stmt.getAsObject();
+                    
+                    // Decodifica JSON dei campi tecnici estratti dallo scraper
+                    let dt = {};
+                    try { dt = JSON.parse(row.dati_tecnici); } catch(e) {}
+                    
+                    // Deduzione logica
+                    let tipologiaDedotta = "Semintegrale";
+                    if (dt.tipo_motorhome) tipologiaDedotta = "Motorhome";
+                    else if (dt.tipo_mansardato) tipologiaDedotta = "Mansardato";
+
+                    // Composizione nome
+                    const marca_modello_str = `${row.marca || ''} ${row.modello || ''} ${row.allestimento || ''}`.trim() || "Sconosciuto";
+
+                    parsedData.push({
+                        id: idCounter++,
+                        marca_modello: marca_modello_str,
+                        punteggio: row.punteggio_totale || 0,
+                        sito: row.sito || "Web",
+                        anno: dt.anno || "N/A",
+                        tipologia: tipologiaDedotta,
+                        stato: dt.nuovo ? "Nuovo" : "Usato",
+                        prezzo: row.prezzo_attuale || 0,
+                        cambio: dt.cambio_automatico ? "Automatico" : "Manuale",
+                        chilometri: dt.chilometri || 0,
+                        distanza_seregno: row.distanza_seregno || 0,
+                        link: row.url,
+                        immagine_url: row.url_immagine,
+                        dettagli_tecnici: dt,
+                        riassunto_ia: dt.riassunto_ia || "", 
+                        testo_originale: row.testo_originale || "",
+                        ai_usata: row.ai_usata === 1 || row.ai_usata === true,
+                        storico_prezzi: priceHistoryMap[row.url] || [] // Passa lo storico prezzi per la modale
+                    });
+                }
+                
+                stmt.free();
+                db.close();
+                
+                currentData = parsedData;
+            } catch (error) {
+                console.error("Fetch Fallito o Errore SQLite:", error);
+                document.getElementById('alert-box').classList.remove('hidden');
+                document.getElementById('camper-grid').innerHTML = `
+                    <div class="col-span-full text-center py-16 bg-white rounded-2xl border border-red-200 text-red-500 shadow-sm">
+                        <i class="fa-solid fa-database text-5xl mb-4 text-red-300"></i>
+                        <h3 class="text-lg font-bold text-red-700 mb-1">Errore Database</h3>
+                        <p>Impossibile leggere camper_tracker.db. Assicurati che esista e di usare un server locale.</p>
+                    </div>`;
+                return;
+            }
+            
+            renderTypeFilters();
+            renderStatusFilters();
+            initializeAdvancedFilters(); // Inizializza i range degli slider in base ai dati
+            applyFiltersAndSort();
+        }
+
+        const initializeAdvancedFilters = () => {
+            numericFields.forEach(field => {
+                let values = currentData.map(c => {
+                    let val = field.isDt ? c.dettagli_tecnici[field.key] : c[field.key];
+                    if (val === undefined || val === null || val === "N/A" || val === "") return null;
+                    if (typeof val === 'string') val = parseFloat(val.replace(',', '.'));
+                    return isNaN(val) ? null : val;
+                }).filter(v => v !== null);
+
+                if (values.length > 0) {
+                    filterBounds[field.key] = {
+                        min: Math.min(...values),
+                        max: Math.max(...values)
+                    };
+                    currentFilterValues[field.key] = field.type === 'max' ? filterBounds[field.key].max : filterBounds[field.key].min;
+                } else {
+                     filterBounds[field.key] = { min: 0, max: 100 };
+                     currentFilterValues[field.key] = field.type === 'max' ? 100 : 0;
+                }
+            });
+
+            renderSliders();
+            renderAdvancedBooleans();
+        };
+
+        const renderSliders = () => {
+            const container = document.getElementById('sliders-container');
+            let html = numericFields.map(field => {
+                const bounds = filterBounds[field.key];
+                const val = currentFilterValues[field.key];
+                const step = (field.key === 'lunghezza') ? '0.1' : '1';
+                return `
+                    <div class="flex flex-col gap-2">
+                        <label class="text-xs font-semibold text-slate-600 flex justify-between items-center">
+                            <span>${field.label}</span>
+                            <span class="text-brand-700 font-bold bg-brand-50 px-2 py-0.5 rounded text-[11px] border border-brand-100" id="val-${field.key}">
+                                ${formatNumber(val)}
+                            </span>
+                        </label>
+                        <input type="range" 
+                               min="${bounds.min}" 
+                               max="${bounds.max}" 
+                               step="${step}"
+                               value="${val}" 
+                               class="w-full"
+                               oninput="updateSliderValue('${field.key}', this.value)"
+                               onchange="applyFiltersAndSort()">
+                    </div>
+                `;
+            }).join('');
+            
+            // Aggiungo il nuovo campo di ricerca IA nello spazio vuoto della griglia sotto "Potenza"
+            html += `
+                <div class="flex flex-col gap-2 col-span-1 sm:col-span-2 lg:col-span-3 xl:col-span-3">
+                    <label class="text-xs font-semibold text-slate-600 flex items-center">
+                        <i class="fa-solid fa-wand-magic-sparkles mr-1.5 text-brand-500"></i> Cerca negli Accessori (IA)
+                    </label>
+                    <div class="relative w-full">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fa-solid fa-magnifying-glass text-slate-400 text-sm"></i>
+                        </div>
+                        <input type="text" id="search-ai" oninput="updateSearchAI()" value="${searchAIText}" class="bg-slate-50 border border-slate-200 text-slate-700 text-sm rounded-lg focus:ring-brand-500 focus:border-brand-500 block w-full pl-9 p-1.5 outline-none font-medium transition-colors" placeholder="Filtra per parola chiave (es. tendalino, inverter...)">
+                    </div>
+                </div>
+            `;
+            
+            container.innerHTML = html;
+        };
+
+        const updateSliderValue = (key, value) => {
+            currentFilterValues[key] = parseFloat(value);
+            document.getElementById(`val-${key}`).innerText = formatNumber(parseFloat(value));
+        };
+
+        const renderAdvancedBooleans = () => {
+            for (const [category, items] of Object.entries(booleanCategories)) {
+                const container = document.getElementById(`bool-${category}-container`);
+                if(container) {
+                    container.innerHTML = items.map(item => {
+                        const isActive = activeBooleans.has(item.key);
+                        const activeClass = isActive 
+                            ? 'bg-brand-600 text-white border-brand-600 shadow-sm' 
+                            : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50';
+                        return `<button onclick="toggleAdvancedBoolean('${item.key}')" class="px-3 py-1.5 rounded-full border text-[11px] font-semibold transition-all duration-200 cursor-pointer flex items-center gap-1.5 ${activeClass}">
+                            ${isActive ? '<i class="fa-solid fa-check"></i>' : ''} ${item.label}
+                        </button>`;
+                    }).join('');
+                }
+            }
+        };
+
+        const toggleAdvancedBoolean = (key) => {
+            if (activeBooleans.has(key)) activeBooleans.delete(key);
+            else activeBooleans.add(key);
+            renderAdvancedBooleans();
+            applyFiltersAndSort();
+        };
+        
+        // Funzione per espandere/collassare i filtri avanzati
+        const toggleAdvancedFilters = () => {
+            const content = document.getElementById('advanced-filters-content');
+            const chevron = document.getElementById('advanced-filters-chevron');
+            
+            if (content.classList.contains('hidden')) {
+                content.classList.remove('hidden');
+                chevron.classList.replace('fa-chevron-down', 'fa-chevron-up');
+            } else {
+                content.classList.add('hidden');
+                chevron.classList.replace('fa-chevron-up', 'fa-chevron-down');
+            }
+        };
+
+        const updateSearchMarca = () => {
+            searchMarcaText = document.getElementById('search-marca').value.toLowerCase();
+            applyFiltersAndSort();
+        };
+
+        const updateSearchAI = () => {
+            searchAIText = document.getElementById('search-ai').value.toLowerCase();
+            applyFiltersAndSort();
+        };
+
+        const getScoreColor = (score) => {
+            if (score >= 85) return 'bg-green-100 text-green-800 border-green-200';
+            if (score >= 70) return 'bg-blue-100 text-blue-800 border-blue-200';
+            if (score >= 50) return 'bg-yellow-100 text-yellow-800 border-yellow-200';
+            return 'bg-red-100 text-red-800 border-red-200';
+        };
+
+        const renderTypeFilters = () => {
+            const container = document.getElementById('type-filters-container');
+            container.innerHTML = allTypes.map(type => {
+                const isActive = activeTypes.has(type);
+                const activeClass = isActive 
+                    ? 'bg-slate-800 text-white border-slate-800 shadow-sm' 
+                    : 'bg-white text-slate-500 border-slate-200 hover:bg-slate-50 hover:text-slate-700';
+                return `<button onclick="toggleType('${type}')" class="px-3 py-1.5 rounded-full border text-xs sm:text-sm font-semibold transition-all duration-200 cursor-pointer flex items-center gap-1 ${activeClass}">${isActive ? '<i class="fa-solid fa-check"></i>' : ''} ${type}</button>`;
+            }).join('');
+        };
+
+        const toggleType = (type) => {
+            if (activeTypes.has(type)) activeTypes.delete(type);
+            else activeTypes.add(type);
+            if(activeTypes.size === 0) activeTypes.add(type); 
+            renderTypeFilters(); applyFiltersAndSort();
+        };
+
+        const renderStatusFilters = () => {
+            const container = document.getElementById('status-filters-container');
+            container.innerHTML = allStatuses.map(status => {
+                const isActive = activeStatuses.has(status);
+                const activeClass = isActive 
+                    ? 'bg-slate-800 text-white border-slate-800 shadow-sm' 
+                    : 'bg-white text-slate-500 border-slate-200 hover:bg-slate-50 hover:text-slate-700';
+                return `<button onclick="toggleStatus('${status}')" class="px-3 py-1.5 rounded-full border text-xs sm:text-sm font-semibold transition-all duration-200 cursor-pointer flex items-center gap-1 ${activeClass}">${isActive ? '<i class="fa-solid fa-check"></i>' : ''} ${status}</button>`;
+            }).join('');
+        };
+
+        const toggleStatus = (status) => {
+            if (activeStatuses.has(status)) activeStatuses.delete(status);
+            else activeStatuses.add(status);
+            if(activeStatuses.size === 0) activeStatuses.add(status);
+            renderStatusFilters(); applyFiltersAndSort();
+        };
+
+        const applyFiltersAndSort = () => {
+            let filteredData = currentData.filter(c => {
+                
+                // 1. Filtri Base
+                if (!activeTypes.has(c.tipologia)) return false;
+                if (!activeStatuses.has(c.stato)) return false;
+
+                // 2. Ricerca Testo (Marca Modello)
+                if (searchMarcaText && !c.marca_modello.toLowerCase().includes(searchMarcaText)) return false;
+
+                // 3. Ricerca Testo (Accessori IA)
+                if (searchAIText) {
+                    const riassunto = c.riassunto_ia ? c.riassunto_ia.toLowerCase() : "";
+                    if (!riassunto.includes(searchAIText)) return false;
+                }
+
+                // 4. Sliders Numerici
+                let passSliders = numericFields.every(field => {
+                    let val = field.isDt ? c.dettagli_tecnici[field.key] : c[field.key];
+                    const isDefault = currentFilterValues[field.key] === (field.type === 'max' ? filterBounds[field.key].max : filterBounds[field.key].min);
+                    
+                    if (val === undefined || val === null || val === "N/A" || val === "") {
+                        return isDefault; 
+                    }
+
+                    if (typeof val === 'string') val = parseFloat(val.replace(',', '.'));
+                    if (isNaN(val)) return isDefault;
+
+                    if (field.type === 'max') {
+                        return val <= currentFilterValues[field.key];
+                    } else { 
+                        return val >= currentFilterValues[field.key];
+                    }
+                });
+                if (!passSliders) return false;
+
+                // 5. Filtri Booleani Avanzati
+                let passBooleans = true;
+                for (let key of activeBooleans) {
+                    let def = null;
+                    for (let cat in booleanCategories) {
+                        let found = booleanCategories[cat].find(i => i.key === key);
+                        if (found) { def = found; break; }
+                    }
+                    
+                    let hasFeature = c.dettagli_tecnici[key] === true;
+                    if (!hasFeature && def && def.altKey) {
+                        hasFeature = c.dettagli_tecnici[def.altKey] === true;
+                    }
+
+                    if (!hasFeature) {
+                        passBooleans = false;
+                        break;
+                    }
+                }
+                if (!passBooleans) return false;
+
+                return true;
+            });
+
+            const sortVal = document.getElementById('sort-select').value;
+            let sortedData = [...filteredData];
+            
+            switch (sortVal) {
+                case 'score_desc': sortedData.sort((a, b) => b.punteggio - a.punteggio); break;
+                case 'price_asc': sortedData.sort((a, b) => a.prezzo - b.prezzo); break;
+                case 'distance_asc': sortedData.sort((a, b) => a.distanza_seregno - b.distanza_seregno); break;
+                case 'km_asc': sortedData.sort((a, b) => a.chilometri - b.chilometri); break;
+            }
+            renderGrid(sortedData);
+        };
+
+        const createCardHTML = (camper) => {
+            const scoreClasses = getScoreColor(camper.punteggio);
+            const imageSrc = camper.immagine_url ? camper.immagine_url : "https://placehold.co/600x400/e2e8f0/64748b?text=Immagine+Non+Disponibile";
+            
+            const lunghezzaBadge = `<div class="absolute bottom-3 left-3 flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white/95 text-slate-700 text-xs font-bold shadow-md border border-slate-200 backdrop-blur-sm"><i class="fa-solid fa-ruler-combined text-amber-500"></i> ${camper.dettagli_tecnici.lunghezza ? camper.dettagli_tecnici.lunghezza + 'm' : '?'}</div>`;
+            const euro6Badge = camper.dettagli_tecnici.emissioni_euro6 
+                ? `<div class="absolute bottom-3 right-3 flex items-center gap-1 px-2.5 py-1 rounded-lg bg-green-100/95 text-green-700 text-xs font-bold shadow-md border border-green-200 backdrop-blur-sm"><i class="fa-solid fa-leaf"></i> Euro 6</div>` 
+                : '';
+
+            return `
+                <div onclick="openModal(${camper.id})" class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden card-hover flex flex-col h-full cursor-pointer relative">
+                    <div class="relative h-48 w-full overflow-hidden bg-slate-100 border-b border-slate-100">
+                        <img src="${imageSrc}" alt="${camper.marca_modello}" class="w-full h-full object-cover transition-transform duration-500 hover:scale-105" onerror="this.src='https://placehold.co/600x400/e2e8f0/64748b?text=Immagine+Non+Disponibile'">
+                        <div class="absolute top-3 left-3">
+                            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-white/90 text-slate-800 shadow-sm backdrop-blur-sm border border-white/20">
+                                <i class="fa-solid fa-tag mr-1 text-brand-600"></i> ${camper.sito}
+                            </span>
+                        </div>
+                        ${lunghezzaBadge}
+                        ${euro6Badge}
+                        <div class="absolute top-3 right-3 flex flex-col items-center justify-center p-1.5 rounded-lg border bg-white/95 shadow-md ${scoreClasses} min-w-[60px] backdrop-blur-sm">
+                            <span class="text-[10px] uppercase font-black tracking-wider opacity-80 leading-none mb-0.5">Score</span>
+                            <span class="text-xl font-black leading-none">${camper.punteggio}</span>
+                        </div>
+                    </div>
+
+                    <div class="px-5 pt-4 pb-2">
+                        <h2 class="text-xl font-bold text-slate-900 leading-tight line-clamp-2" title="${camper.marca_modello}">${camper.marca_modello}</h2>
+                    </div>
+
+                    <div class="px-5 pb-4 pt-2 flex-grow">
+                        <div class="grid grid-cols-2 gap-y-4 gap-x-2">
+                            <div class="flex items-center gap-2">
+                                <div class="w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center text-slate-400 border border-slate-100"><i class="fa-regular fa-calendar"></i></div>
+                                <div><p class="text-[10px] uppercase font-bold text-slate-400">Anno</p><p class="font-semibold text-sm">${camper.anno}</p></div>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <div class="w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center text-slate-400 border border-slate-100"><i class="fa-solid fa-truck-monster"></i></div>
+                                <div><p class="text-[10px] uppercase font-bold text-slate-400">Tipologia</p><p class="font-semibold text-sm">${camper.tipologia}</p></div>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <div class="w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center text-slate-400 border border-slate-100"><i class="fa-solid fa-gauge-high"></i></div>
+                                <div><p class="text-[10px] uppercase font-bold text-slate-400">Chilometri</p><p class="font-semibold text-sm">${camper.chilometri === 0 ? 'Nuovo' : formatNumber(camper.chilometri) + ' km'}</p></div>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <div class="w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center text-slate-400 border border-slate-100"><i class="fa-solid fa-location-dot"></i></div>
+                                <div><p class="text-[10px] uppercase font-bold text-slate-400">Distanza</p><p class="font-semibold text-sm">${camper.distanza_seregno} km</p></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="p-4 bg-slate-50 flex items-center justify-between mt-auto rounded-b-2xl border-t border-slate-100">
+                        <div>
+                            <p class="text-[10px] uppercase font-bold text-slate-500 tracking-wider">Prezzo</p>
+                            <p class="text-xl font-black text-brand-700">€ ${formatNumber(camper.prezzo)}</p>
+                        </div>
+                        <button class="inline-flex items-center justify-center px-4 py-2 text-sm font-bold text-white bg-slate-800 hover:bg-slate-700 rounded-lg transition-colors shadow-sm">
+                            Apri <i class="fa-solid fa-chevron-right ml-2 text-xs"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+        };
+
+        const renderGrid = (data) => {
+            const grid = document.getElementById('camper-grid');
+            if (data.length === 0) {
+                grid.innerHTML = '<div class="col-span-full text-center py-16 bg-white rounded-2xl border border-dashed border-slate-300 text-slate-500"><i class="fa-solid fa-caravan text-5xl mb-4 text-slate-300"></i><h3 class="text-lg font-bold text-slate-700 mb-1">Nessun camper trovato</h3><p>Prova a modificare i filtri per vedere più risultati.</p></div>';
+            } else {
+                grid.innerHTML = data.map(createCardHTML).join('');
+            }
+            document.getElementById('results-count').innerText = data.length;
+        };
+
+        const closeModal = () => { 
+            document.getElementById('detail-modal').classList.add('hidden'); 
+            document.body.style.overflow = 'auto';
+        };
+
+        const renderBoolItem = (label, value) => {
+            const isTrue = value === true;
+            const icon = isTrue ? '<i class="fa-solid fa-circle-check text-green-500 text-lg"></i>' : '<i class="fa-solid fa-circle-xmark text-red-400 text-lg opacity-40"></i>';
+            const textClass = isTrue ? 'text-slate-800 font-semibold' : 'text-slate-400 line-through opacity-70';
+            return `<div class="flex items-center gap-2.5 text-sm ${textClass}">${icon} <span>${label}</span></div>`;
+        };
+
+        const openModal = (id) => {
+            const camper = currentData.find(c => c.id === id);
+            if(!camper) return;
+            
+            const dt = camper.dettagli_tecnici || {};
+            const modalContent = document.getElementById('modal-content');
+            
+            const catMeccanica = [
+                {l: 'Telaio AL-KO', v: dt.telaio_alko},
+                {l: 'Cambio Automatico', v: dt.cambio_automatico},
+                {l: 'Sospensioni Aria', v: dt.sospensioni_aria},
+                {l: 'Piedini Autolivel.', v: dt.piedini_autolivellanti}
+            ];
+            
+            const catStruttura = [
+                {l: 'Doppio Pavimento', v: dt.doppio_pavimento},
+                {l: 'Predisp. Invernale', v: dt.predisposizione_invernale},
+                {l: 'Letti Gemelli', v: dt.letti_gemelli},
+                {l: 'Letto Nautico', v: dt.letto_nautico},
+                {l: 'Letti a Castello', v: dt.letti_a_castello}
+            ];
+
+            const catImpianti = [
+                {l: 'Pannelli Solari', v: dt.pannelli_solari},
+                {l: 'Batterie Litio', v: dt.batterie_litio},
+                {l: 'Doppia Batteria', v: dt.doppia_batteria},
+                {l: 'Aria Condizionata', v: dt.aria_condizionata},
+                {l: 'Risc. Gasolio', v: dt.riscaldamento_gasolio || dt.riscaldatore_gasolio},
+                {l: 'Riscaldamento Alde', v: dt.riscaldamento_alde}
+            ];
+
+            let summaryHTML = '';
+            if (camper.riassunto_ia && camper.riassunto_ia.trim() !== '') {
+                let lines = camper.riassunto_ia.split('\n');
+                let inList = false;
+
+                for (let line of lines) {
+                    let trimLine = line.trim();
+                    if (trimLine.startsWith('- ') || trimLine.startsWith('* ')) {
+                        if (!inList) {
+                            summaryHTML += '<ul class="list-disc pl-5 my-2 space-y-1 text-slate-700">\n';
+                            inList = true;
+                        }
+                        summaryHTML += `<li>${trimLine.substring(2)}</li>\n`;
+                    } else {
+                        if (inList) {
+                            summaryHTML += '</ul>\n';
+                            inList = false;
+                        }
+                    }
+                }
+
+                if (inList) {
+                    summaryHTML += '</ul>\n';
+                }
+            } else {
+                summaryHTML = '<p class="text-sm text-slate-500 italic">Nessun riassunto generato automaticamente.</p>';
+            }
+
+            let priceHistoryHTML = '';
+            if (camper.storico_prezzi && camper.storico_prezzi.length > 0) {
+                priceHistoryHTML = `<div class="mt-4 bg-slate-50 border border-slate-200 rounded-xl p-4 shadow-inner">
+                    <h5 class="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-3 flex items-center"><i class="fa-solid fa-chart-line mr-1.5 text-brand-500"></i> Storico Prezzi</h5>
+                    <div class="space-y-2">`;
+                camper.storico_prezzi.forEach(sp => {
+                    priceHistoryHTML += `
+                        <div class="flex justify-between items-center text-sm border-b border-slate-200 last:border-0 pb-1.5 last:pb-0">
+                            <span class="text-slate-500 font-medium"><i class="fa-regular fa-calendar-days mr-1 text-slate-400"></i> ${sp.data}</span>
+                            <span class="font-black text-brand-700">€ ${formatNumber(sp.prezzo)}</span>
+                        </div>`;
+                });
+                priceHistoryHTML += `</div></div>`;
+            }
+
+            const imageSrc = camper.immagine_url ? camper.immagine_url : "https://placehold.co/800x400/e2e8f0/64748b?text=Immagine+Non+Disponibile";
+
+            modalContent.innerHTML = `
+                <div class="relative h-64 sm:h-80 w-full bg-slate-900 overflow-hidden shrink-0">
+                    <img src="${imageSrc}" alt="${camper.marca_modello}" class="w-full h-full object-cover opacity-60" onerror="this.src='https://placehold.co/800x400/e2e8f0/64748b?text=Immagine+Non+Disponibile'">
+                    
+                    <button type="button" onclick="closeModal()" class="absolute top-4 right-4 rounded-full bg-black/50 p-2.5 text-white hover:bg-black/80 hover:scale-110 backdrop-blur-sm transition-all focus:outline-none z-10">
+                        <i class="fa-solid fa-xmark w-5 h-5 flex items-center justify-center text-xl"></i>
+                    </button>
+
+                    <div class="absolute bottom-0 left-0 w-full p-6 bg-gradient-to-t from-black/95 via-black/70 to-transparent">
+                        <div class="flex items-center gap-3 mb-2">
+                            <span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-bold bg-brand-500 text-white shadow-sm"><i class="fa-solid fa-tag mr-1.5"></i>${camper.sito}</span>
+                            <span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-bold bg-white text-slate-800"><i class="fa-solid fa-truck-monster mr-1.5"></i>${camper.tipologia}</span>
+                        </div>
+                        <h3 class="text-2xl sm:text-4xl font-black leading-tight text-white shadow-sm mb-3">${camper.marca_modello}</h3>
+                        
+                        <div class="flex flex-wrap gap-x-5 gap-y-2 text-sm font-medium text-slate-200">
+                            <span class="flex items-center"><i class="fa-regular fa-calendar mr-1.5 opacity-80 text-lg"></i> ${camper.anno}</span>
+                            <span class="flex items-center"><i class="fa-solid fa-gauge-high mr-1.5 opacity-80 text-lg"></i> ${camper.chilometri === 0 ? 'Nuovo' : formatNumber(camper.chilometri) + ' km'}</span>
+                            <span class="flex items-center text-indigo-300"><i class="fa-solid fa-bed mr-1.5 text-lg"></i> ${dt.posti_letto || '?'} Letti</span>
+                            <span class="flex items-center text-emerald-300"><i class="fa-solid fa-users mr-1.5 text-lg"></i> ${dt.posti_omologati || '?'} Omologati</span>
+                            <span class="flex items-center text-amber-300"><i class="fa-solid fa-ruler-combined mr-1.5 text-lg"></i> ${dt.lunghezza ? dt.lunghezza + 'm' : '?'}</span>
+                            <span class="flex items-center text-blue-300"><i class="fa-solid fa-weight-hanging mr-1.5 text-lg"></i> ${dt.peso ? dt.peso + ' kg' : '?'}</span>
+                            <span class="flex items-center text-rose-300"><i class="fa-solid fa-bolt mr-1.5 text-lg"></i> ${dt.potenza ? dt.potenza + ' CV' : '?'}</span>
+                            ${dt.emissioni_euro6 ? `<span class="flex items-center text-green-400 bg-green-900/40 px-2 py-0.5 rounded-md border border-green-700/50"><i class="fa-solid fa-leaf mr-1.5"></i> Euro 6</span>` : ''}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-slate-50 border-b border-slate-200 px-6 py-4 flex flex-col sm:flex-row justify-between items-center gap-4 sticky top-0 z-20 shadow-sm">
+                    <div class="flex flex-col items-center sm:items-start w-full sm:w-auto">
+                        <p class="text-[10px] uppercase font-bold text-slate-500 tracking-wider mb-0.5">Prezzo Richiesto</p>
+                        <p class="text-3xl font-black text-brand-700 leading-none">€ ${formatNumber(camper.prezzo)}</p>
+                    </div>
+                    <div class="flex items-center gap-4 w-full sm:w-auto justify-between sm:justify-end">
+                        <div class="text-right flex flex-col items-center sm:items-end">
+                            <p class="text-[10px] uppercase font-bold text-slate-500 tracking-wider mb-0.5">Scoring Finale</p>
+                            <div class="inline-flex items-center justify-center px-4 py-1.5 rounded-lg ${getScoreColor(camper.punteggio)} font-black border text-lg shadow-inner">
+                                ${camper.punteggio || 'N/A'}
+                            </div>
+                        </div>
+                        <a href="${camper.link}" target="_blank" class="w-full sm:w-auto inline-flex justify-center items-center rounded-xl bg-slate-900 px-8 py-3.5 text-sm font-bold text-white shadow-md hover:bg-slate-800 hover:shadow-lg hover:-translate-y-0.5 transition-all focus:outline-none">
+                            Vedi annuncio <i class="fa-solid fa-arrow-up-right-from-square ml-2"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="p-6 bg-white overflow-y-auto max-h-[50vh] sm:max-h-[60vh] modal-scrollbar flex-grow">
+                    
+                    <h4 class="text-sm uppercase font-black text-slate-800 tracking-wider mb-4 flex items-center border-b border-slate-100 pb-2">
+                        <i class="fa-solid fa-list-check mr-2 text-brand-500"></i> Parametri Base
+                    </h4>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 bg-slate-50/50 p-5 rounded-xl border border-slate-100">
+                        <div>
+                            <h5 class="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-4">Meccanica & Telaio</h5>
+                            <div class="space-y-3.5">${catMeccanica.map(i => renderBoolItem(i.l, i.v)).join('')}</div>
+                        </div>
+                        <div>
+                            <h5 class="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-4">Struttura & Letti</h5>
+                            <div class="space-y-3.5">${catStruttura.map(i => renderBoolItem(i.l, i.v)).join('')}</div>
+                        </div>
+                        <div>
+                            <h5 class="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-4">Impianti & Energia</h5>
+                            <div class="space-y-3.5">${catImpianti.map(i => renderBoolItem(i.l, i.v)).join('')}</div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-4">
+                        <div>
+                            <h4 class="text-sm uppercase font-black text-slate-800 tracking-wider mb-3 flex items-center border-b border-slate-100 pb-2">
+                                <i class="fa-solid fa-file-lines mr-2 text-slate-500"></i> Testo e Accessori Originali
+                            </h4>
+                            <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 text-sm text-slate-600 h-64 overflow-y-auto modal-scrollbar shadow-inner">
+                                <div class="raw-text-box font-medium">${camper.testo_originale || "Testo non disponibile."}</div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h4 class="text-sm uppercase font-black text-slate-800 tracking-wider mb-3 flex items-center justify-between border-b border-slate-100 pb-2">
+                                <span class="flex items-center"><i class="fa-solid fa-list mr-2 text-indigo-500"></i> Riassunto Accessori (IA)</span>
+                                ${camper.ai_usata ? '<span class="text-[10px] font-bold bg-purple-100 text-purple-700 px-2 py-1 rounded uppercase shadow-sm border border-purple-200"><i class="fa-solid fa-wand-magic-sparkles mr-1"></i> AI Summary</span>' : ''}
+                            </h4>
+                            
+                            <div class="bg-white border border-slate-200 rounded-xl p-4 text-sm text-slate-700 leading-relaxed ${camper.storico_prezzi && camper.storico_prezzi.length > 0 ? 'h-36' : 'h-64'} overflow-y-auto modal-scrollbar shadow-inner">
+                                ${summaryHTML}
+                            </div>
+                            ${priceHistoryHTML}
+                        </div>
+
+                    </div>
+                    
+                </div>
+            `;
+            
+            document.getElementById('detail-modal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden'; 
+        };
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeModal();
+        });
+
+        document.addEventListener('DOMContentLoaded', loadDatabaseLive);
+    </script>
+</body>
+</html>
