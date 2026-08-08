@@ -44,4 +44,4 @@ jobs:
           ollama pull phi3
 
       - name: 5. Esegui lo script principale di scraping
-        run: python main.py
+        run: python main_engine.py
