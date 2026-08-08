@@ -52,7 +52,7 @@ def extract_camper_data_ai(raw_text, ollama_config=None):
     ollama_url = (ollama_config.get("url") if ollama_config and ollama_config.get("url") else os.environ.get("OLLAMA_URL", "http://localhost:11434")).rstrip('/')
     if not ollama_url.endswith("/api/generate"):
         ollama_url += "/api/generate"
-    ollama_model = ollama_config.get("model") if ollama_config and ollama_config.get("model") else os.environ.get("OLLAMA_MODEL", "qwen3:8b")
+    ollama_model = ollama_config.get("model") if ollama_config and ollama_config.get("model") else os.environ.get("OLLAMA_MODEL", "llama3.2")
     
     prompt = get_extraction_prompt(raw_text)
     

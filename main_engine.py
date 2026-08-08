@@ -100,7 +100,7 @@ def load_and_run_scrapers(db_conn):
 
         ollama_config = {
             "url": os.environ.get("OLLAMA_URL", "http://localhost:11434"),
-            "model": os.environ.get("OLLAMA_MODEL", "qwen3:8b")
+            "model": os.environ.get("OLLAMA_MODEL", "llama3.2")
         }
     except Exception as e:
         print(f"  [!] ERRORE CRITICO: Impossibile caricare scoring_config.json o config.env. Dettagli: {e}")
