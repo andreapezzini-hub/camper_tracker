@@ -2,7 +2,6 @@ import os
 import re
 import time
 import requests
-import sqlite3
 from bs4 import BeautifulSoup
 from datetime import datetime
 
@@ -360,28 +359,4 @@ if __name__ == "__main__":
     import sys
     sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
     import scraper_utils
-    try:
-        import score_calculator
-        mock_config = score_calculator.load_config() if os.path.exists('../scoring_config.json') else {"categories": {}}
-    except ImportError:
-        # Mock per l'esecuzione del test qualora score_calculator non fosse nella stessa cartella 
-        class mock_score:
-            def calculate_score(self, dati, config): return {"totale": 50, "status": "TEST"}
-        score_calculator = mock_score()
-        mock_config = {}
-    
-    # Helper finto per simulare DB durante test isolato
-    def get_test_db():
-        conn = sqlite3.connect(":memory:")
-        cursor = conn.cursor()
-        cursor.execute("CREATE TABLE annunci (url TEXT, prezzo_attuale REAL, url_immagine TEXT, dati_tecnici TEXT, punteggio_totale REAL, dettaglio_punteggi TEXT, status TEXT, motivo_scarto TEXT, data_scoperta TEXT, data_ultimo_aggiornamento TEXT, ai_usata INTEGER, testo_originale TEXT, sito TEXT, marca TEXT, modello TEXT, allestimento TEXT, distanza_seregno INTEGER)")
-        cursor.execute("CREATE TABLE storico_prezzi (url_annuncio TEXT, data TEXT, prezzo REAL)")        
-        cursor.execute("CREATE TABLE catalogo_modelli (marca TEXT, modello TEXT, allestimento TEXT)")
-        cursor.execute("INSERT INTO catalogo_modelli VALUES ('Carthago', 'Chic C-Line', 'I 4.9')")
-        conn.commit()
-        return conn
-
-    print("Avvio test isolato Scraper Transwe (SQLite)...")
-    mock_db_conn = get_test_db()
-    run_scraper(mock_db_conn, mock_config)
-    print("\n[+] Esecuzione test DB in memoria completata.")
+    import score_calculator
