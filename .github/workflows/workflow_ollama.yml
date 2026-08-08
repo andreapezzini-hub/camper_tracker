@@ -1,4 +1,4 @@
-name: Main Scraper
+name: Workflow with Ollama
 
 on:
   workflow_dispatch:
