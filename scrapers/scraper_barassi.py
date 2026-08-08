@@ -11,7 +11,7 @@ import scraper_utils
 # 1. LOGICA REGEX SPECIFICA (Da adattare al sito)
 # ==========================================
 
-def regex_extract_camper_data(raw_text, current_price):
+def regex_extract_camper_data(raw_text, current_price, db_conn):
     testo = str(raw_text).lower()
     
     anno_match = re.search(r'\b(199\d|20[0-2]\d)\b', testo)
@@ -97,7 +97,7 @@ def regex_extract_camper_data(raw_text, current_price):
         peso = 4250
     
     # NUOVA LOGICA: Cerca prima nel DB catalogo_modelli usando utils
-    match_db = scraper_utils.match_marca_modello_db(raw_text)
+    match_db = scraper_utils.match_marca_modello_db(raw_text, db_conn)
     
     if match_db:
         marca = match_db["marca"]
@@ -181,7 +181,7 @@ def clean_text_preserve_lists(text):
     text = re.sub(r'[ \t]+', ' ', text)
     return text.strip()
 
-def run_scraper(config, ollama_config=None):
+def run_scraper(db_conn, config, ollama_config=None):
     SITE_NAME = "Centro Caravans Barassi"
     BASE_URL = "https://www.centrocaravansbarassi.com"
     TARGET_URL = f"{BASE_URL}/camper.php"
@@ -265,6 +265,7 @@ def run_scraper(config, ollama_config=None):
 
                 # Utilizziamo la funzione modulare passando la NOSTRA funzione RegEx
                 scraper_utils.process_listing(
+                    db_conn=db_conn,
                     config=config, 
                     url=url_completo, 
                     site_name=SITE_NAME, 
