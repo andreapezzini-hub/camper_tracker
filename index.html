@@ -244,51 +244,29 @@
 
         async function loadDatabaseLive() {
             try {
-                // Inizializza sql.js caricando il modulo WebAssembly
-                const SQL = await initSqlJs({
-                    locateFile: file => `https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.8.0/${file}`
-                });
-
-                // Scarica il file binario SQLite
-                const response = await fetch('camper_tracker.db?t=' + new Date().getTime());
-                if (!response.ok) throw new Error("File DB inaccessibile.");
+                // Scarica direttamente il file JSON generato dalla GitHub Action
+                const response = await fetch('dati_storici.json?t=' + new Date().getTime());
+                if (!response.ok) throw new Error("File dati_storici.json inaccessibile.");
                 
-                const buffer = await response.arrayBuffer();
-                const db = new SQL.Database(new Uint8Array(buffer));
-                
+                const data = await response.json();
                 const parsedData = [];
                 let idCounter = 1;
                 
-                // 1. Carica lo storico prezzi per associarlo agli annunci
-                const priceHistoryMap = {};
-                try {
-                    const stmtPrezzi = db.prepare("SELECT url_annuncio, data, prezzo FROM storico_prezzi ORDER BY data ASC");
-                    while (stmtPrezzi.step()) {
-                        const row = stmtPrezzi.getAsObject();
-                        if (!priceHistoryMap[row.url_annuncio]) priceHistoryMap[row.url_annuncio] = [];
-                        priceHistoryMap[row.url_annuncio].push(row);
-                    }
-                    stmtPrezzi.free();
-                } catch(e) {
-                    console.warn("Tabella storico_prezzi mancante o errore nell'estrazione.", e);
-                }
-
-                // 2. Interroga la tabella annunci ignorando gli scartati
-                const stmt = db.prepare("SELECT * FROM annunci WHERE status != 'SCARTATO'");
+                const annunciObj = data.annunci || {};
                 
-                while (stmt.step()) {
-                    const row = stmt.getAsObject();
+                // Cicla tutti gli annunci presenti nel JSON
+                for (const [url, row] of Object.entries(annunciObj)) {
+                    // Ignora gli scartati se la dashboard deve nasconderli
+                    if (row.status === 'SCARTATO') continue;
                     
-                    // Decodifica JSON dei campi tecnici estratti dallo scraper
-                    let dt = {};
-                    try { dt = JSON.parse(row.dati_tecnici); } catch(e) {}
+                    let dt = row.dati_tecnici || {};
                     
-                    // Deduzione logica
+                    // Deduzione logica tipologia
                     let tipologiaDedotta = "Semintegrale";
                     if (dt.tipo_motorhome) tipologiaDedotta = "Motorhome";
                     else if (dt.tipo_mansardato) tipologiaDedotta = "Mansardato";
 
-                    // Composizione nome
+                    // Composizione nome marca/modello
                     const marca_modello_str = `${row.marca || ''} ${row.modello || ''} ${row.allestimento || ''}`.trim() || "Sconosciuto";
 
                     parsedData.push({
@@ -303,35 +281,32 @@
                         cambio: dt.cambio_automatico ? "Automatico" : "Manuale",
                         chilometri: dt.chilometri || 0,
                         distanza_seregno: row.distanza_seregno || 0,
-                        link: row.url,
+                        link: url,
                         immagine_url: row.url_immagine,
                         dettagli_tecnici: dt,
                         riassunto_ia: dt.riassunto_ia || "", 
                         testo_originale: row.testo_originale || "",
                         ai_usata: row.ai_usata === 1 || row.ai_usata === true,
-                        storico_prezzi: priceHistoryMap[row.url] || [] // Passa lo storico prezzi per la modale
+                        storico_prezzi: row.storico_prezzi || []
                     });
                 }
                 
-                stmt.free();
-                db.close();
-                
                 currentData = parsedData;
             } catch (error) {
-                console.error("Fetch Fallito o Errore SQLite:", error);
+                console.error("Errore nel caricamento del JSON:", error);
                 document.getElementById('alert-box').classList.remove('hidden');
                 document.getElementById('camper-grid').innerHTML = `
                     <div class="col-span-full text-center py-16 bg-white rounded-2xl border border-red-200 text-red-500 shadow-sm">
                         <i class="fa-solid fa-database text-5xl mb-4 text-red-300"></i>
-                        <h3 class="text-lg font-bold text-red-700 mb-1">Errore Database</h3>
-                        <p>Impossibile leggere camper_tracker.db. Assicurati che esista e di usare un server locale.</p>
+                        <h3 class="text-lg font-bold text-red-700 mb-1">Errore Caricamento Dati</h3>
+                        <p>Impossibile leggere il file dati_storici.json. Verifica che sia presente nella root del repository.</p>
                     </div>`;
                 return;
             }
             
             renderTypeFilters();
             renderStatusFilters();
-            initializeAdvancedFilters(); // Inizializza i range degli slider in base ai dati
+            initializeAdvancedFilters(); 
             applyFiltersAndSort();
         }
 
