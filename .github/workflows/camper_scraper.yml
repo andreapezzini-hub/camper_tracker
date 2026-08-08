@@ -45,3 +45,9 @@ jobs:
 
       - name: 5. Esegui lo script principale di scraping
         run: python main_engine.py
+        
+      - name: 6. Committa e spingi il JSON aggiornato su GitHub
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "Aggiornamento automatico dati camper (JSON)"
+          file_pattern: "dati_storici.json"
