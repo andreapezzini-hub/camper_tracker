@@ -22,7 +22,7 @@ def get_db_connection():
     
     if turso_url and turso_token:
         print("[*] Connessione al database remoto su Turso (Cloud)...")
-        import libsql_experimental as libsql
+        import libsql
         return libsql.connect(turso_url, auth_token=turso_token)
     else:
         print("[*] Connessione al database locale SQLite...")
