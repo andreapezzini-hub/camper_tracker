@@ -1,22 +1,9 @@
 import os
 import json
 import requests
-import sqlite3
 import re
 from datetime import datetime
 from dotenv import load_dotenv
-
-# Carica il file .env se siamo in locale su VS Code
-load_dotenv()
-
-TURSO_URL = os.environ.get("TURSO_DATABASE_URL")
-TURSO_TOKEN = os.environ.get("TURSO_AUTH_TOKEN")
-
-# Connessione unificata a Turso (funziona sia da locale che da Actions)
-db_conn = libsql_client.create_client_sync(
-    url=TURSO_URL,
-    auth_token=TURSO_TOKEN
-)
 
 # Il calcolatore punteggio resta esterno ma viene richiamato da qui
 import score_calculator
