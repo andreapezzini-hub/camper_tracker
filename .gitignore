@@ -1,0 +1,8 @@
+# Python bytecode e cache
+__pycache__/
+*.py[cod]
+*$py.class
+.continue/
+
+# Database SQLite del camper tracker
+camper_tracker.db
