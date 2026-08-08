@@ -2,16 +2,15 @@ name: Scraping Camper con Ollama e Turso
 
 on:
   schedule:
-    - cron: '0 8 * * *' # Esegue ogni giorno alle 08:00 UTC
-  workflow_dispatch: # Permette l'avvio manuale dal sito di GitHub
+    - cron: '0 8 * * *'
+  workflow_dispatch:
 
 jobs:
   run-scraper:
     runs-on: ubuntu-latest
 
-    # Iniettiamo le credenziali di Turso come variabili d'ambiente
     env:
-      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true 
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
       TURSO_DATABASE_URL: ${{ secrets.TURSO_DATABASE_URL }}
       TURSO_AUTH_TOKEN: ${{ secrets.TURSO_AUTH_TOKEN }}
 
@@ -19,7 +18,7 @@ jobs:
       - name: 1. Clona il codice del repository
         uses: actions/checkout@v4
 
-      - name: 2. Configura ambiente Python
+      - name: 2. Configura l'ambiente Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.10'
@@ -30,10 +29,19 @@ jobs:
           python -m pip install --upgrade pip
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
-      - name: 4. Installa e avvia Ollama (con cache)
-        uses: pydantic/ollama-action@v3
-        with:
-          model: llama3.2 # Sostituisci con il modello leggero che usi (es. llama3:8b)
+      - name: 4. Installa e avvia Ollama ufficialmente
+        run: |
+          # Scarica e installa Ollama con lo script ufficiale
+          curl -fsSL https://ollama.com/install.sh | sh
+          
+          # Avvia il server di Ollama in background
+          ollama serve &
+          
+          # Attende qualche secondo che il servizio si avvii correttamente
+          sleep 5
+          
+          # Scarica il modello che usi (es. phi3 o llama3)
+          ollama pull phi3
 
       - name: 5. Esegui lo script principale di scraping
-        run: python main_engine.py
+        run: python main.py
