@@ -28,4 +28,4 @@ jobs:
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
       - name: 4. Esegui lo script principale di scraping
-        run: python database_setup.py
+        run: python clear_annunci_table.py
