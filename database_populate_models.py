@@ -245,7 +245,7 @@ CATALOGO_STORICO = [
 ]
 
 def get_db_connection():
-     """Restituisce la connessione al database (SQLite locale o Turso Cloud)."""
+    """Restituisce la connessione al database (SQLite locale o Turso Cloud)."""
     turso_url = os.environ.get("TURSO_DATABASE_URL")
     turso_token = os.environ.get("TURSO_AUTH_TOKEN")
     
