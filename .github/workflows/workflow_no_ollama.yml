@@ -1,4 +1,4 @@
-name: Scraping Camper con Ollama e Turso
+name: Workflow without Ollama
 
 on:
   workflow_dispatch:
