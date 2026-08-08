@@ -3,6 +3,7 @@ __pycache__/
 *.py[cod]
 *$py.class
 .continue/
+local.env
 
 # Database SQLite del camper tracker
 camper_tracker.db

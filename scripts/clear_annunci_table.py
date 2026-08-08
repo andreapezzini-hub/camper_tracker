@@ -1,8 +1,14 @@
+import os
 import sqlite3
+
+from dotenv import load_dotenv
 
 DB_FILE = "camper_tracker.db"
 
 def get_db_connection():
+    config_file_path = os.path.join(os.path.dirname(__file__), "local.env")
+    load_dotenv(config_file_path)
+
     """Restituisce la connessione al database (SQLite locale o Turso Cloud)."""
     turso_url = os.environ.get("TURSO_DATABASE_URL")
     turso_token = os.environ.get("TURSO_AUTH_TOKEN")
@@ -13,8 +19,6 @@ def get_db_connection():
         return libsql.connect(turso_url, auth_token=turso_token)
     else:
         print("[*] Connessione al database locale SQLite...")
-        if not os.path.exists(DB_FILE):
-            database_setup.setup_database()
         return sqlite3.connect(DB_FILE)
 
 def clear_annunci_table():
