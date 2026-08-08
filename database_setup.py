@@ -93,15 +93,23 @@ def setup_database():
     ''')
 
     # Tentativo di aggiornamento schema se la tabella esisteva già con la vecchia struttura
-    try:
-        cursor.execute("ALTER TABLE catalogo_modelli ADD COLUMN base TEXT")
-        cursor.execute("ALTER TABLE catalogo_modelli ADD COLUMN dimensioni TEXT")
-        cursor.execute("ALTER TABLE catalogo_modelli ADD COLUMN posti TEXT")
-        cursor.execute("ALTER TABLE catalogo_modelli ADD COLUMN disposizione TEXT")
-        cursor.execute("ALTER TABLE catalogo_modelli ADD COLUMN prezzo_euro TEXT")
-        cursor.execute("ALTER TABLE catalogo_modelli ADD COLUMN data_aggiornamento TEXT")
-    except sqlite3.OperationalError:
-        pass  # Le colonne esistono già, procediamo oltre
+    # Lista delle colonne da aggiungere con il rispettivo tipo
+    colonne_da_aggiungere = [
+        "base TEXT",
+        "dimensioni TEXT",
+        "posti TEXT",
+        "disposizione TEXT",
+        "prezzo_euro TEXT",
+        "data_aggiornamento TEXT"
+    ]
+    
+    for col in colonne_da_aggiungere:
+        try:
+            cursor.execute(f"ALTER TABLE catalogo_modelli ADD COLUMN {col}")
+        except Exception as e:
+            # Ignora l'errore solo se la colonna esiste già (sia per SQLite standard che per Hrana/libSQL)
+            if "duplicate column name" not in str(e):
+                raise e
 
     # Popolamento iniziale di esempio del catalogo modelli
     dati_iniziali = [
