@@ -245,29 +245,19 @@ CATALOGO_STORICO = [
 ]
 
 def get_db_connection():
-    if not os.path.exists(DB_FILE):
-        print(f"[!] Il file {DB_FILE} non esiste. Creazione al volo del DB.")
-        conn = sqlite3.connect(DB_FILE)
-        cursor = conn.cursor()
-        
-        # Struttura aggiornata per ospitare i nuovi campi estratti dalla pagina
-        cursor.execute('''
-        CREATE TABLE IF NOT EXISTS catalogo_modelli (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            marca TEXT NOT NULL,
-            modello TEXT NOT NULL,
-            allestimento TEXT,
-            base TEXT,
-            dimensioni TEXT,
-            posti TEXT,
-            disposizione TEXT,
-            prezzo_euro TEXT,
-            data_aggiornamento TEXT
-        )
-        ''')
-        conn.commit()
-        return conn
-    return sqlite3.connect(DB_FILE)
+     """Restituisce la connessione al database (SQLite locale o Turso Cloud)."""
+    turso_url = os.environ.get("TURSO_DATABASE_URL")
+    turso_token = os.environ.get("TURSO_AUTH_TOKEN")
+    
+    if turso_url and turso_token:
+        print("[*] Connessione al database remoto su Turso (Cloud)...")
+        import libsql_experimental as libsql
+        return libsql.connect(turso_url, auth_token=turso_token)
+    else:
+        print("[*] Connessione al database locale SQLite...")
+        if not os.path.exists(DB_FILE):
+            database_setup.setup_database()
+        return sqlite3.connect(DB_FILE)
 
 def inserisci_dati(db_conn, dati_catalogo):
     """
