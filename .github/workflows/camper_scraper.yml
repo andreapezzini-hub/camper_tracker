@@ -1,4 +1,4 @@
-name: Scraping Camper con Ollama e Turso
+name: Main Scraper
 
 on:
   schedule:
