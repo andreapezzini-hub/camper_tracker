@@ -41,7 +41,7 @@ jobs:
           sleep 5
           
           # Scarica il modello che usi (es. phi3 o llama3)
-          ollama pull phi3
+          ollama pull llama3.2
 
       - name: 5. Esegui lo script principale di scraping
         run: python main_engine.py
