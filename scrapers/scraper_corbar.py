@@ -165,15 +165,18 @@ def regex_extract_camper_data(raw_text, current_price, db_conn):
 # ==========================================
 
 def extract_price(text):
-    # Cerchiamo in modo specifico "PREZZO" seguito dal valore (es. PREZZO: 62.500)
-    match_prezzo = re.search(r'PREZZO\s*:\s*€?\s*(\d{1,3}(?:[\.,]\d{3})+)', text, re.IGNORECASE)
-    if match_prezzo:
-        return int(match_prezzo.group(1).replace('.', '').replace(',', ''))
+    # Cerchiamo prima tag specifici usati da Corbar ("LISTINO", "PREZZO SENZA PERMUTA", "PREZZO")
+    matches = re.findall(r'(?:PREZZO[^:]*|LISTINO)\s*:\s*€?\s*(\d{1,3}(?:[\.,]\d{3})+)', text, re.IGNORECASE)
+    if matches:
+        # Se ci sono più riscontri (es. listino e poi prezzo finale), restituisce sempre l'ultimo
+        return int(matches[-1].replace('.', '').replace(',', ''))
         
-    # Fallback se non c'è l'etichetta PREZZO
-    match = re.search(r'€?\s*(\d{2,3}[\.,]\d{3})(?:[\.,]\d{2})?\s*€?', text)
-    if match:
-        return int(match.group(1).replace('.', '').replace(',', ''))
+    # Fallback se non c'è una delle diciture sopra, ma c'è un simbolo € vicino ad un numero.
+    match_euro = re.search(r'€\s*(\d{1,3}(?:[\.,]\d{3})+)|(\d{1,3}(?:[\.,]\d{3})+)\s*€', text)
+    if match_euro:
+        val = match_euro.group(1) or match_euro.group(2)
+        return int(val.replace('.', '').replace(',', ''))
+        
     return 0
 
 def clean_text_preserve_lists(text):
@@ -217,6 +220,10 @@ def run_scraper(db_conn, config, ollama_config=None):
                     
                     if url_completo in processed_urls: continue
                     
+                    # Lo aggiungiamo IMMEDIATAMENTE ai log elaborati per evitare duplicati 
+                    # ed elaborazioni ricorsive in caso di "continue" sotto.
+                    processed_urls.add(url_completo)
+                    
                     print(f"    [{SITE_NAME}] Analisi: {url_completo}")
                     
                     try:
@@ -226,19 +233,25 @@ def run_scraper(db_conn, config, ollama_config=None):
                         
                         main_content = det_soup.find('table') or det_soup
                         
-                        for hidden in main_content(["script", "style", "nav", "footer", "header"]):
+                        # Pulizia del codice molto rigida per ripulire l'intestazione che inganna lo scraper sui modelli.
+                        for hidden in main_content(["script", "style", "nav", "footer", "header", "title", "meta", "head"]):
                             hidden.decompose()
+                            
+                        # Rimuoviamo in particolare la barra di menu superiore di corbar ("Home - Chi Siamo - Nuovo - Usato")
+                        navbar = main_content.find('div', class_='navbar')
+                        if navbar:
+                            navbar.decompose()
                             
                         testo_dettaglio = clean_text_preserve_lists(main_content.get_text(separator="\n"))
                         testo_lower = testo_dettaglio.lower()
                         
-                        # Filtro Roulotte e Noleggi
+                        # Filtro Roulotte e Noleggi (Commentato di base, sbloccabile se necessario)
                         #if re.search(r'\b(roulotte|caravan|rimorchio|noleggio|affitto)\b', testo_lower):
                         #    print(f"      [SKIP] Rilevata parola esclusa in {url_completo}")
                         #    continue
                             
-                        # Filtro Veicolo Venduto
-                        if "venduto" in testo_lower[:500]:
+                        # Filtro Veicolo Venduto o Prenotato
+                        if re.search(r'\b(venduto|prenotato)\b', testo_lower[:1000]):
                             print(f"      [SKIP] Veicolo venduto in {url_completo}")
                             continue
                             
@@ -270,7 +283,6 @@ def run_scraper(db_conn, config, ollama_config=None):
                                     break
                         
                         testo_finale = testo_dettaglio[:3000]
-                        processed_urls.add(url_completo)
                         
                         # Utilizziamo la funzione modulare passando la NOSTRA funzione RegEx aggiornata
                         scraper_utils.process_listing(
