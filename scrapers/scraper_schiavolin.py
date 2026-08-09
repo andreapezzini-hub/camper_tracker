@@ -2,6 +2,8 @@ import os
 import re
 import time
 import requests
+from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
 from bs4 import BeautifulSoup
 
 # Importiamo il modulo di utilità condiviso
@@ -215,14 +217,27 @@ def run_scraper(db_conn, config, ollama_config=None):
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
     }
     
+    # Configurazione Session con Retry automatici per tollerare rallentamenti/timeout del server
+    session = requests.Session()
+    retries = Retry(total=5, backoff_factor=1, status_forcelist=[500, 502, 503, 504, 408])
+    session.mount('https://', HTTPAdapter(max_retries=retries))
+    session.mount('http://', HTTPAdapter(max_retries=retries))
+    session.headers.update(headers)
+    
     try:
         processed_urls = set()
         count_elaborati = 0
         
         for target in TARGET_URLS:
             print(f"    [{SITE_NAME}] Scansione catalogo: {target}...")
-            response = requests.get(target, headers=headers, timeout=15)
-            response.raise_for_status()
+            try:
+                # Timeout alzato a 30 secondi
+                response = session.get(target, timeout=30)
+                response.raise_for_status()
+            except Exception as e:
+                print(f"    [!] Errore durante il caricamento del catalogo {target}: {e}")
+                continue
+                
             soup = BeautifulSoup(response.text, 'html.parser')
             
             # Supporto per URL legacy (id=) e nuovi permalink SEO-friendly (veicolo/)
@@ -258,7 +273,8 @@ def run_scraper(db_conn, config, ollama_config=None):
                 
                 try:
                     time.sleep(1) 
-                    det_resp = requests.get(url_completo, headers=headers, timeout=10)
+                    # Timeout alzato a 20 secondi anche sui dettagli
+                    det_resp = session.get(url_completo, timeout=20)
                     det_soup = BeautifulSoup(det_resp.text, 'html.parser')
                     
                     if not img_url:
