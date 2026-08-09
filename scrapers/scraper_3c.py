@@ -21,13 +21,11 @@ def regex_extract_camper_data(raw_text, current_price, db_conn):
     if km is None and ('nuovo' in testo or 'da immatricolare' in testo):
         km = 0
         
-    # LOGICA AFFINATA PER LE CATEGORIE: GERARCHIA RIGOROSA
     tipo_furgonato = bool(re.search(r'(?:\r?\n|\r|\s)(van|furgonat[oi]|camper puro)', testo))
     tipo_mansardato = bool(re.search(r'\bmansardat[oi]\b', testo))
     tipo_motorhome = bool(re.search(r'\bmotorhome\b|\bintegrale\b', testo))
     tipo_semintegrale = bool(re.search(r'\bsemi[\s-]?integral[ei]\b|\bprofilat[oi]\b', testo))
     
-    # Protezione per evitare false assegnazioni al semintegrale
     if tipo_furgonato:
         tipo_semintegrale = False
         tipo_motorhome = False
@@ -41,16 +39,13 @@ def regex_extract_camper_data(raw_text, current_price, db_conn):
         tipo_semintegrale = False
     
     lunghezza = None
-    # Catturiamo i numeri decimali nel testo (misure come 7.4, 7.35, 2.95, ecc.)
     misure_dec = re.findall(r'(\d+[.,]\d{1,2})', testo)
     if misure_dec:
         floats = [float(m.replace(',', '.')) for m in misure_dec]
-        # REGOLA: un camper non sarà mai meno lungo di 5 metri, e non sarà mai più alto/largo di 5 metri.
         lunghezze_valide = [v for v in floats if 5.0 <= v <= 12.0]
         if lunghezze_valide:
             lunghezza = max(lunghezze_valide)
             
-    # Fallback in caso la lunghezza sia indicata intera es. "lunghezza 7 m" 
     if lunghezza is None:
         match_lung = re.search(r'lunghezza\s*[:]?\s*(\d+[.,]?\d*)', testo)
         if match_lung:
@@ -74,7 +69,6 @@ def regex_extract_camper_data(raw_text, current_price, db_conn):
     cv_match = re.search(r'(\d{3})\s*cv', testo)
     potenza = int(cv_match.group(1)) if cv_match else None
     
-    # Regole di estrazione Riscaldamento
     riscaldamento_gasolio = bool(re.search(r'webasto|eberspacher|eberspächer|riscaldatore\s*(?:[a-z0-9]+\s*){0,3}(?:a\s*)?gasolio|riscaldamento\s*(?:[a-z0-9]+\s*){0,3}(?:a\s*)?gasolio|riscaldamento\s*diesel|stufa\s*(?:a\s*)?gasolio|truma\s*(?:combi\s*)?(?:d\b|a\s*gasolio)|riscaldatore\s*supplementare', testo))
     riscaldamento_alde = bool(re.search(r'\balde\b', testo))
     
@@ -86,14 +80,13 @@ def regex_extract_camper_data(raw_text, current_price, db_conn):
     letti_gemelli = bool(re.search(r'letti\s*gemelli|letto\s*gemello', testo))
     letti_a_castello = bool(re.search(r'letti\s*a\s*castello|letto\s*a\s*castello|\bcastello\b', testo))
     
-    peso = 3500 # Default patente B comune
+    peso = 3500 
     match_peso = re.search(r'(\d{4})\s*kg', testo)
     if match_peso:
         peso = float(match_peso.group(1))
     elif re.search(r'patente\s*c|oltre\s*3500|heavy|maxi', testo):
         peso = 4250
     
-    # NUOVA LOGICA: Cerca prima nel DB catalogo_modelli usando utils
     match_db = scraper_utils.match_marca_modello_db(raw_text, db_conn)
     
     if match_db:
@@ -101,7 +94,6 @@ def regex_extract_camper_data(raw_text, current_price, db_conn):
         modello = match_db["modello"]
         allestimento = match_db["allestimento"]
     else:
-        # Fallback se il DB non ha corrispondenze
         parole = str(raw_text).split()
         parole_utili = []
         stop_words = ['nuovo', 'usato', 'pronta', 'consegna', 'camper', 'occasione', '']
@@ -139,7 +131,8 @@ def regex_extract_camper_data(raw_text, current_price, db_conn):
         "telaio_alko": 'alko' in testo or 'al-ko' in testo,
         "doppio_pavimento": 'doppio pavimento' in testo,
         "cambio_automatico": 'automatico' in testo,
-        "emissioni_euro6": bool(re.search(r'euro\s*6', testo)) or (anno is not None and anno >= 2017),"pannelli_solari": 'pannell' in testo and 'solar' in testo,
+        "emissioni_euro6": bool(re.search(r'euro\s*6', testo)) or (anno is not None and anno >= 2017),
+        "pannelli_solari": 'pannell' in testo and 'solar' in testo,
         "batterie_litio": batterie_litio,
         "sospensioni_aria": 'sospensioni' in testo and ('aria' in testo or 'pneumat' in testo),
         "predisposizione_invernale": predisposizione_invernale,
@@ -160,19 +153,16 @@ def regex_extract_camper_data(raw_text, current_price, db_conn):
 def extract_price(text):
     prices = []
     
-    # 1. Trova i prezzi associati al simbolo € o alla parola euro (gestisce migliaia con punto/senza punto ed eventuali decimali)
     pattern_currency = r'(?:€|euro)\s*(\d{1,3}(?:[.,]\d{3})*|\d+)(?:[.,]\d{2})?|(\d{1,3}(?:[.,]\d{3})*|\d+)(?:[.,]\d{2})?\s*(?:€|euro)'
     matches_curr = re.findall(pattern_currency, text, re.IGNORECASE)
     
     for m in matches_curr:
         val_str = m[0] if m[0] else m[1]
         if val_str:
-            # Eliminiamo punti e virgole delle migliaia
             clean_val = re.sub(r'[.,]', '', val_str)
             if clean_val.isdigit():
                 prices.append(int(clean_val))
                 
-    # 2. Trova numeri preceduti da termini specifici
     pattern_words = r'(?:prezzo|a\s+soli|tuo\s+a)\s*(?:di\s*)?(?::)?\s*(\d{1,3}(?:[.,]\d{3})*|\d+)(?:[.,]\d{2})?'
     matches_words = re.findall(pattern_words, text, re.IGNORECASE)
     for m in matches_words:
@@ -181,11 +171,9 @@ def extract_price(text):
             if clean_val.isdigit():
                 prices.append(int(clean_val))
                 
-    # Filtriamo i prezzi considerando solo quelli validi per un camper (> 5.000€)
     valid_prices = [p for p in prices if p >= 5000]
     
     if valid_prices:
-        # Prende l'importo massimo tra quelli validi (così da scartare piccoli acconti se menzionati)
         return max(valid_prices)
         
     if prices:
@@ -202,32 +190,39 @@ def fetch_url_with_retry(session, url, headers, max_retries=3, timeout=25):
     for attempt in range(1, max_retries + 1):
         try:
             response = session.get(url, headers=headers, timeout=timeout)
+            
+            # NOVITA': Se troviamo un 404, ritorniamo la response senza andare in errore.
+            # E' inutile riprovare 3 volte su una pagina che oggettivamente non esiste più.
+            if response.status_code == 404:
+                return response
+                
             response.raise_for_status()
             return response
         except (requests.RequestException, Exception) as e:
             if attempt == max_retries:
                 raise e
-            print(f"      [!] Rete/Timeout su {url} (tentativo {attempt}/{max_retries}), riprovo... ({e})")
+            print(f"      [!] Timeout o Disconnessione (tentativo {attempt}/{max_retries}), riprovo tra {2 * attempt}s...")
             time.sleep(2 * attempt)
 
 def run_scraper(db_conn, config, ollama_config=None):
     SITE_NAME = "3C Srl"
     BASE_URL = "https://3csrl.com"
-    # Adattamento per i probabili path di 3C Srl
     TARGET_URLS = [
         f"{BASE_URL}/categoria-prodotto/camper-usati/",
         f"{BASE_URL}/categoria-prodotto/camper-nuovi/",
         f"{BASE_URL}/veicoli-usati/",
         f"{BASE_URL}/camper/"
     ]
-    DISTANCE_FROM_SEREGNO = 170 # Reggio Emilia -> Seregno
+    DISTANCE_FROM_SEREGNO = 170 
     MAX_ANNUNCI = 500
     count_elaborati = 0
     
+    # NOVITA': Aggiunto "Connection: close" per forzare il server a non droppare le connessioni Keep-Alive persistenti.
     headers = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
         'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
-        'Accept-Language': 'it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7'
+        'Accept-Language': 'it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7',
+        'Connection': 'close' 
     }
     
     session = requests.Session()
@@ -249,14 +244,16 @@ def run_scraper(db_conn, config, ollama_config=None):
             print(f"    [{SITE_NAME}] Scansione sezione: {target}...")
             try:
                 response = fetch_url_with_retry(session, target, headers=headers)
+                # Adesso gestiamo silenziosamente il 404 senza spammare la console
                 if response.status_code == 404:
-                    continue # Ignora se una delle categorie base non esiste
-            except Exception:
+                    print(f"      [-] Categoria inesistente (404), passo alla successiva.")
+                    continue 
+            except Exception as e:
+                print(f"      [!] Errore irrecuperabile su {target}: {e}")
                 continue
                 
             soup = BeautifulSoup(response.text, 'html.parser')
             
-            # Gestione Paginazione (es. /page/2/ o ?paged=2)
             for page_link in soup.find_all('a', href=True):
                 href = page_link['href']
                 if ('/page/' in href or '?paged=' in href) and BASE_URL in href and href not in scanned_targets:
@@ -271,13 +268,11 @@ def run_scraper(db_conn, config, ollama_config=None):
                     
                 url_parziale = link['href']
                 
-                # Ignora direttamente le scorciatoie di rete per telefono e mail
                 if url_parziale.lower().startswith(('tel:', 'mailto:', 'javascript:')):
                     continue
                 
                 url_completo = url_parziale if url_parziale.startswith('http') else f"{BASE_URL.rstrip('/')}/{url_parziale.lstrip('/')}"
                 
-                # Deve essere dominio corretto
                 if BASE_URL not in url_completo:
                     continue
                 
@@ -286,9 +281,8 @@ def run_scraper(db_conn, config, ollama_config=None):
                 if any(skip in path_lower for skip in skip_words) or url_completo in scanned_targets:
                     continue
                 
-                # Cerchiamo pattern tipici di schede prodotto / veicoli
                 is_product = ('/prodotto/' in path_lower or '/veicolo/' in path_lower or '/camper/' in path_lower or '-it-' in path_lower)
-                # Spesso gli URL prodotti sono lunghi
+                
                 if not is_product and len(url_completo.split('/')[-1]) < 15:
                     continue
                 
@@ -298,8 +292,12 @@ def run_scraper(db_conn, config, ollama_config=None):
                 print(f"    [{SITE_NAME}] Check URL: {url_completo}")
                 
                 try:
-                    time.sleep(0.5) 
+                    # NOVITA': Pausa alzata a 2 secondi per evitare i blocchi RemoteDisconnected anti-bot
+                    time.sleep(2.0) 
                     det_resp = fetch_url_with_retry(session, url_completo, headers=headers)
+                    if det_resp.status_code == 404:
+                        continue
+                        
                     det_soup = BeautifulSoup(det_resp.text, 'html.parser')
                     
                     for hidden in det_soup(["script", "style", "nav", "footer", "header"]):
@@ -313,7 +311,6 @@ def run_scraper(db_conn, config, ollama_config=None):
                     testo_dettaglio = clean_text_preserve_lists(det_soup.get_text(separator="\n"))
                     testo_dettaglio_lower = testo_dettaglio.lower()
                     
-                    # Controllo parole chiave vietate solo nel titolo principale e URL per evitare falsi positivi nel footer
                     h1_testo = " ".join([h1.get_text(separator=" ") for h1 in det_soup.find_all('h1')]).lower()
                     if re.search(r'\b(roulotte|noleggio|noleggi|caravan)\b', h1_testo) or re.search(r'\b(roulotte|noleggio|noleggi|caravan)\b', url_completo.lower()):
                         print("      [!] Saltato: Trovate parole chiave vietate nell'intestazione o nell'URL.")
@@ -328,7 +325,6 @@ def run_scraper(db_conn, config, ollama_config=None):
                     print(f"    [{SITE_NAME}] >>> Avvio estrazione dati per: {url_completo}")
                     
                     img_url = None
-                    # WooCommerce spesso usa immagini di classe wp-post-image o gallerie
                     img_tags = det_soup.find_all('img', class_=re.compile(r'wp-post-image|woocommerce-main-image|attachment-shop_single'))
                     if not img_tags:
                         img_tags = det_soup.find_all('img')
