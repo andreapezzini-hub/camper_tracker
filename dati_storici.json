@@ -11210,11 +11210,15 @@
             "modello": "",
             "allestimento": "",
             "distanza_seregno": 20,
-            "prezzo_attuale": 75460.0,
+            "prezzo_attuale": 68900.0,
             "storico_prezzi": [
                 {
                     "data": "2026-08-09",
                     "prezzo": 75460.0
+                },
+                {
+                    "data": "2026-08-09",
+                    "prezzo": 68900.0
                 }
             ],
             "dati_tecnici": {
@@ -11276,11 +11280,15 @@
             "modello": "",
             "allestimento": "",
             "distanza_seregno": 20,
-            "prezzo_attuale": 74672.0,
+            "prezzo_attuale": 68000.0,
             "storico_prezzi": [
                 {
                     "data": "2026-08-09",
                     "prezzo": 74672.0
+                },
+                {
+                    "data": "2026-08-09",
+                    "prezzo": 68000.0
                 }
             ],
             "dati_tecnici": {
@@ -11342,11 +11350,15 @@
             "modello": "",
             "allestimento": "",
             "distanza_seregno": 20,
-            "prezzo_attuale": 70185.0,
+            "prezzo_attuale": 66350.0,
             "storico_prezzi": [
                 {
                     "data": "2026-08-09",
                     "prezzo": 70185.0
+                },
+                {
+                    "data": "2026-08-09",
+                    "prezzo": 66350.0
                 }
             ],
             "dati_tecnici": {
@@ -11408,11 +11420,15 @@
             "modello": "",
             "allestimento": "",
             "distanza_seregno": 20,
-            "prezzo_attuale": 70185.0,
+            "prezzo_attuale": 66350.0,
             "storico_prezzi": [
                 {
                     "data": "2026-08-09",
                     "prezzo": 70185.0
+                },
+                {
+                    "data": "2026-08-09",
+                    "prezzo": 66350.0
                 }
             ],
             "dati_tecnici": {
@@ -11540,11 +11556,15 @@
             "modello": "",
             "allestimento": "",
             "distanza_seregno": 20,
-            "prezzo_attuale": 77590.0,
+            "prezzo_attuale": 72500.0,
             "storico_prezzi": [
                 {
                     "data": "2026-08-09",
                     "prezzo": 77590.0
+                },
+                {
+                    "data": "2026-08-09",
+                    "prezzo": 72500.0
                 }
             ],
             "dati_tecnici": {
@@ -11606,11 +11626,15 @@
             "modello": "",
             "allestimento": "",
             "distanza_seregno": 20,
-            "prezzo_attuale": 76560.0,
+            "prezzo_attuale": 74500.0,
             "storico_prezzi": [
                 {
                     "data": "2026-08-09",
                     "prezzo": 76560.0
+                },
+                {
+                    "data": "2026-08-09",
+                    "prezzo": 74500.0
                 }
             ],
             "dati_tecnici": {
@@ -11672,11 +11696,15 @@
             "modello": "",
             "allestimento": "",
             "distanza_seregno": 20,
-            "prezzo_attuale": 75140.0,
+            "prezzo_attuale": 73000.0,
             "storico_prezzi": [
                 {
                     "data": "2026-08-09",
                     "prezzo": 75140.0
+                },
+                {
+                    "data": "2026-08-09",
+                    "prezzo": 73000.0
                 }
             ],
             "dati_tecnici": {
@@ -11738,11 +11766,15 @@
             "modello": "",
             "allestimento": "",
             "distanza_seregno": 20,
-            "prezzo_attuale": 72015.0,
+            "prezzo_attuale": 67900.0,
             "storico_prezzi": [
                 {
                     "data": "2026-08-09",
                     "prezzo": 72015.0
+                },
+                {
+                    "data": "2026-08-09",
+                    "prezzo": 67900.0
                 }
             ],
             "dati_tecnici": {
@@ -11804,11 +11836,15 @@
             "modello": "Horon",
             "allestimento": "84 XT",
             "distanza_seregno": 20,
-            "prezzo_attuale": 69875.0,
+            "prezzo_attuale": 65850.0,
             "storico_prezzi": [
                 {
                     "data": "2026-08-09",
                     "prezzo": 69875.0
+                },
+                {
+                    "data": "2026-08-09",
+                    "prezzo": 65850.0
                 }
             ],
             "dati_tecnici": {
@@ -11870,11 +11906,15 @@
             "modello": "",
             "allestimento": "",
             "distanza_seregno": 20,
-            "prezzo_attuale": 69465.0,
+            "prezzo_attuale": 65500.0,
             "storico_prezzi": [
                 {
                     "data": "2026-08-09",
                     "prezzo": 69465.0
+                },
+                {
+                    "data": "2026-08-09",
+                    "prezzo": 65500.0
                 }
             ],
             "dati_tecnici": {
@@ -11936,11 +11976,15 @@
             "modello": "",
             "allestimento": "",
             "distanza_seregno": 20,
-            "prezzo_attuale": 71265.0,
+            "prezzo_attuale": 67200.0,
             "storico_prezzi": [
                 {
                     "data": "2026-08-09",
                     "prezzo": 71265.0
+                },
+                {
+                    "data": "2026-08-09",
+                    "prezzo": 67200.0
                 }
             ],
             "dati_tecnici": {
@@ -12002,11 +12046,15 @@
             "modello": "",
             "allestimento": "",
             "distanza_seregno": 20,
-            "prezzo_attuale": 68575.0,
+            "prezzo_attuale": 64650.0,
             "storico_prezzi": [
                 {
                     "data": "2026-08-09",
                     "prezzo": 68575.0
+                },
+                {
+                    "data": "2026-08-09",
+                    "prezzo": 64650.0
                 }
             ],
             "dati_tecnici": {
@@ -12068,11 +12116,15 @@
             "modello": "",
             "allestimento": "",
             "distanza_seregno": 20,
-            "prezzo_attuale": 70765.0,
+            "prezzo_attuale": 66750.0,
             "storico_prezzi": [
                 {
                     "data": "2026-08-09",
                     "prezzo": 70765.0
+                },
+                {
+                    "data": "2026-08-09",
+                    "prezzo": 66750.0
                 }
             ],
             "dati_tecnici": {
@@ -12134,11 +12186,15 @@
             "modello": "Kyros",
             "allestimento": "2",
             "distanza_seregno": 20,
-            "prezzo_attuale": 72950.0,
+            "prezzo_attuale": 69000.0,
             "storico_prezzi": [
                 {
                     "data": "2026-08-09",
                     "prezzo": 72950.0
+                },
+                {
+                    "data": "2026-08-09",
+                    "prezzo": 69000.0
                 }
             ],
             "dati_tecnici": {
@@ -12200,11 +12256,15 @@
             "modello": "",
             "allestimento": "",
             "distanza_seregno": 20,
-            "prezzo_attuale": 82150.0,
+            "prezzo_attuale": 77500.0,
             "storico_prezzi": [
                 {
                     "data": "2026-08-09",
                     "prezzo": 82150.0
+                },
+                {
+                    "data": "2026-08-09",
+                    "prezzo": 77500.0
                 }
             ],
             "dati_tecnici": {
@@ -12266,11 +12326,15 @@
             "modello": "BoxLife",
             "allestimento": "540 MQ",
             "distanza_seregno": 20,
-            "prezzo_attuale": 77643.0,
+            "prezzo_attuale": 72900.0,
             "storico_prezzi": [
                 {
                     "data": "2026-08-09",
                     "prezzo": 77643.0
+                },
+                {
+                    "data": "2026-08-09",
+                    "prezzo": 72900.0
                 }
             ],
             "dati_tecnici": {
@@ -12332,11 +12396,15 @@
             "modello": "",
             "allestimento": "",
             "distanza_seregno": 20,
-            "prezzo_attuale": 77893.0,
+            "prezzo_attuale": 72750.0,
             "storico_prezzi": [
                 {
                     "data": "2026-08-09",
                     "prezzo": 77893.0
+                },
+                {
+                    "data": "2026-08-09",
+                    "prezzo": 72750.0
                 }
             ],
             "dati_tecnici": {
@@ -12398,11 +12466,15 @@
             "modello": "BoxLife",
             "allestimento": "600 MQ",
             "distanza_seregno": 20,
-            "prezzo_attuale": 74018.0,
+            "prezzo_attuale": 69200.0,
             "storico_prezzi": [
                 {
                     "data": "2026-08-09",
                     "prezzo": 74018.0
+                },
+                {
+                    "data": "2026-08-09",
+                    "prezzo": 69200.0
                 }
             ],
             "dati_tecnici": {
@@ -12464,11 +12536,15 @@
             "modello": "BoxLife",
             "allestimento": "630 ME",
             "distanza_seregno": 20,
-            "prezzo_attuale": 79730.0,
+            "prezzo_attuale": 74800.0,
             "storico_prezzi": [
                 {
                     "data": "2026-08-09",
                     "prezzo": 79730.0
+                },
+                {
+                    "data": "2026-08-09",
+                    "prezzo": 74800.0
                 }
             ],
             "dati_tecnici": {
@@ -12530,11 +12606,15 @@
             "modello": "",
             "allestimento": "",
             "distanza_seregno": 20,
-            "prezzo_attuale": 93472.0,
+            "prezzo_attuale": 79900.0,
             "storico_prezzi": [
                 {
                     "data": "2026-08-09",
                     "prezzo": 93472.0
+                },
+                {
+                    "data": "2026-08-09",
+                    "prezzo": 79900.0
                 }
             ],
             "dati_tecnici": {
@@ -12596,11 +12676,15 @@
             "modello": "Ecovip",
             "allestimento": "1",
             "distanza_seregno": 20,
-            "prezzo_attuale": 114606.0,
+            "prezzo_attuale": 99800.0,
             "storico_prezzi": [
                 {
                     "data": "2026-08-09",
                     "prezzo": 114606.0
+                },
+                {
+                    "data": "2026-08-09",
+                    "prezzo": 99800.0
                 }
             ],
             "dati_tecnici": {
@@ -12655,11 +12739,15 @@
             "modello": "Ecovip",
             "allestimento": "1",
             "distanza_seregno": 20,
-            "prezzo_attuale": 119823.0,
+            "prezzo_attuale": 110500.0,
             "storico_prezzi": [
                 {
                     "data": "2026-08-09",
                     "prezzo": 119823.0
+                },
+                {
+                    "data": "2026-08-09",
+                    "prezzo": 110500.0
                 }
             ],
             "dati_tecnici": {
@@ -12714,11 +12802,15 @@
             "modello": "Ecovip",
             "allestimento": "1",
             "distanza_seregno": 20,
-            "prezzo_attuale": 117208.0,
+            "prezzo_attuale": 108000.0,
             "storico_prezzi": [
                 {
                     "data": "2026-08-09",
                     "prezzo": 117208.0
+                },
+                {
+                    "data": "2026-08-09",
+                    "prezzo": 108000.0
                 }
             ],
             "dati_tecnici": {
@@ -12773,11 +12865,15 @@
             "modello": "Ecovip",
             "allestimento": "1",
             "distanza_seregno": 20,
-            "prezzo_attuale": 106271.0,
+            "prezzo_attuale": 98200.0,
             "storico_prezzi": [
                 {
                     "data": "2026-08-09",
                     "prezzo": 106271.0
+                },
+                {
+                    "data": "2026-08-09",
+                    "prezzo": 98200.0
                 }
             ],
             "dati_tecnici": {
@@ -12839,11 +12935,15 @@
             "modello": "",
             "allestimento": "",
             "distanza_seregno": 20,
-            "prezzo_attuale": 89019.0,
+            "prezzo_attuale": 82800.0,
             "storico_prezzi": [
                 {
                     "data": "2026-08-09",
                     "prezzo": 89019.0
+                },
+                {
+                    "data": "2026-08-09",
+                    "prezzo": 82800.0
                 }
             ],
             "dati_tecnici": {
@@ -12905,11 +13005,15 @@
             "modello": "Kreos H",
             "allestimento": "5109",
             "distanza_seregno": 20,
-            "prezzo_attuale": 30773.0,
+            "prezzo_attuale": 155000.0,
             "storico_prezzi": [
                 {
                     "data": "2026-08-09",
                     "prezzo": 30773.0
+                },
+                {
+                    "data": "2026-08-09",
+                    "prezzo": 155000.0
                 }
             ],
             "dati_tecnici": {
@@ -12971,11 +13075,15 @@
             "modello": "Ecovip",
             "allestimento": "1",
             "distanza_seregno": 20,
-            "prezzo_attuale": 84564.0,
+            "prezzo_attuale": 79700.0,
             "storico_prezzi": [
                 {
                     "data": "2026-08-09",
                     "prezzo": 84564.0
+                },
+                {
+                    "data": "2026-08-09",
+                    "prezzo": 79700.0
                 }
             ],
             "dati_tecnici": {
@@ -13037,11 +13145,15 @@
             "modello": "",
             "allestimento": "",
             "distanza_seregno": 20,
-            "prezzo_attuale": 97229.0,
+            "prezzo_attuale": 87800.0,
             "storico_prezzi": [
                 {
                     "data": "2026-08-09",
                     "prezzo": 97229.0
+                },
+                {
+                    "data": "2026-08-09",
+                    "prezzo": 87800.0
                 }
             ],
             "dati_tecnici": {
@@ -13103,11 +13215,15 @@
             "modello": "",
             "allestimento": "",
             "distanza_seregno": 20,
-            "prezzo_attuale": 98729.0,
+            "prezzo_attuale": 91000.0,
             "storico_prezzi": [
                 {
                     "data": "2026-08-09",
                     "prezzo": 98729.0
+                },
+                {
+                    "data": "2026-08-09",
+                    "prezzo": 91000.0
                 }
             ],
             "dati_tecnici": {
@@ -13169,11 +13285,15 @@
             "modello": "",
             "allestimento": "",
             "distanza_seregno": 20,
-            "prezzo_attuale": 126725.0,
+            "prezzo_attuale": 117900.0,
             "storico_prezzi": [
                 {
                     "data": "2026-08-09",
                     "prezzo": 126725.0
+                },
+                {
+                    "data": "2026-08-09",
+                    "prezzo": 117900.0
                 }
             ],
             "dati_tecnici": {
@@ -13228,11 +13348,15 @@
             "modello": "",
             "allestimento": "",
             "distanza_seregno": 20,
-            "prezzo_attuale": 20300.0,
+            "prezzo_attuale": 101000.0,
             "storico_prezzi": [
                 {
                     "data": "2026-08-09",
                     "prezzo": 20300.0
+                },
+                {
+                    "data": "2026-08-09",
+                    "prezzo": 101000.0
                 }
             ],
             "dati_tecnici": {
@@ -13294,11 +13418,15 @@
             "modello": "",
             "allestimento": "",
             "distanza_seregno": 20,
-            "prezzo_attuale": 20300.0,
+            "prezzo_attuale": 102000.0,
             "storico_prezzi": [
                 {
                     "data": "2026-08-09",
                     "prezzo": 20300.0
+                },
+                {
+                    "data": "2026-08-09",
+                    "prezzo": 102000.0
                 }
             ],
             "dati_tecnici": {
@@ -13360,11 +13488,15 @@
             "modello": "",
             "allestimento": "",
             "distanza_seregno": 20,
-            "prezzo_attuale": 68149.0,
+            "prezzo_attuale": 64900.0,
             "storico_prezzi": [
                 {
                     "data": "2026-08-09",
                     "prezzo": 68149.0
+                },
+                {
+                    "data": "2026-08-09",
+                    "prezzo": 64900.0
                 }
             ],
             "dati_tecnici": {
@@ -13426,11 +13558,15 @@
             "modello": "",
             "allestimento": "",
             "distanza_seregno": 20,
-            "prezzo_attuale": 99815.0,
+            "prezzo_attuale": 93500.0,
             "storico_prezzi": [
                 {
                     "data": "2026-08-09",
                     "prezzo": 99815.0
+                },
+                {
+                    "data": "2026-08-09",
+                    "prezzo": 93500.0
                 }
             ],
             "dati_tecnici": {
@@ -13492,11 +13628,15 @@
             "modello": "CaraSuite",
             "allestimento": "650 MEG",
             "distanza_seregno": 20,
-            "prezzo_attuale": 82342.0,
+            "prezzo_attuale": 73500.0,
             "storico_prezzi": [
                 {
                     "data": "2026-08-09",
                     "prezzo": 82342.0
+                },
+                {
+                    "data": "2026-08-09",
+                    "prezzo": 73500.0
                 }
             ],
             "dati_tecnici": {
@@ -13558,11 +13698,15 @@
             "modello": "",
             "allestimento": "",
             "distanza_seregno": 20,
-            "prezzo_attuale": 85511.0,
+            "prezzo_attuale": 75500.0,
             "storico_prezzi": [
                 {
                     "data": "2026-08-09",
                     "prezzo": 85511.0
+                },
+                {
+                    "data": "2026-08-09",
+                    "prezzo": 75500.0
                 }
             ],
             "dati_tecnici": {
@@ -13624,11 +13768,15 @@
             "modello": "",
             "allestimento": "",
             "distanza_seregno": 20,
-            "prezzo_attuale": 66927.0,
+            "prezzo_attuale": 61000.0,
             "storico_prezzi": [
                 {
                     "data": "2026-08-09",
                     "prezzo": 66927.0
+                },
+                {
+                    "data": "2026-08-09",
+                    "prezzo": 61000.0
                 }
             ],
             "dati_tecnici": {
@@ -13690,11 +13838,15 @@
             "modello": "CaraSuite",
             "allestimento": "700 MEG",
             "distanza_seregno": 20,
-            "prezzo_attuale": 88991.0,
+            "prezzo_attuale": 79900.0,
             "storico_prezzi": [
                 {
                     "data": "2026-08-09",
                     "prezzo": 88991.0
+                },
+                {
+                    "data": "2026-08-09",
+                    "prezzo": 79900.0
                 }
             ],
             "dati_tecnici": {
