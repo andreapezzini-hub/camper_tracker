@@ -84,45 +84,61 @@
 
         <div class="sticky top-[68px] z-40 bg-[#f8fafc] pt-2 pb-4 px-2 -mx-2 max-h-[calc(100vh-68px)] overflow-y-auto modal-scrollbar shadow-[0_15px_15px_-15px_rgba(0,0,0,0.05)] mb-6 border-b border-transparent">
     
-            <!-- Controls Bar Aggiornata -->
-            <div class="bg-white p-4 rounded-xl shadow-sm mb-4 border border-slate-100 flex flex-col gap-4">
+            <!-- Controls Bar Aggiornata (Collassabile) -->
+            <div class="bg-white rounded-xl shadow-sm mb-4 border border-slate-100 overflow-hidden">
                 
-                <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
-                    <div class="text-slate-600 font-medium whitespace-nowrap w-full lg:w-auto">
-                        Trovati <span id="results-count" class="font-bold text-brand-600">0</span> annunci
+                <button onclick="toggleBasicFilters()" class="w-full px-5 py-4 flex justify-between items-center bg-white hover:bg-slate-50 transition-colors focus:outline-none cursor-pointer">
+                    <div class="text-sm font-bold text-slate-800 flex items-center">
+                        <i class="fa-solid fa-search text-brand-500 mr-2"></i> Ricerca e Filtri Base
                     </div>
-                    
-                    <!-- Ricerca per Marca/Modello -->
-                    <div class="w-full lg:w-1/3">
-                        <div class="relative">
-                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                <i class="fa-solid fa-magnifying-glass text-slate-400"></i>
+                    <div class="flex items-center gap-4">
+                        <div class="text-slate-600 font-medium text-sm">
+                            Trovati <span id="results-count" class="font-bold text-brand-600">0</span> annunci
+                        </div>
+                        <i id="basic-filters-chevron" class="fa-solid fa-chevron-up text-slate-400 transition-transform duration-300"></i>
+                    </div>
+                </button>
+
+                <div id="basic-filters-content" class="px-5 pb-5 pt-2 block border-t border-slate-50">
+                    <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 mt-2">
+                        <!-- Ricerca per Marca/Modello -->
+                        <div class="w-full lg:w-1/2">
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <i class="fa-solid fa-magnifying-glass text-slate-400"></i>
+                                </div>
+                                <input type="text" id="search-marca" oninput="updateSearchMarca()" class="bg-slate-50 border border-slate-200 text-slate-700 text-sm rounded-lg focus:ring-brand-500 focus:border-brand-500 block w-full pl-10 p-2.5 outline-none font-medium transition-colors" placeholder="Cerca marca o modello...">
                             </div>
-                            <input type="text" id="search-marca" oninput="updateSearchMarca()" class="bg-slate-50 border border-slate-200 text-slate-700 text-sm rounded-lg focus:ring-brand-500 focus:border-brand-500 block w-full pl-10 p-2.5 outline-none font-medium transition-colors" placeholder="Cerca marca o modello...">
+                        </div>
+
+                        <div class="flex items-center gap-2 w-full lg:w-auto justify-between lg:justify-start">
+                            <label for="sort-select" class="text-sm font-semibold text-slate-600 whitespace-nowrap"><i class="fa-solid fa-arrow-down-a-z mr-1"></i> Ordina:</label>
+                            <select id="sort-select" onchange="applyFiltersAndSort()" class="w-full sm:w-auto bg-slate-50 border border-slate-200 text-slate-700 text-sm rounded-lg focus:ring-brand-500 focus:border-brand-500 block p-2 outline-none font-medium cursor-pointer">
+                                <option value="score_desc">🏆 Punteggio (Più alto)</option>
+                                <option value="price_asc">💰 Prezzo (Più basso)</option>
+                                <option value="distance_asc">📍 Distanza (Più vicino)</option>
+                                <option value="km_asc">🛣️ Chilometri (Meno usati)</option>
+                            </select>
                         </div>
                     </div>
 
-                    <div class="flex items-center gap-2 w-full lg:w-auto justify-between lg:justify-start">
-                        <label for="sort-select" class="text-sm font-semibold text-slate-600 whitespace-nowrap"><i class="fa-solid fa-arrow-down-a-z mr-1"></i> Ordina:</label>
-                        <select id="sort-select" onchange="applyFiltersAndSort()" class="w-full sm:w-auto bg-slate-50 border border-slate-200 text-slate-700 text-sm rounded-lg focus:ring-brand-500 focus:border-brand-500 block p-2 outline-none font-medium cursor-pointer">
-                            <option value="score_desc">🏆 Punteggio (Più alto)</option>
-                            <option value="price_asc">💰 Prezzo (Più basso)</option>
-                            <option value="distance_asc">📍 Distanza (Più vicino)</option>
-                            <option value="km_asc">🛣️ Chilometri (Meno usati)</option>
-                        </select>
-                    </div>
-                </div>
+                    <!-- Pillole Base -->
+                    <div class="flex flex-col xl:flex-row items-start xl:items-center gap-4 xl:gap-6 border-t border-slate-100 pt-4 mt-4">
+                        
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <span class="text-sm font-semibold text-slate-600 mr-1"><i class="fa-solid fa-globe mr-1"></i> Sito:</span>
+                            <div id="site-filters-container" class="flex flex-wrap gap-2"></div>
+                        </div>
 
-                <!-- Pillole Base -->
-                <div class="flex flex-col sm:flex-row items-start sm:items-center gap-6 border-t border-slate-100 pt-4">
-                    <div class="flex items-center gap-2 flex-wrap">
-                        <span class="text-sm font-semibold text-slate-600 mr-1"><i class="fa-solid fa-filter mr-1"></i> Tipo:</span>
-                        <div id="type-filters-container" class="flex flex-wrap gap-2"></div>
-                    </div>
+                        <div class="flex items-center gap-2 flex-wrap xl:border-l border-slate-200 xl:pl-4">
+                            <span class="text-sm font-semibold text-slate-600 mr-1"><i class="fa-solid fa-filter mr-1"></i> Tipo:</span>
+                            <div id="type-filters-container" class="flex flex-wrap gap-2"></div>
+                        </div>
 
-                    <div class="flex items-center gap-2 flex-wrap sm:border-l border-slate-200 sm:pl-4">
-                        <span class="text-sm font-semibold text-slate-600 mr-1"><i class="fa-solid fa-tag mr-1"></i> Stato:</span>
-                        <div id="status-filters-container" class="flex flex-wrap gap-2"></div>
+                        <div class="flex items-center gap-2 flex-wrap xl:border-l border-slate-200 xl:pl-4">
+                            <span class="text-sm font-semibold text-slate-600 mr-1"><i class="fa-solid fa-tag mr-1"></i> Stato:</span>
+                            <div id="status-filters-container" class="flex flex-wrap gap-2"></div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -193,6 +209,10 @@
         let activeTypes = new Set(allTypes);
         const allStatuses = ["Nuovo", "Usato"];
         let activeStatuses = new Set(allStatuses);
+        
+        // Filtri Siti Dinamici
+        let allSites = [];
+        let activeSites = new Set();
 
         // Filtri Avanzati State
         let searchMarcaText = "";
@@ -292,6 +312,12 @@
                 }
                 
                 currentData = parsedData;
+
+                // Estrai siti unici e popola i filtri
+                const sitesSet = new Set(parsedData.map(c => c.sito));
+                allSites = Array.from(sitesSet).sort();
+                activeSites = new Set(allSites);
+
             } catch (error) {
                 console.error("Errore nel caricamento del JSON:", error);
                 document.getElementById('alert-box').classList.remove('hidden');
@@ -304,6 +330,7 @@
                 return;
             }
             
+            renderSiteFilters();
             renderTypeFilters();
             renderStatusFilters();
             initializeAdvancedFilters(); 
@@ -407,6 +434,20 @@
             renderAdvancedBooleans();
             applyFiltersAndSort();
         };
+
+        // Funzione per espandere/collassare i filtri base
+        const toggleBasicFilters = () => {
+            const content = document.getElementById('basic-filters-content');
+            const chevron = document.getElementById('basic-filters-chevron');
+            
+            if (content.classList.contains('hidden')) {
+                content.classList.remove('hidden');
+                chevron.classList.replace('fa-chevron-down', 'fa-chevron-up');
+            } else {
+                content.classList.add('hidden');
+                chevron.classList.replace('fa-chevron-up', 'fa-chevron-down');
+            }
+        };
         
         // Funzione per espandere/collassare i filtri avanzati
         const toggleAdvancedFilters = () => {
@@ -437,6 +478,24 @@
             if (score >= 70) return 'bg-blue-100 text-blue-800 border-blue-200';
             if (score >= 50) return 'bg-yellow-100 text-yellow-800 border-yellow-200';
             return 'bg-red-100 text-red-800 border-red-200';
+        };
+
+        const renderSiteFilters = () => {
+            const container = document.getElementById('site-filters-container');
+            container.innerHTML = allSites.map(site => {
+                const isActive = activeSites.has(site);
+                const activeClass = isActive 
+                    ? 'bg-slate-800 text-white border-slate-800 shadow-sm' 
+                    : 'bg-white text-slate-500 border-slate-200 hover:bg-slate-50 hover:text-slate-700';
+                return `<button onclick="toggleSite('${site}')" class="px-3 py-1.5 rounded-full border text-xs sm:text-sm font-semibold transition-all duration-200 cursor-pointer flex items-center gap-1 ${activeClass}">${isActive ? '<i class="fa-solid fa-check"></i>' : ''} ${site}</button>`;
+            }).join('');
+        };
+
+        const toggleSite = (site) => {
+            if (activeSites.has(site)) activeSites.delete(site);
+            else activeSites.add(site);
+            if(activeSites.size === 0) activeSites.add(site); 
+            renderSiteFilters(); applyFiltersAndSort();
         };
 
         const renderTypeFilters = () => {
@@ -478,7 +537,8 @@
         const applyFiltersAndSort = () => {
             let filteredData = currentData.filter(c => {
                 
-                // 1. Filtri Base
+                // 1. Filtri Base (Incluso Sito)
+                if (!activeSites.has(c.sito)) return false;
                 if (!activeTypes.has(c.tipologia)) return false;
                 if (!activeStatuses.has(c.stato)) return false;
 
