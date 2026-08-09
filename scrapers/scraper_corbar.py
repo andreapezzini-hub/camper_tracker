@@ -245,13 +245,29 @@ def run_scraper(db_conn, config, ollama_config=None):
                         prezzo = extract_price(testo_dettaglio)
                         
                         img_url = None
-                        # Cerchiamo l'immagine nell'intera pagina per aggirare slider, ignorando i loghi
-                        for img in det_soup.find_all('img'):
-                            src = img.get('src') or img.get('data-src') or ''
-                            src_lower = src.lower()
-                            if src and 'logo' not in src_lower and 'header' not in src_lower and 'icon' not in src_lower and 'banner' not in src_lower:
-                                img_url = src if src.startswith('http') else urljoin(BASE_URL, src)
-                                break
+                        
+                        # 1. Ricerca regex sull'HTML puro per intercettare i link in /public/
+                        img_matches = re.findall(r'["\']([^"\']*/?public/(?:nuovo|usato|veicoli)/[^"\']*\.jpg)["\']', det_resp.text, re.IGNORECASE)
+                        if img_matches:
+                            # Diamo priorità all'immagine principale (es. _1b.jpg) indicata
+                            img_path = next((m for m in img_matches if '_1b' in m.lower()), img_matches[0])
+                            img_url = img_path if img_path.startswith('http') else urljoin(BASE_URL, img_path)
+                            
+                        # 2. Fallback su meta tag Open Graph
+                        if not img_url:
+                            meta_og = det_soup.find('meta', property='og:image')
+                            if meta_og and meta_og.get('content'):
+                                img_url = meta_og['content']
+                                
+                        # 3. Fallback classico migliorato
+                        if not img_url:
+                            for img in det_soup.find_all('img'):
+                                src = img.get('src') or img.get('data-src') or ''
+                                src_lower = src.lower()
+                                ignore_list = ['logo', 'header', 'icon', 'banner', 'chiama', 'wa.png', 'whatsapp']
+                                if src and not any(x in src_lower for x in ignore_list):
+                                    img_url = src if src.startswith('http') else urljoin(BASE_URL, src)
+                                    break
                         
                         testo_finale = testo_dettaglio[:3000]
                         processed_urls.add(url_completo)

@@ -158,9 +158,39 @@ def regex_extract_camper_data(raw_text, current_price, db_conn):
 # 2. CORE SCRAPER - 3C Srl
 # ==========================================
 def extract_price(text):
-    match = re.search(r'€?\s*(\d{2,3}[\.,]\d{3})(?:[\.,]\d{2})?\s*€?', text)
-    if match:
-        return int(match.group(1).replace('.', '').replace(',', ''))
+    prices = []
+    
+    # 1. Trova i prezzi associati al simbolo € o alla parola euro (gestisce migliaia con punto/senza punto ed eventuali decimali)
+    pattern_currency = r'(?:€|euro)\s*(\d{1,3}(?:[.,]\d{3})*|\d+)(?:[.,]\d{2})?|(\d{1,3}(?:[.,]\d{3})*|\d+)(?:[.,]\d{2})?\s*(?:€|euro)'
+    matches_curr = re.findall(pattern_currency, text, re.IGNORECASE)
+    
+    for m in matches_curr:
+        val_str = m[0] if m[0] else m[1]
+        if val_str:
+            # Eliminiamo punti e virgole delle migliaia
+            clean_val = re.sub(r'[.,]', '', val_str)
+            if clean_val.isdigit():
+                prices.append(int(clean_val))
+                
+    # 2. Trova numeri preceduti da termini specifici
+    pattern_words = r'(?:prezzo|a\s+soli|tuo\s+a)\s*(?:di\s*)?(?::)?\s*(\d{1,3}(?:[.,]\d{3})*|\d+)(?:[.,]\d{2})?'
+    matches_words = re.findall(pattern_words, text, re.IGNORECASE)
+    for m in matches_words:
+        if m:
+            clean_val = re.sub(r'[.,]', '', m)
+            if clean_val.isdigit():
+                prices.append(int(clean_val))
+                
+    # Filtriamo i prezzi considerando solo quelli validi per un camper (> 5.000€)
+    valid_prices = [p for p in prices if p >= 5000]
+    
+    if valid_prices:
+        # Prende l'importo massimo tra quelli validi (così da scartare piccoli acconti se menzionati)
+        return max(valid_prices)
+        
+    if prices:
+        return max(prices)
+        
     return 0
 
 def clean_text_preserve_lists(text):
@@ -240,6 +270,11 @@ def run_scraper(db_conn, config, ollama_config=None):
                     break
                     
                 url_parziale = link['href']
+                
+                # Ignora direttamente le scorciatoie di rete per telefono e mail
+                if url_parziale.lower().startswith(('tel:', 'mailto:', 'javascript:')):
+                    continue
+                
                 url_completo = url_parziale if url_parziale.startswith('http') else f"{BASE_URL.rstrip('/')}/{url_parziale.lstrip('/')}"
                 
                 # Deve essere dominio corretto
@@ -278,8 +313,10 @@ def run_scraper(db_conn, config, ollama_config=None):
                     testo_dettaglio = clean_text_preserve_lists(det_soup.get_text(separator="\n"))
                     testo_dettaglio_lower = testo_dettaglio.lower()
                     
-                    if re.search(r'\b(roulotte|noleggio|noleggi|caravan)\b', testo_dettaglio_lower):
-                        print("      [!] Saltato: Trovate parole chiave vietate.")
+                    # Controllo parole chiave vietate solo nel titolo principale e URL per evitare falsi positivi nel footer
+                    h1_testo = " ".join([h1.get_text(separator=" ") for h1 in det_soup.find_all('h1')]).lower()
+                    if re.search(r'\b(roulotte|noleggio|noleggi|caravan)\b', h1_testo) or re.search(r'\b(roulotte|noleggio|noleggi|caravan)\b', url_completo.lower()):
+                        print("      [!] Saltato: Trovate parole chiave vietate nell'intestazione o nell'URL.")
                         continue
                         
                     prezzo = extract_price(testo_dettaglio)

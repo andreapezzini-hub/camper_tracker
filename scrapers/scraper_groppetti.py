@@ -104,9 +104,10 @@ def run_scraper(db_conn, config, ollama_config=None):
     SITE_NAME = "Groppetti"
     BASE_URL = "https://www.groppetti.net"
     TARGET_URLS = [
-        f"{BASE_URL}/veicoli-usati/",
-        f"{BASE_URL}/veicoli-nuovi/",
-        f"{BASE_URL}/veicoli/"
+        f"{BASE_URL}/camper/2/camper-usati-in-vendita/",
+        f"{BASE_URL}/camper/1/camper-nuovi-in-vendita/",
+        f"{BASE_URL}/camper/2/",
+        f"{BASE_URL}/camper/1/"
     ]
     DISTANCE_FROM_SEREGNO = 50 # Chiuduno (BG) -> Seregno
     MAX_ANNUNCI = 500
@@ -117,6 +118,11 @@ def run_scraper(db_conn, config, ollama_config=None):
     try:
         processed_urls, urls_to_scan, scanned_targets = set(), list(TARGET_URLS), set()
         
+        # Aggiungo preventivamente pagine di paginazione per bypassare eventuali bottoni JS "mostra altro"
+        for base_t in TARGET_URLS[:2]:
+            for p in range(2, 6):
+                urls_to_scan.append(f"{base_t}page/{p}/")
+        
         while urls_to_scan and count_elaborati < MAX_ANNUNCI:
             target = urls_to_scan.pop(0)
             if target in scanned_targets: continue
@@ -125,41 +131,65 @@ def run_scraper(db_conn, config, ollama_config=None):
             print(f"    [{SITE_NAME}] Scansione sezione: {target}...")
             try: response = session.get(target, headers=headers, timeout=20)
             except Exception: continue
+            
+            if response.status_code != 200: continue
             soup = BeautifulSoup(response.text, 'html.parser')
             
+            # Recupero di eventuali link di paginazione extra
             for a in soup.find_all('a', href=True):
                 href = a['href']
-                if ('page=' in href or 'p=' in href) and BASE_URL in href and href not in scanned_targets and href not in urls_to_scan:
+                if ('/page/' in href or 'page=' in href or 'p=' in href) and BASE_URL in href and href not in scanned_targets and href not in urls_to_scan:
                     urls_to_scan.append(href)
             
             for link in soup.find_all('a', href=True):
                 if count_elaborati >= MAX_ANNUNCI: break
-                url_completo = link['href'] if link['href'].startswith('http') else f"{BASE_URL}/{link['href'].lstrip('/')}"
                 
-                path_lower = link['href'].lower()
-                # Di solito dettagli/ o veicoli-usati/nome...
-                if not ('/dettaglio/' in path_lower or '/veicolo/' in path_lower or len(url_completo.split('/')[-1]) > 15): continue
-                if any(skip in path_lower for skip in ['noleggio', 'contatti', 'officina', 'accessori']): continue
+                href_raw = link['href']
+                url_completo = href_raw if href_raw.startswith('http') else f"{BASE_URL}/{href_raw.lstrip('/')}"
+                if BASE_URL not in url_completo: continue
                 
+                path_lower = url_completo.lower()
+                
+                # Esclusioni per evitare di processare contatti o risorse statiche
+                if any(skip in path_lower for skip in ['noleggio', 'contatti', 'officina', 'accessori', 'privacy', 'cookie', 'chi-siamo', '.jpg', '.png', '.pdf']): continue
+                
+                parts = [p for p in url_completo.split('/') if p]
+                if not parts: continue
+                last_part = parts[-1]
+                
+                # Identifica i link ai dettagli del camper: di solito contengono tratini e sono abbastanza lunghi
+                is_listing = (
+                    '/dettaglio/' in path_lower or 
+                    '/veicolo/' in path_lower or 
+                    '/listings/' in path_lower or 
+                    ('-' in last_part and len(last_part) > 12)
+                )
+                
+                if not is_listing: continue
                 if url_completo in processed_urls: continue
                 processed_urls.add(url_completo)
                 
                 try:
                     time.sleep(0.5)
                     det_resp = session.get(url_completo, headers=headers, timeout=20)
+                    if det_resp.status_code != 200: continue
                     det_soup = BeautifulSoup(det_resp.text, 'html.parser')
+                    
                     for hidden in det_soup(["script", "style", "nav", "footer", "header"]): hidden.decompose()
                     
                     testo = clean_text(det_soup.get_text(separator="\n"))
                     if re.search(r'\b(roulotte|noleggio|caravan)\b', testo.lower()): continue
                     prezzo = extract_price(testo)
+                    
                     if prezzo < 5000: continue
                     
                     img_url = None
-                    img = det_soup.find('img')
-                    if img and (img.get('src') or img.get('data-src')):
+                    for img in det_soup.find_all('img'):
                         src = img.get('src') or img.get('data-src')
-                        img_url = src if src.startswith('http') else f"{BASE_URL}/{src.lstrip('/')}"
+                        # Evitiamo di raccogliere i loghi aziendali
+                        if src and 'logo' not in src.lower() and 'icon' not in src.lower():
+                            img_url = src if src.startswith('http') else f"{BASE_URL}/{src.lstrip('/')}"
+                            break
                     
                     scraper_utils.process_listing(
                         db_conn, config, url_completo, SITE_NAME, f"--- DETTAGLI ---\n{testo}"[:3000], 
