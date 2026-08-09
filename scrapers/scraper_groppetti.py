@@ -96,20 +96,20 @@ def regex_extract_camper_data(raw_text, current_price, db_conn):
 def extract_price(text):
     prices = []
     
-    # 1. Cerca il simbolo € prima del numero (es. "€ 105.900", "€105900")
+    # Formato: "€ 105.900", "€105900"
     for m in re.finditer(r'€\s*(\d{1,3}(?:[.,]\d{3})*|\d{4,6})(?:[.,]\d{2})?', text):
         val = int(m.group(1).replace('.', '').replace(',', ''))
         if val >= 5000: prices.append(val)
         
-    # 2. Cerca il simbolo € dopo il numero (es. "105.900 €", "105900€")
+    # Formato: "105.900 €", "105900€"
     for m in re.finditer(r'(\d{1,3}(?:[.,]\d{3})*|\d{4,6})(?:[.,]\d{2})?\s*€', text):
         val = int(m.group(1).replace('.', '').replace(',', ''))
         if val >= 5000: prices.append(val)
         
     if prices:
-        return min(prices)  # Se ci sono prezzi doppi (es. barrato/scontato in promo), prende quello reale
+        return min(prices)
         
-    # 3. Fallback: cerca vicino alla parola prezzo
+    # Fallback su keyword
     for m in re.finditer(r'prezzo[\s:]*(?:€\s*)?(\d{1,3}(?:[.,]\d{3})*|\d{4,6})', text, re.IGNORECASE):
         val = int(m.group(1).replace('.', '').replace(',', ''))
         if val >= 5000: prices.append(val)
@@ -119,7 +119,8 @@ def extract_price(text):
         
     return 0
 
-def clean_text(text): return re.sub(r'\n\s*\n', '\n', re.sub(r'[ \t]+', ' ', text)).strip()
+def clean_text(text): 
+    return re.sub(r'\n\s*\n', '\n', re.sub(r'[ \t]+', ' ', text)).strip()
 
 def run_scraper(db_conn, config, ollama_config=None):
     SITE_NAME = "Groppetti"
@@ -127,20 +128,25 @@ def run_scraper(db_conn, config, ollama_config=None):
     TARGET_URLS = [
         f"{BASE_URL}/camper/2/camper-usati-in-vendita/",
         f"{BASE_URL}/camper/1/camper-nuovi-in-vendita/",
+        f"{BASE_URL}/camper/2/listings/",
+        f"{BASE_URL}/camper/1/listings/",
         f"{BASE_URL}/camper/2/",
         f"{BASE_URL}/camper/1/"
     ]
-    DISTANCE_FROM_SEREGNO = 50 # Chiuduno (BG) -> Seregno
+    DISTANCE_FROM_SEREGNO = 50 
     MAX_ANNUNCI = 500
     count_elaborati = 0
+    
     session = requests.Session()
     headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'}
     
     try:
-        processed_urls, urls_to_scan, scanned_targets = set(), list(TARGET_URLS), set()
+        processed_urls = set()
+        urls_to_scan = list(TARGET_URLS)
+        scanned_targets = set()
         
-        # Aggiungo preventivamente pagine di paginazione per bypassare eventuali pulsanti javascript
-        for base_t in TARGET_URLS[:2]:
+        # Aggiungo preventivamente pagine di paginazione per bypassare eventuali bottoni JS
+        for base_t in TARGET_URLS[:4]:
             for p in range(2, 6):
                 urls_to_scan.append(f"{base_t}page/{p}/")
         
@@ -150,83 +156,102 @@ def run_scraper(db_conn, config, ollama_config=None):
             scanned_targets.add(target)
             
             print(f"    [{SITE_NAME}] Scansione sezione: {target}...")
-            try: response = session.get(target, headers=headers, timeout=20)
-            except Exception: continue
+            try: 
+                response = session.get(target, headers=headers, timeout=20)
+            except Exception: 
+                continue
             
             if response.status_code != 200: continue
             soup = BeautifulSoup(response.text, 'html.parser')
             
-            # Recupero di eventuali link di paginazione extra presenti a pie' di pagina
+            # Recupero di eventuali link di paginazione
             for a in soup.find_all('a', href=True):
-                href = a['href']
-                if ('/page/' in href or 'page=' in href or 'p=' in href) and BASE_URL in href and href not in scanned_targets and href not in urls_to_scan:
-                    urls_to_scan.append(href)
+                href_raw = a['href']
+                if not href_raw or href_raw.startswith('javascript'): continue
+                
+                url_completo = href_raw if href_raw.startswith('http') else f"{BASE_URL}/{href_raw.lstrip('/')}"
+                if BASE_URL not in url_completo: continue
+                
+                url_no_query = url_completo.split('#')[0].split('?')[0]
+                
+                if '/page/' in url_no_query:
+                    if url_completo not in scanned_targets and url_completo not in urls_to_scan:
+                        urls_to_scan.append(url_completo)
             
+            # Ricerca dei veri listing all'interno della pagina corrente
             for link in soup.find_all('a', href=True):
                 if count_elaborati >= MAX_ANNUNCI: break
                 
                 href_raw = link['href']
+                if not href_raw or href_raw.startswith('javascript'): continue
+                
                 url_completo = href_raw if href_raw.startswith('http') else f"{BASE_URL}/{href_raw.lstrip('/')}"
                 if BASE_URL not in url_completo: continue
                 
-                # Rimuovo ancore e query param (che ingannerebbero il path resolver)
-                if '#' in url_completo: url_completo = url_completo.split('#')[0]
-                url_no_query = url_completo.split('?')[0]
-                
+                url_no_query = url_completo.split('#')[0].split('?')[0]
                 path_lower = url_no_query.lower()
                 
-                # Esclusioni per evitare di processare contatti o risorse statiche
-                if any(skip in path_lower for skip in ['noleggio', 'contatti', 'officina', 'accessori', 'privacy', 'cookie', 'chi-siamo', '.jpg', '.png', '.pdf']): continue
+                if any(skip in path_lower for skip in ['noleggio', 'contatti', 'officina', 'accessori', 'privacy', 'cookie', 'chi-siamo', 'news']): 
+                    continue
+                if url_no_query.endswith(('.jpg', '.png', '.pdf')):
+                    continue
                 
                 parts = [p for p in url_no_query.split('/') if p]
                 if not parts: continue
-                last_part = parts[-1]
+                last_part = parts[-1].lower()
                 
-                # Assicuriamoci che non stia spacciando per camper un archivio o il catalogo
-                if last_part in ['listings', 'camper-usati-in-vendita', 'camper-nuovi-in-vendita', 'camper', '1', '2'] or 'page' in last_part:
+                # Ignoro root pages e liste paginazioni
+                if last_part in ['listings', 'camper-usati-in-vendita', 'camper-nuovi-in-vendita', 'camper', '1', '2'] or last_part.startswith('page'):
                     continue
                 
-                # Identifica i link ai veri dettagli del camper (spesso formattati con slug e trattini)
-                is_listing = (
-                    '/dettaglio/' in path_lower or 
-                    '/veicolo/' in path_lower or 
-                    '/listings/' in path_lower or 
-                    ('-' in last_part and len(last_part) > 12)
-                )
+                is_listing = False
                 
-                if not is_listing: continue
-                if url_completo in processed_urls: continue
-                processed_urls.add(url_completo)
+                # Un dettaglio contiene /listings/ e un'alta entropia nel last_part, non è la radice.
+                if '/listings/' in path_lower and last_part != 'listings':
+                    is_listing = True
+                elif '-' in last_part and len(last_part) > 12:
+                    is_listing = True
+                
+                if not is_listing: 
+                    continue
+                
+                # Salviamo url pulito da query per evitare duplicati causati da tag filter
+                if url_no_query in processed_urls: continue
+                processed_urls.add(url_no_query)
                 
                 try:
                     time.sleep(0.5)
-                    det_resp = session.get(url_completo, headers=headers, timeout=20)
+                    det_resp = session.get(url_no_query, headers=headers, timeout=20)
                     if det_resp.status_code != 200: continue
                     det_soup = BeautifulSoup(det_resp.text, 'html.parser')
                     
-                    for hidden in det_soup(["script", "style", "nav", "footer", "header", "form"]): hidden.decompose()
+                    # Elimino le sezioni che contengono recapiti ambigui (es. la mail "noleggio@groppetti")
+                    for hidden in det_soup(["script", "style", "nav", "footer", "header", "form"]): 
+                        hidden.decompose()
                     
                     testo = clean_text(det_soup.get_text(separator="\n"))
-                    if re.search(r'\b(roulotte|noleggio|caravan)\b', testo.lower()): continue
                     prezzo = extract_price(testo)
                     
-                    if prezzo < 5000: continue
+                    # Salto solo i falsi prezzi bassi (come rate o ricambi), accetto gli "0" per trattativa riservata
+                    if 0 < prezzo < 5000: 
+                        continue
                     
                     img_url = None
                     for img in det_soup.find_all('img'):
                         src = img.get('src') or img.get('data-src')
-                        # Evitiamo di raccogliere i loghi o i banner aziendali
-                        if src and not any(x in src.lower() for x in ['logo', 'icon', 'banner']):
+                        if src and not any(x in src.lower() for x in ['logo', 'icon', 'banner', 'avatar']):
                             img_url = src if src.startswith('http') else f"{BASE_URL}/{src.lstrip('/')}"
                             break
                     
                     scraper_utils.process_listing(
-                        db_conn, config, url_completo, SITE_NAME, f"--- DETTAGLI ---\n{testo}"[:3000], 
+                        db_conn, config, url_no_query, SITE_NAME, f"--- DETTAGLI ---\n{testo}"[:3000], 
                         prezzo, DISTANCE_FROM_SEREGNO, img_url, regex_extract_camper_data, ollama_config
                     )
                     count_elaborati += 1
-                except Exception as e: pass
-    except Exception as e: print(f"[!] Errore {SITE_NAME}: {e}")
+                except Exception as e: 
+                    pass
+    except Exception as e: 
+        print(f"[!] Errore {SITE_NAME}: {e}")
 
 if __name__ == "__main__":
     import sys
