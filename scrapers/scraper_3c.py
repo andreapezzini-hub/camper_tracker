@@ -18,12 +18,10 @@ def regex_extract_camper_data(raw_text, current_price, db_conn):
     if match_anno_explicit:
         anno = int(match_anno_explicit.group(1))
     else:
-        # Evita i numeri preceduti da cilindrata o cc
         anno_match = re.search(r'(?<!cilindrata\s)(?<!cilindrata)(?<!cc\s)\b(199\d|20[0-2]\d)\b', testo)
         if anno_match:
             anno = int(anno_match.group(1))
             
-    # Se il camper è palesemente nuovo ma ha preso un anno vecchio (falso positivo), azzeriamo
     if anno and anno < 2023 and ('nuovo' in testo or 'da immatricolare' in testo):
         anno = None
     
@@ -192,7 +190,6 @@ def extract_price(text):
             if clean_val.isdigit():
                 prices.append(int(clean_val))
                 
-    # Filtro stringente tra 5k e 200k per tagliare fuori numeri anomali
     valid_prices = [p for p in prices if 5000 <= p <= 200000]
     
     if valid_prices:
@@ -267,7 +264,7 @@ def run_scraper(db_conn, config, ollama_config=None):
             
             # 1. Trova Paginazione
             for page_link in soup.find_all('a', href=True):
-                href = page_link['href']
+                href = page_link['href'].split('#')[0] # Rimuove le ancore
                 if ('/page/' in href or '?paged=' in href) and BASE_URL in href and href not in scanned_targets:
                     if href not in urls_to_scan:
                         urls_to_scan.append(href)
@@ -278,7 +275,12 @@ def run_scraper(db_conn, config, ollama_config=None):
                 if count_elaborati >= MAX_ANNUNCI:
                     break
                     
-                url_parziale = link['href']
+                url_parziale = link['href'].split('#')[0] # Rimuove le ancore
+                
+                # Blocca preventivamente link multimediali espliciti
+                if re.search(r'\.(webp|jpg|jpeg|png|gif|pdf|zip|rar)$', url_parziale, re.IGNORECASE):
+                    continue
+                    
                 if url_parziale.lower().startswith(('tel:', 'mailto:', 'javascript:')):
                     continue
                 
@@ -287,37 +289,50 @@ def run_scraper(db_conn, config, ollama_config=None):
                 if BASE_URL not in url_completo:
                     continue
                 
-                path_lower = url_parziale.lower()
-                skip_words = ['chi-siamo', 'contatti', 'dove', 'noleggio', 'officina', 'servizi', 'privacy', 'cookie', 'index', 'caravan', 'rimorchi', 'barca', 'carrelli', 'login', 'cart', 'checkout', 'carrello', 'my-account']
-                if any(skip in path_lower for skip in skip_words) or url_completo in scanned_targets:
+                path_lower = url_completo.lower()
+                skip_words = ['chi-siamo', 'contatti', 'dove', 'noleggio', 'officina', 'servizi', 'privacy', 'cookie', 'index', 'caravan', 'rimorchi', 'barca', 'carrelli', 'login', 'cart', 'checkout', 'carrello', 'my-account', 'feed']
+                if any(skip in path_lower for skip in skip_words):
                     continue
                 
                 is_product = ('/prodotto/' in path_lower or '/veicolo/' in path_lower or '/camper/' in path_lower or '-it-' in path_lower)
                 
-                if not is_product and len(url_completo.split('/')[-1]) < 15:
+                if is_product:
+                    # Rimuove i query param (?utm_source=...) per deduplicare gli URL
+                    url_completo = url_completo.split('?')[0]
+                    # REQUISITO: Le pagine camper terminano SEMPRE con /
+                    if not url_completo.endswith('/'):
+                        continue
+                elif len(url_completo.split('/')[-1]) < 15:
                     continue
                 
-                if url_completo in processed_urls: continue
+                # Check Deduplicazione rinforzato
+                if url_completo in processed_urls or url_completo in scanned_targets:
+                    continue
                 processed_urls.add(url_completo)
                 
                 print(f"    [{SITE_NAME}] Check URL: {url_completo}")
                 
                 try:
-                    time.sleep(2.0) 
+                    time.sleep(1.0) # Abbassato leggermente avendo ora filtri più severi
                     det_resp = fetch_url_with_retry(session, url_completo, headers=headers)
                     if det_resp.status_code == 404:
                         continue
                         
                     det_soup = BeautifulSoup(det_resp.text, 'html.parser')
                     
-                    # LOGICA "NESTED LINKS" (Risolve il problema Challenger Serie X)
-                    # Cerca link interni a questa pagina che rimandano ad altri camper e mettili in coda
+                    # LOGICA "NESTED LINKS" con filtri applicati
                     for inner_link in det_soup.find_all('a', href=True):
-                        inner_href = inner_link['href']
+                        inner_href = inner_link['href'].split('?')[0].split('#')[0]
+                        
+                        if inner_href.startswith('/'):
+                            inner_href = f"{BASE_URL.rstrip('/')}{inner_href}"
+                            
                         if BASE_URL in inner_href and ('/camper/' in inner_href or '/prodotto/' in inner_href):
-                            if inner_href not in processed_urls and inner_href not in urls_to_scan and inner_href not in scanned_targets:
-                                urls_to_scan.append(inner_href)
+                            if inner_href.endswith('/') and not re.search(r'\.(webp|jpg|jpeg|png|pdf)$', inner_href, re.IGNORECASE):
+                                if inner_href not in processed_urls and inner_href not in urls_to_scan and inner_href not in scanned_targets:
+                                    urls_to_scan.append(inner_href)
                     
+                    # Pulizia DOM
                     for hidden in det_soup(["script", "style", "nav", "footer", "header"]):
                         hidden.decompose()
                     for menu in det_soup.find_all(['div', 'ul'], class_=re.compile(r'menu|nav|footer|header|sidebar|widget', re.I)):
@@ -327,6 +342,11 @@ def run_scraper(db_conn, config, ollama_config=None):
                         
                     testo_dettaglio = clean_text_preserve_lists(det_soup.get_text(separator="\n"))
                     testo_dettaglio_lower = testo_dettaglio.lower()
+                    
+                    # REQUISITO: Check parola chiave obbligatoria "dotazioni"
+                    if 'dotazioni' not in testo_dettaglio_lower:
+                        print("      [!] Saltato: Non contiene la parola chiave 'dotazioni'. Pagina non di dettaglio.")
+                        continue
                     
                     h1_testo = " ".join([h1.get_text(separator=" ") for h1 in det_soup.find_all('h1')]).lower()
                     if re.search(r'\b(roulotte|noleggio|noleggi|caravan)\b', h1_testo) or re.search(r'\b(roulotte|noleggio|noleggi|caravan)\b', url_completo.lower()):
@@ -341,14 +361,11 @@ def run_scraper(db_conn, config, ollama_config=None):
                     
                     print(f"    [{SITE_NAME}] >>> Avvio estrazione dati per: {url_completo}")
                     
-                    # LOGICA IMMAGINI (Risolve il problema immagine non trovata)
                     img_url = None
-                    # 1. Prova prima con i meta tag ufficiali di anteprima condivisione (estremamente affidabili)
                     og_image = det_soup.find('meta', property='og:image')
                     if og_image and og_image.get('content'):
                         img_url = og_image['content']
                     
-                    # 2. Fallback su classi WooCommerce e tag classici
                     if not img_url:
                         img_tags = det_soup.find_all('img', class_=re.compile(r'wp-post-image|woocommerce-main-image|attachment-shop_single'))
                         if not img_tags:
