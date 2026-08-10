@@ -22,14 +22,35 @@ def regex_extract_camper_data(raw_text, current_price, db_conn):
         if anno_match:
             anno = int(anno_match.group(1))
             
-    if anno and anno < 2023 and ('nuovo' in testo or 'da immatricolare' in testo):
-        anno = None
+    # 2. CHILOMETRI E STATO (NUOVO/USATO)
+    km = None
+    is_nuovo = False
     
-    # 2. CHILOMETRI
-    km_match = re.search(r'km\s*(\d{1,3}(?:\.\d{3})+|\d{1,6})', testo)
-    km = int(km_match.group(1).replace('.', '')) if km_match else None
-    if km is None and ('nuovo' in testo or 'da immatricolare' in testo):
-        km = 0
+    # Lettura rigorosa dei KM
+    match_km = re.search(r'\b(?:km|chilometri|chilometraggio)\s*[:\-]?\s*(\d{1,3}(?:\.\d{3})+|\d{1,6})\b', testo)
+    if not match_km:
+        match_km = re.search(r'\b(\d{1,3}(?:\.\d{3})+|\d{1,6})\s*(?:km|chilometri)\b', testo)
+        
+    if match_km:
+        val = match_km.group(1) if match_km.group(1) else match_km.group(2)
+        km = int(val.replace('.', ''))
+        # Se ha più di 1000 km, lo consideriamo di base usato
+        if km > 1000:
+            is_nuovo = False
+        else:
+            is_nuovo = True
+            
+    # Ricerca di etichette esplicite nel testo (ignora la semplice parola "nuovo" per colpa dei footer del sito)
+    if re.search(r'caratteristiche del camper nuovo', testo) or re.search(r'\b(?:condizioni|condizione|stato)\s*[:\-]?\s*nuovo\b', testo) or 'da immatricolare' in testo:
+        is_nuovo = True
+        if km is None:
+            km = 0
+    elif re.search(r'caratteristiche del camper usato', testo) or re.search(r'\b(?:condizioni|condizione|stato)\s*[:\-]?\s*usato\b', testo):
+        is_nuovo = False
+        
+    # Annulla anno falso positivo (es. 1996) se il camper è esplicitamente nuovo
+    if is_nuovo and anno and anno < 2023:
+        anno = None
         
     # 3. TIPOLOGIA
     tipo_furgonato = bool(re.search(r'(?:\r?\n|\r|\s)(van|furgonat[oi]|camper puro)', testo))
@@ -86,7 +107,7 @@ def regex_extract_camper_data(raw_text, current_price, db_conn):
         cv_match_2 = re.search(r'(\d{3})\s*(?:cv|cavalli)', testo)
         if cv_match_2: potenza = int(cv_match_2.group(1))
         
-    # 7. PESO (Protezione da "Cilindrata 1996 Kg")
+    # 7. PESO 
     peso = 3500 
     match_peso = re.search(r'peso\s*(?:p\.?c\.?\s*)?[:]?\s*(\d{3,4})\s*kg', testo)
     if match_peso:
@@ -137,7 +158,7 @@ def regex_extract_camper_data(raw_text, current_price, db_conn):
         "prezzo": current_price,
         "anno": anno,
         "chilometri": km,
-        "nuovo": km == 0,
+        "nuovo": is_nuovo,
         "peso": peso,
         "tipo_furgonato": tipo_furgonato,
         "tipo_mansardato": tipo_mansardato,
@@ -262,22 +283,19 @@ def run_scraper(db_conn, config, ollama_config=None):
                 
             soup = BeautifulSoup(response.text, 'html.parser')
             
-            # 1. Trova Paginazione
             for page_link in soup.find_all('a', href=True):
-                href = page_link['href'].split('#')[0] # Rimuove le ancore
+                href = page_link['href'].split('#')[0] 
                 if ('/page/' in href or '?paged=' in href) and BASE_URL in href and href not in scanned_targets:
                     if href not in urls_to_scan:
                         urls_to_scan.append(href)
 
-            # 2. Trova Link Camper
             links_veicoli = soup.find_all('a', href=True)
             for link in links_veicoli:
                 if count_elaborati >= MAX_ANNUNCI:
                     break
                     
-                url_parziale = link['href'].split('#')[0] # Rimuove le ancore
+                url_parziale = link['href'].split('#')[0] 
                 
-                # Blocca preventivamente link multimediali espliciti
                 if re.search(r'\.(webp|jpg|jpeg|png|gif|pdf|zip|rar)$', url_parziale, re.IGNORECASE):
                     continue
                     
@@ -297,15 +315,12 @@ def run_scraper(db_conn, config, ollama_config=None):
                 is_product = ('/prodotto/' in path_lower or '/veicolo/' in path_lower or '/camper/' in path_lower or '-it-' in path_lower)
                 
                 if is_product:
-                    # Rimuove i query param (?utm_source=...) per deduplicare gli URL
                     url_completo = url_completo.split('?')[0]
-                    # REQUISITO: Le pagine camper terminano SEMPRE con /
                     if not url_completo.endswith('/'):
                         continue
                 elif len(url_completo.split('/')[-1]) < 15:
                     continue
                 
-                # Check Deduplicazione rinforzato
                 if url_completo in processed_urls or url_completo in scanned_targets:
                     continue
                 processed_urls.add(url_completo)
@@ -313,17 +328,15 @@ def run_scraper(db_conn, config, ollama_config=None):
                 print(f"    [{SITE_NAME}] Check URL: {url_completo}")
                 
                 try:
-                    time.sleep(1.0) # Abbassato leggermente avendo ora filtri più severi
+                    time.sleep(1.0) 
                     det_resp = fetch_url_with_retry(session, url_completo, headers=headers)
                     if det_resp.status_code == 404:
                         continue
                         
                     det_soup = BeautifulSoup(det_resp.text, 'html.parser')
                     
-                    # LOGICA "NESTED LINKS" con filtri applicati
                     for inner_link in det_soup.find_all('a', href=True):
                         inner_href = inner_link['href'].split('?')[0].split('#')[0]
-                        
                         if inner_href.startswith('/'):
                             inner_href = f"{BASE_URL.rstrip('/')}{inner_href}"
                             
@@ -332,7 +345,6 @@ def run_scraper(db_conn, config, ollama_config=None):
                                 if inner_href not in processed_urls and inner_href not in urls_to_scan and inner_href not in scanned_targets:
                                     urls_to_scan.append(inner_href)
                     
-                    # Pulizia DOM
                     for hidden in det_soup(["script", "style", "nav", "footer", "header"]):
                         hidden.decompose()
                     for menu in det_soup.find_all(['div', 'ul'], class_=re.compile(r'menu|nav|footer|header|sidebar|widget', re.I)):
@@ -343,7 +355,6 @@ def run_scraper(db_conn, config, ollama_config=None):
                     testo_dettaglio = clean_text_preserve_lists(det_soup.get_text(separator="\n"))
                     testo_dettaglio_lower = testo_dettaglio.lower()
                     
-                    # REQUISITO: Check parola chiave obbligatoria "dotazioni"
                     if 'dotazioni' not in testo_dettaglio_lower:
                         print("      [!] Saltato: Non contiene la parola chiave 'dotazioni'. Pagina non di dettaglio.")
                         continue
@@ -361,21 +372,38 @@ def run_scraper(db_conn, config, ollama_config=None):
                     
                     print(f"    [{SITE_NAME}] >>> Avvio estrazione dati per: {url_completo}")
                     
+                    # LOGICA IMMAGINI (Totalmente rivista e potenziata)
                     img_url = None
-                    og_image = det_soup.find('meta', property='og:image')
-                    if og_image and og_image.get('content'):
-                        img_url = og_image['content']
                     
+                    # 1. Cerca Meta tag di condivisione (estremamente affidabili se presenti)
+                    for meta in det_soup.find_all(['meta', 'link']):
+                        if meta.get('property') in ['og:image', 'og:image:url'] or meta.get('name') == 'twitter:image':
+                            img_url = meta.get('content')
+                            break
+                        if meta.get('rel') == ['image_src']:
+                            img_url = meta.get('href')
+                            break
+                    
+                    # 2. Fallback su tag img generici scandagliando attributi "lazy" (risolve il problema delle immagini mancanti)
                     if not img_url:
-                        img_tags = det_soup.find_all('img', class_=re.compile(r'wp-post-image|woocommerce-main-image|attachment-shop_single'))
+                        img_tags = det_soup.find_all('img', class_=re.compile(r'wp-post-image|woocommerce-main-image|attachment-shop_single|gallery|slider|main|product', re.I))
                         if not img_tags:
                             img_tags = det_soup.find_all('img')
                             
                         for img in img_tags:
-                            src = img.get('src') or img.get('data-src') or img.get('data-large_image')
-                            if src and ('upload' in src.lower() or 'camper' in src.lower() or 'prodotto' in src.lower()):
-                                img_url = src if src.startswith('http') else f"{BASE_URL}/{src.lstrip('/')}"
-                                break
+                            # Controlla attributi tipici di lazy loading o slider
+                            src = img.get('src') or img.get('data-src') or img.get('data-lazy-src') or img.get('data-large_image')
+                            if not src and img.get('srcset'):
+                                src = img.get('srcset').split(',')[0].split(' ')[0]
+                                
+                            if src:
+                                src_lower = src.lower()
+                                # Filtro anti-rumore: evita loghi, icone, sfondi o placeholder
+                                selettori_esclusi = ['logo', 'icon', 'spinner', 'avatar', 'blank', 'placeholder', 'svg']
+                                if not any(x in src_lower for x in selettori_esclusi):
+                                    if '.jpg' in src_lower or '.webp' in src_lower or '.jpeg' in src_lower or '.png' in src_lower:
+                                        img_url = src if src.startswith('http') else f"{BASE_URL}/{src.lstrip('/')}"
+                                        break
                     
                     testo_finale = f"--- DETTAGLI ---\n{testo_dettaglio}"
                     if len(testo_finale) > 3000:
