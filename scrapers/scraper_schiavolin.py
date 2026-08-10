@@ -213,16 +213,38 @@ def run_scraper(db_conn, config, ollama_config=None):
     ]
     DISTANCE_FROM_SEREGNO = 60 
     
+    # Aggiunti header completi per mimetizzarsi come browser reale (Chrome)
     headers = {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
+        'Accept-Language': 'it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7',
+        'Accept-Encoding': 'gzip, deflate, br',
+        'Connection': 'keep-alive',
+        'Upgrade-Insecure-Requests': '1',
+        'Sec-Fetch-Dest': 'document',
+        'Sec-Fetch-Mode': 'navigate',
+        'Sec-Fetch-Site': 'none',
+        'Sec-Fetch-User': '?1',
+        'DNT': '1'
     }
     
-    # Configurazione Session con Retry automatici per tollerare rallentamenti/timeout del server
+    # Se continui a ricevere ConnectTimeoutError, decommenta le righe sotto per usare un Proxy 
+    # (è l'unica soluzione se l'IP del tuo server/computer è stato bloccato)
+    # PROXIES = {
+    #     'http': 'http://indirizzo_del_tuo_proxy:porta',
+    #     'https': 'http://indirizzo_del_tuo_proxy:porta'
+    # }
+    PROXIES = None
+    
+    # Configurazione Session con Retry automatici (inclusi gli errori 403 e 429 da firewall)
     session = requests.Session()
-    retries = Retry(total=5, backoff_factor=1, status_forcelist=[500, 502, 503, 504, 408])
+    retries = Retry(total=5, backoff_factor=2, status_forcelist=[403, 429, 500, 502, 503, 504, 408])
     session.mount('https://', HTTPAdapter(max_retries=retries))
     session.mount('http://', HTTPAdapter(max_retries=retries))
     session.headers.update(headers)
+    
+    if PROXIES:
+        session.proxies.update(PROXIES)
     
     try:
         processed_urls = set()
@@ -272,8 +294,8 @@ def run_scraper(db_conn, config, ollama_config=None):
                         break
                 
                 try:
-                    time.sleep(1) 
-                    # Timeout alzato a 20 secondi anche sui dettagli
+                    # Delay aumentato a 2 secondi per evitare rate limiting / blocchi IP
+                    time.sleep(2) 
                     det_resp = session.get(url_completo, timeout=20)
                     det_soup = BeautifulSoup(det_resp.text, 'html.parser')
                     
@@ -332,4 +354,3 @@ if __name__ == "__main__":
     # Aggiungiamo la directory superiore per poter importare scraper_utils e score_calculator se eseguiamo da /scrapers
     sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
     import score_calculator
-    import scraper_utils
