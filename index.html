@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CamperTracker AI - Dashboard</title>
+    <!-- 1. Icona Favicon replicata (van-shuttle in SVG, blu brand) -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 640 512'><path fill='%232563eb' d='M144 0a80 80 0 0 1 80 80V96h192V80a80 80 0 0 1 80-80h48a48 48 0 0 1 48 48v240a48 48 0 0 1-48 48H528v-16c0-44.2-35.8-80-80-80s-80 35.8-80 80v16H272v-16c0-44.2-35.8-80-80-80s-80 35.8-80 80v16H48a48 48 0 0 1-48-48V48A48 48 0 0 1 48 0h96zM192 416a48 48 0 1 0 -96 0 48 48 0 1 0 96 0zm352-48a48 48 0 1 0 0 96 48 48 0 1 0 0-96z'/></svg>">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.8.0/sql-wasm.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -93,9 +95,20 @@
                         <i class="fa-solid fa-search text-brand-500 mr-2"></i> Ricerca e Filtri Base
                     </div>
                     <div class="flex items-center gap-4 z-10">
-                        <button id="btn-favorites" onclick="toggleShowFavorites(event)" class="px-3 py-1.5 rounded-full border border-slate-200 text-slate-500 hover:text-amber-600 hover:bg-amber-50 text-sm font-bold flex items-center gap-1.5 transition-colors cursor-pointer bg-white">
-                            <i class="fa-regular fa-star"></i> Solo Preferiti
-                        </button>
+                        
+                        <!-- 5. Gestione Preferiti Cloud/Offline -->
+                        <div class="flex items-center bg-white rounded-full border border-slate-200 shadow-sm overflow-hidden">
+                            <button id="btn-favorites" onclick="toggleShowFavorites(event)" class="px-3 py-1.5 text-slate-500 hover:text-amber-600 hover:bg-amber-50 text-sm font-bold flex items-center gap-1.5 transition-colors cursor-pointer border-r border-slate-200">
+                                <i class="fa-regular fa-star"></i> Preferiti
+                            </button>
+                            <button onclick="exportFavorites(event)" class="px-2.5 py-1.5 text-slate-400 hover:text-brand-600 hover:bg-brand-50 transition-colors cursor-pointer border-r border-slate-200" title="Copia Preferiti negli Appunti">
+                                <i class="fa-solid fa-arrow-up-from-bracket"></i>
+                            </button>
+                            <button onclick="importFavorites(event)" class="px-2.5 py-1.5 text-slate-400 hover:text-brand-600 hover:bg-brand-50 transition-colors cursor-pointer" title="Incolla Preferiti">
+                                <i class="fa-solid fa-arrow-right-to-bracket"></i>
+                            </button>
+                        </div>
+
                         <div class="text-slate-600 font-medium text-sm">
                             Trovati <span id="results-count" class="font-bold text-brand-600">0</span> annunci
                         </div>
@@ -256,9 +269,9 @@
 
         // Filtri Avanzati State
         let searchMarcaText = "";
-        let searchAIText = ""; // Nuovo stato per la ricerca testuale IA
-        let filterBounds = {}; // Valori min e max calcolati dai dati reali
-        let currentFilterValues = {}; // Stato corrente degli slider
+        let searchAIText = ""; 
+        let filterBounds = {}; 
+        let currentFilterValues = {}; 
         let activeBooleans = new Set();
 
         // Configurazione campi numerici per slider
@@ -304,7 +317,6 @@
 
         async function loadDatabaseLive() {
             try {
-                // Scarica direttamente il file JSON generato dalla GitHub Action
                 const response = await fetch('dati_storici.json?t=' + new Date().getTime());
                 if (!response.ok) throw new Error("File dati_storici.json inaccessibile.");
                 
@@ -314,19 +326,15 @@
                 
                 const annunciObj = data.annunci || {};
                 
-                // Cicla tutti gli annunci presenti nel JSON
                 for (const [url, row] of Object.entries(annunciObj)) {
-                    // Ignora gli scartati se la dashboard deve nasconderli
                     if (row.status === 'SCARTATO') continue;
                     
                     let dt = row.dati_tecnici || {};
                     
-                    // Deduzione logica tipologia
                     let tipologiaDedotta = "Semintegrale";
                     if (dt.tipo_motorhome) tipologiaDedotta = "Motorhome";
                     else if (dt.tipo_mansardato) tipologiaDedotta = "Mansardato";
 
-                    // Composizione nome marca/modello
                     const marca_modello_str = `${row.marca || ''} ${row.modello || ''} ${row.allestimento || ''}`.trim() || "Sconosciuto";
 
                     parsedData.push({
@@ -336,7 +344,6 @@
                         sito: row.sito || "Web",
                         anno: dt.anno || "N/A",
                         tipologia: tipologiaDedotta,
-                        // Fix Nuovo/Usato: Se è esplicitamente nuovo o se ha 0 km (o non sono specificati/sono stati dedotti come 0) forziamo a "Nuovo"
                         stato: (dt.nuovo === true || dt.chilometri === 0) ? "Nuovo" : "Usato",
                         prezzo: row.prezzo_attuale || 0,
                         cambio: dt.cambio_automatico ? "Automatico" : "Manuale",
@@ -354,7 +361,6 @@
                 
                 currentData = parsedData;
 
-                // Estrai siti unici e popola i filtri
                 const sitesSet = new Set(parsedData.map(c => c.sito));
                 allSites = Array.from(sitesSet).sort();
                 activeSites = new Set(allSites);
@@ -429,7 +435,6 @@
                 `;
             }).join('');
             
-            // Aggiungo il nuovo campo di ricerca IA nello spazio vuoto della griglia sotto "Potenza"
             html += `
                 <div class="flex flex-col gap-2 col-span-1 sm:col-span-2 lg:col-span-3 xl:col-span-3">
                     <label class="text-xs font-semibold text-slate-600 flex items-center">
@@ -476,7 +481,6 @@
             applyFiltersAndSort();
         };
 
-        // Funzione per espandere/collassare i filtri base
         const toggleBasicFilters = () => {
             const content = document.getElementById('basic-filters-content');
             const chevron = document.getElementById('basic-filters-chevron');
@@ -490,7 +494,6 @@
             }
         };
         
-        // Funzione per espandere/collassare i filtri avanzati
         const toggleAdvancedFilters = () => {
             const content = document.getElementById('advanced-filters-content');
             const chevron = document.getElementById('advanced-filters-chevron');
@@ -575,9 +578,9 @@
             renderStatusFilters(); applyFiltersAndSort();
         };
 
-        // Preferiti Logica
+        // --- Gestione Preferiti ed Esportazione ---
         const toggleFavorite = (id, event) => {
-            event.stopPropagation();
+            if (event) event.stopPropagation();
             if(favorites.has(id)) {
                 favorites.delete(id);
             } else {
@@ -588,25 +591,60 @@
         };
 
         const toggleShowFavorites = (event) => {
-            if(event) event.stopPropagation();
+            if (event) event.stopPropagation();
             showOnlyFavorites = !showOnlyFavorites;
             
             const btn = document.getElementById('btn-favorites');
             if (showOnlyFavorites) {
-                btn.classList.remove('border-slate-200', 'text-slate-500', 'bg-white', 'hover:bg-amber-50');
-                btn.classList.add('bg-amber-100', 'border-amber-300', 'text-amber-700');
+                btn.classList.remove('text-slate-500', 'hover:bg-amber-50');
+                btn.classList.add('bg-amber-100', 'text-amber-700');
                 btn.querySelector('i').classList.replace('fa-regular', 'fa-solid');
             } else {
-                btn.classList.add('border-slate-200', 'text-slate-500', 'bg-white', 'hover:bg-amber-50');
-                btn.classList.remove('bg-amber-100', 'border-amber-300', 'text-amber-700');
+                btn.classList.add('text-slate-500', 'hover:bg-amber-50');
+                btn.classList.remove('bg-amber-100', 'text-amber-700');
                 btn.querySelector('i').classList.replace('fa-solid', 'fa-regular');
             }
             applyFiltersAndSort();
         };
 
-        // Confronto Logica
+        const exportFavorites = (event) => {
+            if (event) event.stopPropagation();
+            if (favorites.size === 0) {
+                alert("Nessun preferito salvato da esportare.");
+                return;
+            }
+            const favStr = JSON.stringify([...favorites]);
+            const base64 = btoa(favStr);
+            const exportCode = `CMPR-FAV:${base64}`;
+            navigator.clipboard.writeText(exportCode).then(() => {
+                alert("✅ Codice preferiti copiato negli appunti!\n\nPer usarlo su un altro browser o dispositivo, clicca il tasto 'Incolla Preferiti' ed inserisci il codice copiato.");
+            }).catch(err => {
+                prompt("Impossibile copiare in automatico. Copia questo codice:", exportCode);
+            });
+        };
+
+        const importFavorites = (event) => {
+            if (event) event.stopPropagation();
+            const input = prompt("Incolla qui il codice preferiti (es. CMPR-FAV:...):");
+            if (input && input.startsWith("CMPR-FAV:")) {
+                try {
+                    const base64 = input.replace("CMPR-FAV:", "");
+                    const favArray = JSON.parse(atob(base64));
+                    favorites = new Set(favArray);
+                    localStorage.setItem('camperTrackerFavorites', JSON.stringify([...favorites]));
+                    applyFiltersAndSort();
+                    alert("🎉 Preferiti importati con successo!");
+                } catch(e) {
+                    alert("❌ Codice non valido o corrotto.");
+                }
+            } else if (input) {
+                alert("❌ Formato del codice non riconosciuto.");
+            }
+        };
+
+        // --- Gestione Confronto ---
         const toggleCompare = (id, event) => {
-            event.stopPropagation();
+            if (event) event.stopPropagation();
             if(compareList.has(id)) {
                 compareList.delete(id);
             } else {
@@ -617,7 +655,7 @@
                 compareList.add(id);
             }
             updateCompareBar();
-            applyFiltersAndSort(); // Aggiorna i pulsanti sulle card
+            applyFiltersAndSort(); 
         };
 
         const clearCompare = () => {
@@ -642,24 +680,19 @@
         const applyFiltersAndSort = () => {
             let filteredData = currentData.filter(c => {
                 
-                // 0. Preferiti
                 if (showOnlyFavorites && !favorites.has(c.id)) return false;
 
-                // 1. Filtri Base (Incluso Sito)
                 if (!activeSites.has(c.sito)) return false;
                 if (!activeTypes.has(c.tipologia)) return false;
                 if (!activeStatuses.has(c.stato)) return false;
 
-                // 2. Ricerca Testo (Marca Modello)
                 if (searchMarcaText && !c.marca_modello.toLowerCase().includes(searchMarcaText)) return false;
 
-                // 3. Ricerca Testo (Accessori IA)
                 if (searchAIText) {
                     const riassunto = c.riassunto_ia ? c.riassunto_ia.toLowerCase() : "";
                     if (!riassunto.includes(searchAIText)) return false;
                 }
 
-                // 4. Sliders Numerici
                 let passSliders = numericFields.every(field => {
                     let val = field.isDt ? c.dettagli_tecnici[field.key] : c[field.key];
                     const isDefault = currentFilterValues[field.key] === (field.type === 'max' ? filterBounds[field.key].max : filterBounds[field.key].min);
@@ -679,7 +712,6 @@
                 });
                 if (!passSliders) return false;
 
-                // 5. Filtri Booleani Avanzati
                 let passBooleans = true;
                 for (let key of activeBooleans) {
                     let def = null;
@@ -732,10 +764,8 @@
                     <div class="relative h-48 w-full overflow-hidden bg-slate-100 border-b border-slate-100">
                         <img src="${imageSrc}" alt="${camper.marca_modello}" class="w-full h-full object-cover transition-transform duration-500 hover:scale-105" onerror="this.src='https://placehold.co/600x400/e2e8f0/64748b?text=Immagine+Non+Disponibile'">
                         
-                        <div class="absolute top-3 left-3 flex flex-col items-start gap-2">
-                            <button type="button" onclick="toggleFavorite(${camper.id}, event)" class="w-9 h-9 rounded-full bg-white/95 flex items-center justify-center shadow-md border border-white hover:scale-110 transition-transform z-10 focus:outline-none">
-                                <i class="${isFav ? 'fa-solid text-amber-400' : 'fa-regular text-slate-400'} fa-star text-lg"></i>
-                            </button>
+                        <!-- 4. Sito in alto a sinistra -->
+                        <div class="absolute top-3 left-3">
                             <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-white/90 text-slate-800 shadow-sm backdrop-blur-sm border border-white/20">
                                 <i class="fa-solid fa-globe mr-1.5 text-brand-600"></i> ${camper.sito}
                             </span>
@@ -779,7 +809,12 @@
                             <p class="text-[10px] uppercase font-bold text-slate-500 tracking-wider">Prezzo</p>
                             <p class="text-xl font-black text-brand-700">€ ${formatNumber(camper.prezzo)}</p>
                         </div>
+                        
+                        <!-- 4. Preferiti a sx della comparativa -->
                         <div class="flex items-center gap-2">
+                            <button type="button" onclick="toggleFavorite(${camper.id}, event)" class="inline-flex items-center justify-center w-10 h-10 rounded-lg transition-colors border shadow-sm focus:outline-none ${isFav ? 'bg-amber-50 text-amber-500 border-amber-200' : 'bg-white text-slate-400 border-slate-200 hover:bg-slate-100'}" title="${isFav ? 'Rimuovi dai preferiti' : 'Aggiungi ai preferiti'}">
+                                <i class="${isFav ? 'fa-solid' : 'fa-regular'} fa-star"></i>
+                            </button>
                             <button type="button" onclick="toggleCompare(${camper.id}, event)" class="inline-flex items-center justify-center w-10 h-10 rounded-lg transition-colors border shadow-sm focus:outline-none ${isComp ? 'bg-brand-100 text-brand-700 border-brand-200' : 'bg-white text-slate-500 border-slate-200 hover:bg-slate-100'}" title="${isComp ? 'Rimuovi dal confronto' : 'Aggiungi al confronto'}">
                                 <i class="fa-solid fa-code-compare"></i>
                             </button>
@@ -819,7 +854,34 @@
             return `<div class="flex items-center gap-2.5 text-sm ${textClass}">${icon} <span>${label}</span></div>`;
         };
 
-        // Generazione del layout modale di confronto
+        const generateSummaryHTML = (camper) => {
+            let summaryHTML = '';
+            if (camper.riassunto_ia && camper.riassunto_ia.trim() !== '') {
+                let lines = camper.riassunto_ia.split('\n');
+                let inList = false;
+                for (let line of lines) {
+                    let trimLine = line.trim();
+                    if (trimLine.startsWith('- ') || trimLine.startsWith('* ')) {
+                        if (!inList) {
+                            summaryHTML += '<ul class="list-disc pl-5 my-2 space-y-1 text-slate-700">\n';
+                            inList = true;
+                        }
+                        summaryHTML += `<li>${trimLine.substring(2)}</li>\n`;
+                    } else {
+                        if (inList) {
+                            summaryHTML += '</ul>\n';
+                            inList = false;
+                        }
+                    }
+                }
+                if (inList) summaryHTML += '</ul>\n';
+            } else {
+                summaryHTML = '<p class="text-sm text-slate-500 italic">Nessun riassunto IA.</p>';
+            }
+            return summaryHTML;
+        };
+
+        // 3. Nuova Modale Comparativa Espansa
         const openCompareModal = () => {
             const list = Array.from(compareList).map(id => currentData.find(c => c.id === id)).filter(Boolean);
             if(list.length === 0) return;
@@ -829,15 +891,15 @@
                     <h2 class="text-2xl font-black text-slate-800 flex items-center"><i class="fa-solid fa-code-compare mr-3 text-brand-600"></i> Confronto Camper</h2>
                     <button onclick="closeCompareModal()" class="text-slate-400 hover:text-slate-800 focus:outline-none transition-colors"><i class="fa-solid fa-xmark text-2xl"></i></button>
                 </div>
-                <div class="p-6 overflow-x-auto max-h-[70vh] modal-scrollbar">
+                <div class="p-6 overflow-x-auto max-h-[75vh] modal-scrollbar">
                     <table class="w-full text-sm text-left border-collapse">
                         <thead>
                             <tr>
                                 <th class="p-3 border-b-2 border-slate-200 text-slate-400 uppercase font-black text-xs tracking-wider w-1/4">Parametri</th>
                                 ${list.map(c => `
-                                <th class="p-3 border-b-2 border-slate-200 min-w-[250px] w-1/4 align-top">
+                                <th class="p-3 border-b-2 border-slate-200 min-w-[300px] w-1/4 align-top">
                                     <div class="relative h-32 w-full rounded-xl overflow-hidden mb-3 bg-slate-100 shadow-sm border border-slate-200">
-                                        <img src="${c.immagine_url || 'https://placehold.co/400x300'}" class="w-full h-full object-cover">
+                                        <img src="${c.immagine_url || 'https://placehold.co/400x300'}" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/400x300/e2e8f0/64748b?text=Immagine+Non+Disponibile'">
                                     </div>
                                     <div class="font-bold text-base text-slate-800 leading-tight mb-2 h-10 line-clamp-2">${c.marca_modello}</div>
                                     <span class="inline-flex items-center px-2 py-1 rounded bg-slate-100 text-slate-600 text-xs font-bold border border-slate-200"><i class="fa-solid fa-globe mr-1 text-brand-500"></i> ${c.sito}</span>
@@ -845,27 +907,80 @@
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-100">
-                            <tr class="hover:bg-slate-50"><td class="p-3 font-semibold text-slate-500">Prezzo</td>
+                            <!-- Prezzo & Score -->
+                            <tr class="hover:bg-slate-50"><td class="p-3 font-semibold text-slate-500"><i class="fa-solid fa-euro-sign mr-1"></i> Prezzo</td>
                                 ${list.map(c => `<td class="p-3 font-black text-xl text-brand-700">€ ${formatNumber(c.prezzo)}</td>`).join('')}</tr>
-                            <tr class="hover:bg-slate-50"><td class="p-3 font-semibold text-slate-500">Score IA</td>
+                            <tr class="hover:bg-slate-50"><td class="p-3 font-semibold text-slate-500"><i class="fa-solid fa-ranking-star mr-1"></i> Score IA</td>
                                 ${list.map(c => `<td class="p-3"><span class="${getScoreColor(c.punteggio)} px-2.5 py-1 rounded text-sm font-black border shadow-sm">${c.punteggio}</span></td>`).join('')}</tr>
-                            <tr class="hover:bg-slate-50"><td class="p-3 font-semibold text-slate-500">Stato</td>
+                            
+                            <!-- Parametri Base -->
+                            <tr class="hover:bg-slate-50"><td class="p-3 font-semibold text-slate-500"><i class="fa-solid fa-tag mr-1"></i> Stato</td>
                                 ${list.map(c => `<td class="p-3 font-medium text-slate-700">${c.stato}</td>`).join('')}</tr>
-                            <tr class="hover:bg-slate-50"><td class="p-3 font-semibold text-slate-500">Chilometri</td>
+                            <tr class="hover:bg-slate-50"><td class="p-3 font-semibold text-slate-500"><i class="fa-solid fa-gauge-high mr-1"></i> Chilometri</td>
                                 ${list.map(c => `<td class="p-3 font-medium text-slate-700">${c.chilometri === 0 ? 'Nuovo' : formatNumber(c.chilometri) + ' km'}</td>`).join('')}</tr>
-                            <tr class="hover:bg-slate-50"><td class="p-3 font-semibold text-slate-500">Anno</td>
+                            <tr class="hover:bg-slate-50"><td class="p-3 font-semibold text-slate-500"><i class="fa-regular fa-calendar mr-1"></i> Anno</td>
                                 ${list.map(c => `<td class="p-3 font-medium text-slate-700">${c.anno}</td>`).join('')}</tr>
-                            <tr class="hover:bg-slate-50"><td class="p-3 font-semibold text-slate-500">Tipologia</td>
+                            <tr class="hover:bg-slate-50"><td class="p-3 font-semibold text-slate-500"><i class="fa-solid fa-van-shuttle mr-1"></i> Tipologia</td>
                                 ${list.map(c => `<td class="p-3 font-medium text-slate-700">${c.tipologia}</td>`).join('')}</tr>
-                            <tr class="hover:bg-slate-50"><td class="p-3 font-semibold text-slate-500">Posti Letto</td>
+                            <tr class="hover:bg-slate-50"><td class="p-3 font-semibold text-slate-500"><i class="fa-solid fa-bed mr-1"></i> Posti Letto</td>
                                 ${list.map(c => `<td class="p-3 font-medium text-slate-700">${c.dettagli_tecnici.posti_letto || '?'}</td>`).join('')}</tr>
-                            <tr class="hover:bg-slate-50"><td class="p-3 font-semibold text-slate-500">Lunghezza</td>
+                            <tr class="hover:bg-slate-50"><td class="p-3 font-semibold text-slate-500"><i class="fa-solid fa-users mr-1"></i> Posti Omologati</td>
+                                ${list.map(c => `<td class="p-3 font-medium text-slate-700">${c.dettagli_tecnici.posti_omologati || '?'}</td>`).join('')}</tr>
+                            <tr class="hover:bg-slate-50"><td class="p-3 font-semibold text-slate-500"><i class="fa-solid fa-ruler-combined mr-1"></i> Lunghezza</td>
                                 ${list.map(c => `<td class="p-3 font-medium text-slate-700">${c.dettagli_tecnici.lunghezza ? c.dettagli_tecnici.lunghezza + 'm' : '?'}</td>`).join('')}</tr>
-                            <tr class="hover:bg-slate-50"><td class="p-3 font-semibold text-slate-500">Meccanica / Telaio</td>
-                                ${list.map(c => `<td class="p-3 font-medium text-slate-700">
-                                    ${c.dettagli_tecnici.cambio_automatico ? 'Automatico' : 'Manuale'}<br>
-                                    ${c.dettagli_tecnici.potenza ? c.dettagli_tecnici.potenza + ' CV' : ''}
+                            <tr class="hover:bg-slate-50"><td class="p-3 font-semibold text-slate-500"><i class="fa-solid fa-weight-hanging mr-1"></i> Peso</td>
+                                ${list.map(c => `<td class="p-3 font-medium text-slate-700">${c.dettagli_tecnici.peso ? c.dettagli_tecnici.peso + ' kg' : '?'}</td>`).join('')}</tr>
+                            <tr class="hover:bg-slate-50"><td class="p-3 font-semibold text-slate-500"><i class="fa-solid fa-bolt mr-1"></i> Potenza</td>
+                                ${list.map(c => `<td class="p-3 font-medium text-slate-700">${c.dettagli_tecnici.potenza ? c.dettagli_tecnici.potenza + ' CV' : '?'}</td>`).join('')}</tr>
+                            <tr class="hover:bg-slate-50"><td class="p-3 font-semibold text-slate-500"><i class="fa-solid fa-leaf mr-1"></i> Classe Emissioni</td>
+                                ${list.map(c => `<td class="p-3 font-medium">${c.dettagli_tecnici.emissioni_euro6 ? '<span class="text-green-600 font-bold"><i class="fa-solid fa-check mr-1"></i> Euro 6</span>' : '<span class="text-slate-400">N/A</span>'}</td>`).join('')}</tr>
+                            
+                            <!-- Parametri Estesi -->
+                            <tr class="bg-slate-100/50"><td colspan="${list.length + 1}" class="p-3 text-[11px] font-black text-slate-400 uppercase tracking-widest border-y border-slate-200">Meccanica & Telaio</td></tr>
+                            <tr class="hover:bg-slate-50"><td class="p-3 font-semibold text-slate-500">Dettagli</td>
+                                ${list.map(c => `<td class="p-3 align-top"><div class="space-y-2">
+                                    ${renderBoolItem('Cambio Auto', c.dettagli_tecnici.cambio_automatico)}
+                                    ${renderBoolItem('Telaio AL-KO', c.dettagli_tecnici.telaio_alko)}
+                                    ${renderBoolItem('Sospensioni Aria', c.dettagli_tecnici.sospensioni_aria)}
+                                    ${renderBoolItem('Autolivellanti', c.dettagli_tecnici.piedini_autolivellanti)}
+                                </div></td>`).join('')}</tr>
+
+                            <tr class="bg-slate-100/50"><td colspan="${list.length + 1}" class="p-3 text-[11px] font-black text-slate-400 uppercase tracking-widest border-y border-slate-200">Struttura & Letti</td></tr>
+                            <tr class="hover:bg-slate-50"><td class="p-3 font-semibold text-slate-500">Dettagli</td>
+                                ${list.map(c => `<td class="p-3 align-top"><div class="space-y-2">
+                                    ${renderBoolItem('Doppio Pavimento', c.dettagli_tecnici.doppio_pavimento)}
+                                    ${renderBoolItem('Predisp. Invernale', c.dettagli_tecnici.predisposizione_invernale)}
+                                    ${renderBoolItem('Letti Gemelli', c.dettagli_tecnici.letti_gemelli)}
+                                    ${renderBoolItem('Letto Nautico', c.dettagli_tecnici.letto_nautico)}
+                                    ${renderBoolItem('Letti Castello', c.dettagli_tecnici.letti_a_castello)}
+                                </div></td>`).join('')}</tr>
+
+                            <tr class="bg-slate-100/50"><td colspan="${list.length + 1}" class="p-3 text-[11px] font-black text-slate-400 uppercase tracking-widest border-y border-slate-200">Impianti & Energia</td></tr>
+                            <tr class="hover:bg-slate-50"><td class="p-3 font-semibold text-slate-500">Dettagli</td>
+                                ${list.map(c => `<td class="p-3 align-top"><div class="space-y-2">
+                                    ${renderBoolItem('Pannelli Solari', c.dettagli_tecnici.pannelli_solari)}
+                                    ${renderBoolItem('Batterie Litio', c.dettagli_tecnici.batterie_litio)}
+                                    ${renderBoolItem('Doppia Batteria', c.dettagli_tecnici.doppia_batteria)}
+                                    ${renderBoolItem('Climatizzatore', c.dettagli_tecnici.aria_condizionata)}
+                                    ${renderBoolItem('Risc. Gasolio', c.dettagli_tecnici.riscaldamento_gasolio || c.dettagli_tecnici.riscaldatore_gasolio)}
+                                    ${renderBoolItem('Risc. Alde', c.dettagli_tecnici.riscaldamento_alde)}
+                                </div></td>`).join('')}</tr>
+
+                            <!-- Accessori e Testo -->
+                            <tr class="bg-slate-100/50"><td colspan="${list.length + 1}" class="p-3 text-[11px] font-black text-slate-400 uppercase tracking-widest border-y border-slate-200">Testo & Accessori</td></tr>
+                            <tr class="hover:bg-slate-50"><td class="p-3 font-semibold text-slate-500"><i class="fa-solid fa-list mr-1 text-indigo-500"></i> Accessori IA</td>
+                                ${list.map(c => `<td class="p-3 align-top">
+                                    <div class="bg-white border border-slate-200 rounded-xl p-3 text-sm text-slate-700 leading-relaxed shadow-inner max-h-48 overflow-y-auto modal-scrollbar">
+                                        ${generateSummaryHTML(c)}
+                                    </div>
                                 </td>`).join('')}</tr>
+                            <tr class="hover:bg-slate-50"><td class="p-3 font-semibold text-slate-500"><i class="fa-solid fa-file-lines mr-1 text-slate-500"></i> Testo Originale</td>
+                                ${list.map(c => `<td class="p-3 align-top">
+                                    <div class="bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs text-slate-600 shadow-inner max-h-48 overflow-y-auto modal-scrollbar">
+                                        <div class="raw-text-box font-medium">${c.testo_originale || "N/A"}</div>
+                                    </div>
+                                </td>`).join('')}</tr>
+
                             <tr><td class="p-3 border-t border-slate-200"></td>
                                 ${list.map(c => `<td class="p-3 pt-5 border-t border-slate-200">
                                     <a href="${c.link}" target="_blank" class="block w-full text-center bg-slate-900 text-white rounded-lg py-3 font-bold hover:bg-slate-800 shadow-md transition-all">Apri Annuncio <i class="fa-solid fa-arrow-up-right-from-square ml-1 text-xs"></i></a>
@@ -910,33 +1025,7 @@
                 {l: 'Riscaldamento Alde', v: dt.riscaldamento_alde}
             ];
 
-            let summaryHTML = '';
-            if (camper.riassunto_ia && camper.riassunto_ia.trim() !== '') {
-                let lines = camper.riassunto_ia.split('\n');
-                let inList = false;
-
-                for (let line of lines) {
-                    let trimLine = line.trim();
-                    if (trimLine.startsWith('- ') || trimLine.startsWith('* ')) {
-                        if (!inList) {
-                            summaryHTML += '<ul class="list-disc pl-5 my-2 space-y-1 text-slate-700">\n';
-                            inList = true;
-                        }
-                        summaryHTML += `<li>${trimLine.substring(2)}</li>\n`;
-                    } else {
-                        if (inList) {
-                            summaryHTML += '</ul>\n';
-                            inList = false;
-                        }
-                    }
-                }
-
-                if (inList) {
-                    summaryHTML += '</ul>\n';
-                }
-            } else {
-                summaryHTML = '<p class="text-sm text-slate-500 italic">Nessun riassunto generato automaticamente.</p>';
-            }
+            const summaryHTML = generateSummaryHTML(camper);
 
             let priceHistoryHTML = '';
             if (camper.storico_prezzi && camper.storico_prezzi.length > 0) {
@@ -954,6 +1043,8 @@
             }
 
             const imageSrc = camper.immagine_url ? camper.immagine_url : "https://placehold.co/800x400/e2e8f0/64748b?text=Immagine+Non+Disponibile";
+            const isFav = favorites.has(camper.id);
+            const isComp = compareList.has(camper.id);
 
             modalContent.innerHTML = `
                 <div class="relative h-64 sm:h-80 w-full bg-slate-900 overflow-hidden shrink-0">
@@ -989,6 +1080,17 @@
                         <p class="text-3xl font-black text-brand-700 leading-none">€ ${formatNumber(camper.prezzo)}</p>
                     </div>
                     <div class="flex items-center gap-4 w-full sm:w-auto justify-between sm:justify-end">
+                        
+                        <!-- 2. Pulsanti Preferiti e Comparativa in modale -->
+                        <div class="flex gap-2 mr-2 border-r border-slate-200 pr-4">
+                            <button type="button" onclick="toggleFavorite(${camper.id}, event); openModal(${camper.id});" class="inline-flex items-center justify-center w-10 h-10 rounded-lg transition-colors border shadow-sm focus:outline-none ${isFav ? 'bg-amber-50 text-amber-500 border-amber-200' : 'bg-white text-slate-400 border-slate-200 hover:bg-slate-100'}" title="${isFav ? 'Rimuovi dai preferiti' : 'Aggiungi ai preferiti'}">
+                                <i class="${isFav ? 'fa-solid' : 'fa-regular'} fa-star"></i>
+                            </button>
+                            <button type="button" onclick="toggleCompare(${camper.id}, event); openModal(${camper.id});" class="inline-flex items-center justify-center w-10 h-10 rounded-lg transition-colors border shadow-sm focus:outline-none ${isComp ? 'bg-brand-100 text-brand-700 border-brand-200' : 'bg-white text-slate-500 border-slate-200 hover:bg-slate-100'}" title="${isComp ? 'Rimuovi dal confronto' : 'Aggiungi al confronto'}">
+                                <i class="fa-solid fa-code-compare"></i>
+                            </button>
+                        </div>
+
                         <div class="text-right flex flex-col items-center sm:items-end">
                             <p class="text-[10px] uppercase font-bold text-slate-500 tracking-wider mb-0.5">Scoring Finale</p>
                             <div class="inline-flex items-center justify-center px-4 py-1.5 rounded-lg ${getScoreColor(camper.punteggio)} font-black border text-lg shadow-inner">
