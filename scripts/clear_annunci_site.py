@@ -30,8 +30,8 @@ def clear_dati_sito(sito):
     # Se utilizzi l'URL come chiave o nomi diversi per le colonne, modificali di conseguenza qui sotto.
     cursor.execute("""
         DELETE FROM storico_prezzi 
-        WHERE id_annuncio IN (
-            SELECT id FROM annunci WHERE sito = ?
+        WHERE url_annuncio IN (
+            SELECT url FROM annunci WHERE sito = ?
         )
     """, (sito,))
     
