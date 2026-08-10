@@ -61,11 +61,11 @@
         }
     </style>
 </head>
-<body class="text-slate-800 antialiased">
+<body class="text-slate-800 antialiased pb-20">
     <header class="bg-white shadow-sm sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
             <div class="flex items-center gap-3">
-                <i class="fa-solid fa-caravan text-brand-600 text-3xl"></i>
+                <i class="fa-solid fa-van-shuttle text-brand-600 text-3xl"></i>
                 <h1 class="text-2xl font-bold tracking-tight text-slate-900">CamperTracker AI</h1>
             </div>
             <div class="text-sm text-slate-500 font-medium hidden sm:block">
@@ -87,17 +87,23 @@
             <!-- Controls Bar Aggiornata (Collassabile) -->
             <div class="bg-white rounded-xl shadow-sm mb-4 border border-slate-100 overflow-hidden">
                 
-                <button onclick="toggleBasicFilters()" class="w-full px-5 py-4 flex justify-between items-center bg-white hover:bg-slate-50 transition-colors focus:outline-none cursor-pointer">
-                    <div class="text-sm font-bold text-slate-800 flex items-center">
+                <div class="w-full px-5 py-4 flex justify-between items-center bg-white border-b border-slate-50 relative">
+                    <button onclick="toggleBasicFilters()" class="flex-grow flex items-center bg-transparent focus:outline-none cursor-pointer text-left h-full absolute inset-0 z-0"></button>
+                    <div class="text-sm font-bold text-slate-800 flex items-center z-10 pointer-events-none">
                         <i class="fa-solid fa-search text-brand-500 mr-2"></i> Ricerca e Filtri Base
                     </div>
-                    <div class="flex items-center gap-4">
+                    <div class="flex items-center gap-4 z-10">
+                        <button id="btn-favorites" onclick="toggleShowFavorites(event)" class="px-3 py-1.5 rounded-full border border-slate-200 text-slate-500 hover:text-amber-600 hover:bg-amber-50 text-sm font-bold flex items-center gap-1.5 transition-colors cursor-pointer bg-white">
+                            <i class="fa-regular fa-star"></i> Solo Preferiti
+                        </button>
                         <div class="text-slate-600 font-medium text-sm">
                             Trovati <span id="results-count" class="font-bold text-brand-600">0</span> annunci
                         </div>
-                        <i id="basic-filters-chevron" class="fa-solid fa-chevron-up text-slate-400 transition-transform duration-300"></i>
+                        <button onclick="toggleBasicFilters()" class="p-2 text-slate-400 focus:outline-none cursor-pointer">
+                            <i id="basic-filters-chevron" class="fa-solid fa-chevron-up transition-transform duration-300"></i>
+                        </button>
                     </div>
-                </button>
+                </div>
 
                 <div id="basic-filters-content" class="px-5 pb-5 pt-2 block border-t border-slate-50">
                     <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 mt-2">
@@ -201,8 +207,42 @@
         </div>
     </div>
 
+    <!-- Modal per Confronto -->
+    <div id="compare-modal" class="fixed inset-0 z-[100] hidden">
+        <div class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm transition-opacity" onclick="closeCompareModal()"></div>
+        <div class="fixed inset-0 z-10 overflow-y-auto">
+            <div class="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
+                <div class="relative transform overflow-hidden rounded-2xl bg-white text-left shadow-2xl transition-all sm:my-8 w-full max-w-6xl border border-slate-200" onclick="event.stopPropagation()">
+                    <div id="compare-modal-content" class="flex flex-col w-full bg-white rounded-2xl">
+                        <!-- Generato da JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating Action Bar per Confronto -->
+    <div id="compare-bar" class="fixed bottom-0 left-0 w-full bg-slate-900/95 backdrop-blur-md text-white px-6 py-4 hidden justify-between items-center z-[90] shadow-[0_-10px_20px_rgba(0,0,0,0.2)] border-t border-slate-700">
+        <div class="flex items-center gap-3">
+            <i class="fa-solid fa-code-compare text-brand-400 text-xl"></i>
+            <div>
+                <p class="font-bold text-sm">Confronto Camper</p>
+                <p class="text-xs text-slate-400">Selezionati: <span id="compare-count" class="text-white font-black">0</span> / 3</p>
+            </div>
+        </div>
+        <div class="flex items-center gap-4">
+            <button onclick="clearCompare()" class="text-sm text-slate-300 hover:text-white transition-colors cursor-pointer">Svuota lista</button>
+            <button onclick="openCompareModal()" class="bg-brand-600 hover:bg-brand-500 text-white px-6 py-2 rounded-lg font-bold shadow-sm transition-colors cursor-pointer">Apri Confronto</button>
+        </div>
+    </div>
+
     <script>
         let currentData = [];
+        
+        // Preferiti e Confronto
+        let favorites = new Set(JSON.parse(localStorage.getItem('camperTrackerFavorites') || '[]'));
+        let showOnlyFavorites = false;
+        let compareList = new Set();
         
         // Filtri Base
         const allTypes = ["Motorhome", "Mansardato", "Semintegrale"];
@@ -296,7 +336,8 @@
                         sito: row.sito || "Web",
                         anno: dt.anno || "N/A",
                         tipologia: tipologiaDedotta,
-                        stato: dt.nuovo ? "Nuovo" : "Usato",
+                        // Fix Nuovo/Usato: Se è esplicitamente nuovo o se ha 0 km (o non sono specificati/sono stati dedotti come 0) forziamo a "Nuovo"
+                        stato: (dt.nuovo === true || dt.chilometri === 0) ? "Nuovo" : "Usato",
                         prezzo: row.prezzo_attuale || 0,
                         cambio: dt.cambio_automatico ? "Automatico" : "Manuale",
                         chilometri: dt.chilometri || 0,
@@ -534,9 +575,76 @@
             renderStatusFilters(); applyFiltersAndSort();
         };
 
+        // Preferiti Logica
+        const toggleFavorite = (id, event) => {
+            event.stopPropagation();
+            if(favorites.has(id)) {
+                favorites.delete(id);
+            } else {
+                favorites.add(id);
+            }
+            localStorage.setItem('camperTrackerFavorites', JSON.stringify([...favorites]));
+            applyFiltersAndSort();
+        };
+
+        const toggleShowFavorites = (event) => {
+            if(event) event.stopPropagation();
+            showOnlyFavorites = !showOnlyFavorites;
+            
+            const btn = document.getElementById('btn-favorites');
+            if (showOnlyFavorites) {
+                btn.classList.remove('border-slate-200', 'text-slate-500', 'bg-white', 'hover:bg-amber-50');
+                btn.classList.add('bg-amber-100', 'border-amber-300', 'text-amber-700');
+                btn.querySelector('i').classList.replace('fa-regular', 'fa-solid');
+            } else {
+                btn.classList.add('border-slate-200', 'text-slate-500', 'bg-white', 'hover:bg-amber-50');
+                btn.classList.remove('bg-amber-100', 'border-amber-300', 'text-amber-700');
+                btn.querySelector('i').classList.replace('fa-solid', 'fa-regular');
+            }
+            applyFiltersAndSort();
+        };
+
+        // Confronto Logica
+        const toggleCompare = (id, event) => {
+            event.stopPropagation();
+            if(compareList.has(id)) {
+                compareList.delete(id);
+            } else {
+                if(compareList.size >= 3) {
+                    alert("Puoi confrontare al massimo 3 camper contemporaneamente.");
+                    return;
+                }
+                compareList.add(id);
+            }
+            updateCompareBar();
+            applyFiltersAndSort(); // Aggiorna i pulsanti sulle card
+        };
+
+        const clearCompare = () => {
+            compareList.clear();
+            updateCompareBar();
+            applyFiltersAndSort();
+        };
+
+        const updateCompareBar = () => {
+            const bar = document.getElementById('compare-bar');
+            const count = document.getElementById('compare-count');
+            count.innerText = compareList.size;
+            if(compareList.size > 0) {
+                bar.classList.remove('hidden');
+                bar.classList.add('flex');
+            } else {
+                bar.classList.add('hidden');
+                bar.classList.remove('flex');
+            }
+        };
+
         const applyFiltersAndSort = () => {
             let filteredData = currentData.filter(c => {
                 
+                // 0. Preferiti
+                if (showOnlyFavorites && !favorites.has(c.id)) return false;
+
                 // 1. Filtri Base (Incluso Sito)
                 if (!activeSites.has(c.sito)) return false;
                 if (!activeTypes.has(c.tipologia)) return false;
@@ -611,6 +719,9 @@
             const scoreClasses = getScoreColor(camper.punteggio);
             const imageSrc = camper.immagine_url ? camper.immagine_url : "https://placehold.co/600x400/e2e8f0/64748b?text=Immagine+Non+Disponibile";
             
+            const isFav = favorites.has(camper.id);
+            const isComp = compareList.has(camper.id);
+            
             const lunghezzaBadge = `<div class="absolute bottom-3 left-3 flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white/95 text-slate-700 text-xs font-bold shadow-md border border-slate-200 backdrop-blur-sm"><i class="fa-solid fa-ruler-combined text-amber-500"></i> ${camper.dettagli_tecnici.lunghezza ? camper.dettagli_tecnici.lunghezza + 'm' : '?'}</div>`;
             const euro6Badge = camper.dettagli_tecnici.emissioni_euro6 
                 ? `<div class="absolute bottom-3 right-3 flex items-center gap-1 px-2.5 py-1 rounded-lg bg-green-100/95 text-green-700 text-xs font-bold shadow-md border border-green-200 backdrop-blur-sm"><i class="fa-solid fa-leaf"></i> Euro 6</div>` 
@@ -620,11 +731,16 @@
                 <div onclick="openModal(${camper.id})" class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden card-hover flex flex-col h-full cursor-pointer relative">
                     <div class="relative h-48 w-full overflow-hidden bg-slate-100 border-b border-slate-100">
                         <img src="${imageSrc}" alt="${camper.marca_modello}" class="w-full h-full object-cover transition-transform duration-500 hover:scale-105" onerror="this.src='https://placehold.co/600x400/e2e8f0/64748b?text=Immagine+Non+Disponibile'">
-                        <div class="absolute top-3 left-3">
+                        
+                        <div class="absolute top-3 left-3 flex flex-col items-start gap-2">
+                            <button type="button" onclick="toggleFavorite(${camper.id}, event)" class="w-9 h-9 rounded-full bg-white/95 flex items-center justify-center shadow-md border border-white hover:scale-110 transition-transform z-10 focus:outline-none">
+                                <i class="${isFav ? 'fa-solid text-amber-400' : 'fa-regular text-slate-400'} fa-star text-lg"></i>
+                            </button>
                             <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-white/90 text-slate-800 shadow-sm backdrop-blur-sm border border-white/20">
-                                <i class="fa-solid fa-tag mr-1 text-brand-600"></i> ${camper.sito}
+                                <i class="fa-solid fa-globe mr-1.5 text-brand-600"></i> ${camper.sito}
                             </span>
                         </div>
+                        
                         ${lunghezzaBadge}
                         ${euro6Badge}
                         <div class="absolute top-3 right-3 flex flex-col items-center justify-center p-1.5 rounded-lg border bg-white/95 shadow-md ${scoreClasses} min-w-[60px] backdrop-blur-sm">
@@ -644,7 +760,7 @@
                                 <div><p class="text-[10px] uppercase font-bold text-slate-400">Anno</p><p class="font-semibold text-sm">${camper.anno}</p></div>
                             </div>
                             <div class="flex items-center gap-2">
-                                <div class="w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center text-slate-400 border border-slate-100"><i class="fa-solid fa-truck-monster"></i></div>
+                                <div class="w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center text-slate-400 border border-slate-100"><i class="fa-solid fa-van-shuttle"></i></div>
                                 <div><p class="text-[10px] uppercase font-bold text-slate-400">Tipologia</p><p class="font-semibold text-sm">${camper.tipologia}</p></div>
                             </div>
                             <div class="flex items-center gap-2">
@@ -663,9 +779,14 @@
                             <p class="text-[10px] uppercase font-bold text-slate-500 tracking-wider">Prezzo</p>
                             <p class="text-xl font-black text-brand-700">€ ${formatNumber(camper.prezzo)}</p>
                         </div>
-                        <button class="inline-flex items-center justify-center px-4 py-2 text-sm font-bold text-white bg-slate-800 hover:bg-slate-700 rounded-lg transition-colors shadow-sm">
-                            Apri <i class="fa-solid fa-chevron-right ml-2 text-xs"></i>
-                        </button>
+                        <div class="flex items-center gap-2">
+                            <button type="button" onclick="toggleCompare(${camper.id}, event)" class="inline-flex items-center justify-center w-10 h-10 rounded-lg transition-colors border shadow-sm focus:outline-none ${isComp ? 'bg-brand-100 text-brand-700 border-brand-200' : 'bg-white text-slate-500 border-slate-200 hover:bg-slate-100'}" title="${isComp ? 'Rimuovi dal confronto' : 'Aggiungi al confronto'}">
+                                <i class="fa-solid fa-code-compare"></i>
+                            </button>
+                            <button type="button" class="inline-flex items-center justify-center px-4 py-2 h-10 text-sm font-bold text-white bg-slate-800 hover:bg-slate-700 rounded-lg transition-colors shadow-sm focus:outline-none">
+                                Apri <i class="fa-solid fa-chevron-right ml-2 text-xs"></i>
+                            </button>
+                        </div>
                     </div>
                 </div>
             `;
@@ -674,7 +795,7 @@
         const renderGrid = (data) => {
             const grid = document.getElementById('camper-grid');
             if (data.length === 0) {
-                grid.innerHTML = '<div class="col-span-full text-center py-16 bg-white rounded-2xl border border-dashed border-slate-300 text-slate-500"><i class="fa-solid fa-caravan text-5xl mb-4 text-slate-300"></i><h3 class="text-lg font-bold text-slate-700 mb-1">Nessun camper trovato</h3><p>Prova a modificare i filtri per vedere più risultati.</p></div>';
+                grid.innerHTML = '<div class="col-span-full text-center py-16 bg-white rounded-2xl border border-dashed border-slate-300 text-slate-500"><i class="fa-solid fa-van-shuttle text-5xl mb-4 text-slate-300"></i><h3 class="text-lg font-bold text-slate-700 mb-1">Nessun camper trovato</h3><p>Prova a modificare i filtri per vedere più risultati.</p></div>';
             } else {
                 grid.innerHTML = data.map(createCardHTML).join('');
             }
@@ -686,11 +807,76 @@
             document.body.style.overflow = 'auto';
         };
 
+        const closeCompareModal = () => {
+            document.getElementById('compare-modal').classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        };
+
         const renderBoolItem = (label, value) => {
             const isTrue = value === true;
             const icon = isTrue ? '<i class="fa-solid fa-circle-check text-green-500 text-lg"></i>' : '<i class="fa-solid fa-circle-xmark text-red-400 text-lg opacity-40"></i>';
             const textClass = isTrue ? 'text-slate-800 font-semibold' : 'text-slate-400 line-through opacity-70';
             return `<div class="flex items-center gap-2.5 text-sm ${textClass}">${icon} <span>${label}</span></div>`;
+        };
+
+        // Generazione del layout modale di confronto
+        const openCompareModal = () => {
+            const list = Array.from(compareList).map(id => currentData.find(c => c.id === id)).filter(Boolean);
+            if(list.length === 0) return;
+
+            let html = `
+                <div class="p-6 bg-slate-50 border-b border-slate-200 rounded-t-2xl flex justify-between items-center sticky top-0 z-20 shadow-sm">
+                    <h2 class="text-2xl font-black text-slate-800 flex items-center"><i class="fa-solid fa-code-compare mr-3 text-brand-600"></i> Confronto Camper</h2>
+                    <button onclick="closeCompareModal()" class="text-slate-400 hover:text-slate-800 focus:outline-none transition-colors"><i class="fa-solid fa-xmark text-2xl"></i></button>
+                </div>
+                <div class="p-6 overflow-x-auto max-h-[70vh] modal-scrollbar">
+                    <table class="w-full text-sm text-left border-collapse">
+                        <thead>
+                            <tr>
+                                <th class="p-3 border-b-2 border-slate-200 text-slate-400 uppercase font-black text-xs tracking-wider w-1/4">Parametri</th>
+                                ${list.map(c => `
+                                <th class="p-3 border-b-2 border-slate-200 min-w-[250px] w-1/4 align-top">
+                                    <div class="relative h-32 w-full rounded-xl overflow-hidden mb-3 bg-slate-100 shadow-sm border border-slate-200">
+                                        <img src="${c.immagine_url || 'https://placehold.co/400x300'}" class="w-full h-full object-cover">
+                                    </div>
+                                    <div class="font-bold text-base text-slate-800 leading-tight mb-2 h-10 line-clamp-2">${c.marca_modello}</div>
+                                    <span class="inline-flex items-center px-2 py-1 rounded bg-slate-100 text-slate-600 text-xs font-bold border border-slate-200"><i class="fa-solid fa-globe mr-1 text-brand-500"></i> ${c.sito}</span>
+                                </th>`).join('')}
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100">
+                            <tr class="hover:bg-slate-50"><td class="p-3 font-semibold text-slate-500">Prezzo</td>
+                                ${list.map(c => `<td class="p-3 font-black text-xl text-brand-700">€ ${formatNumber(c.prezzo)}</td>`).join('')}</tr>
+                            <tr class="hover:bg-slate-50"><td class="p-3 font-semibold text-slate-500">Score IA</td>
+                                ${list.map(c => `<td class="p-3"><span class="${getScoreColor(c.punteggio)} px-2.5 py-1 rounded text-sm font-black border shadow-sm">${c.punteggio}</span></td>`).join('')}</tr>
+                            <tr class="hover:bg-slate-50"><td class="p-3 font-semibold text-slate-500">Stato</td>
+                                ${list.map(c => `<td class="p-3 font-medium text-slate-700">${c.stato}</td>`).join('')}</tr>
+                            <tr class="hover:bg-slate-50"><td class="p-3 font-semibold text-slate-500">Chilometri</td>
+                                ${list.map(c => `<td class="p-3 font-medium text-slate-700">${c.chilometri === 0 ? 'Nuovo' : formatNumber(c.chilometri) + ' km'}</td>`).join('')}</tr>
+                            <tr class="hover:bg-slate-50"><td class="p-3 font-semibold text-slate-500">Anno</td>
+                                ${list.map(c => `<td class="p-3 font-medium text-slate-700">${c.anno}</td>`).join('')}</tr>
+                            <tr class="hover:bg-slate-50"><td class="p-3 font-semibold text-slate-500">Tipologia</td>
+                                ${list.map(c => `<td class="p-3 font-medium text-slate-700">${c.tipologia}</td>`).join('')}</tr>
+                            <tr class="hover:bg-slate-50"><td class="p-3 font-semibold text-slate-500">Posti Letto</td>
+                                ${list.map(c => `<td class="p-3 font-medium text-slate-700">${c.dettagli_tecnici.posti_letto || '?'}</td>`).join('')}</tr>
+                            <tr class="hover:bg-slate-50"><td class="p-3 font-semibold text-slate-500">Lunghezza</td>
+                                ${list.map(c => `<td class="p-3 font-medium text-slate-700">${c.dettagli_tecnici.lunghezza ? c.dettagli_tecnici.lunghezza + 'm' : '?'}</td>`).join('')}</tr>
+                            <tr class="hover:bg-slate-50"><td class="p-3 font-semibold text-slate-500">Meccanica / Telaio</td>
+                                ${list.map(c => `<td class="p-3 font-medium text-slate-700">
+                                    ${c.dettagli_tecnici.cambio_automatico ? 'Automatico' : 'Manuale'}<br>
+                                    ${c.dettagli_tecnici.potenza ? c.dettagli_tecnici.potenza + ' CV' : ''}
+                                </td>`).join('')}</tr>
+                            <tr><td class="p-3 border-t border-slate-200"></td>
+                                ${list.map(c => `<td class="p-3 pt-5 border-t border-slate-200">
+                                    <a href="${c.link}" target="_blank" class="block w-full text-center bg-slate-900 text-white rounded-lg py-3 font-bold hover:bg-slate-800 shadow-md transition-all">Apri Annuncio <i class="fa-solid fa-arrow-up-right-from-square ml-1 text-xs"></i></a>
+                                </td>`).join('')}</tr>
+                        </tbody>
+                    </table>
+                </div>
+            `;
+            document.getElementById('compare-modal-content').innerHTML = html;
+            document.getElementById('compare-modal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
         };
 
         const openModal = (id) => {
@@ -779,8 +965,8 @@
 
                     <div class="absolute bottom-0 left-0 w-full p-6 bg-gradient-to-t from-black/95 via-black/70 to-transparent">
                         <div class="flex items-center gap-3 mb-2">
-                            <span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-bold bg-brand-500 text-white shadow-sm"><i class="fa-solid fa-tag mr-1.5"></i>${camper.sito}</span>
-                            <span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-bold bg-white text-slate-800"><i class="fa-solid fa-truck-monster mr-1.5"></i>${camper.tipologia}</span>
+                            <span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-bold bg-brand-500 text-white shadow-sm"><i class="fa-solid fa-globe mr-1.5"></i>${camper.sito}</span>
+                            <span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-bold bg-white text-slate-800"><i class="fa-solid fa-van-shuttle mr-1.5"></i>${camper.tipologia}</span>
                         </div>
                         <h3 class="text-2xl sm:text-4xl font-black leading-tight text-white shadow-sm mb-3">${camper.marca_modello}</h3>
                         
@@ -868,7 +1054,10 @@
         };
 
         document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') closeModal();
+            if (e.key === 'Escape') {
+                closeModal();
+                closeCompareModal();
+            }
         });
 
         document.addEventListener('DOMContentLoaded', loadDatabaseLive);
