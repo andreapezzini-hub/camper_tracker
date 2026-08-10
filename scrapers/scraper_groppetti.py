@@ -19,26 +19,40 @@ def regex_extract_camper_data(raw_text, current_price, db_conn):
     km = int(km_match.group(1).replace('.', '')) if km_match else None
     if km is None and ('nuovo' in testo or 'da immatricolare' in testo): km = 0
         
-    tipo_furgonato = bool(re.search(r'(?:\r?\n|\r|\s)(van|furgonat[oi]|camper puro)', testo))
-    tipo_mansardato = bool(re.search(r'\bmansardat[oi]\b', testo))
     tipo_motorhome = bool(re.search(r'\bmotorhome\b|\bintegrale\b', testo))
-    tipo_semintegrale = bool(re.search(r'\bsemi[\s-]?integral[ei]\b|\bprofilat[oi]\b', testo))
+    tipo_mansardato = bool(re.search(r'\bmansardat[oi]\b', testo))
+    tipo_furgonato = bool(re.search(r'(?:\r?\n|\r|\s)(van|furgonat[oi]|camper puro)', testo))
+    tipo_semintegrale = False
     
-    if tipo_furgonato: tipo_semintegrale = tipo_motorhome = tipo_mansardato = False
-    elif tipo_mansardato: tipo_semintegrale = tipo_motorhome = False
-    elif tipo_semintegrale: tipo_motorhome = False
-    elif tipo_motorhome and not re.search(r'\bsemi[\s-]?integral[ei]\b', testo): tipo_semintegrale = False
+    # Gerarchia rigorosa: Motorhome -> Mansardato -> Furgonato -> Semintegrale
+    if tipo_motorhome:
+        tipo_mansardato = tipo_furgonato = tipo_semintegrale = False
+    elif tipo_mansardato:
+        tipo_furgonato = tipo_semintegrale = False
+    elif tipo_furgonato:
+        tipo_semintegrale = False
+    else:
+        # Se non è nessuno dei 3, controllo se è semintegrale
+        tipo_semintegrale = bool(re.search(r'\bsemi[\s-]?integral[ei]\b|\bprofilat[oi]\b', testo))
     
     lunghezza = None
-    misure_dec = re.findall(r'(\d+[.,]\d{1,2})', testo)
-    if misure_dec:
-        floats = [float(m.replace(',', '.')) for m in misure_dec]
-        lunghezze_valide = [v for v in floats if 5.0 <= v <= 12.0]
-        if lunghezze_valide: lunghezza = max(lunghezze_valide)
+    # 1. Cerca esplicitamente la parola lunghezza e il valore, gestendo anche i cm (es. 699)
+    match_lung = re.search(r'lunghezza[\s\w]*?[:]?\s*(\d+[.,]\d{1,3})', testo)
+    if match_lung:
+        lung_val = float(match_lung.group(1).replace(',', '.'))
+        if lung_val > 100: 
+            lung_val = lung_val / 100 # Converte cm in metri
+        if 5.0 <= lung_val <= 12.0:
+            lunghezza = lung_val
             
+    # 2. Fallback: cerca un numero seguito da m o mt (es. 6,99 m)
     if lunghezza is None:
-        match_lung = re.search(r'lunghezza\s*[:]?\s*(\d+[.,]?\d*)', testo)
-        if match_lung: lunghezza = float(match_lung.group(1).replace(',', '.'))
+        match_lung_m = re.findall(r'(\d+[.,]\d{1,2})\s*(?:m|mt)\b', testo)
+        if match_lung_m:
+            floats = [float(m.replace(',', '.')) for m in match_lung_m]
+            lunghezze_valide = [v for v in floats if 5.0 <= v <= 12.0]
+            if lunghezze_valide: 
+                lunghezza = max(lunghezze_valide)
 
     posti_omologati = posti_letto = None
     match_omologati = re.search(r'(?:omologati|viaggio)[\s:]*(\d)', testo) or re.search(r'(\d)\s*posti\s*(?:omologati|viaggio)', testo)
@@ -106,18 +120,22 @@ def extract_price(text):
         val = int(m.group(1).replace('.', '').replace(',', ''))
         if val >= 5000: prices.append(val)
         
-    if prices:
-        return min(prices)
-        
     # Fallback su keyword
     for m in re.finditer(r'prezzo[\s:]*(?:€\s*)?(\d{1,3}(?:[.,]\d{3})*|\d{4,6})', text, re.IGNORECASE):
         val = int(m.group(1).replace('.', '').replace(',', ''))
         if val >= 5000: prices.append(val)
         
-    if prices:
-        return min(prices)
+    if not prices:
+        return 0
         
-    return 0
+    max_p = max(prices)
+    # Filtro: un prezzo valido del camper non può essere inferiore al 30% del prezzo massimo trovato
+    # Questo scarta automaticamente l'importo dello "sconto" o del "risparmio" che è notevolmente inferiore al listino
+    valid_prices = [p for p in prices if p > (max_p * 0.3)]
+    
+    if valid_prices:
+        return min(valid_prices) # Tra i prezzi reali validi, prendo il più basso (es. prezzo scontato anziché listino)
+    return max_p
 
 def clean_text(text): 
     return re.sub(r'\n\s*\n', '\n', re.sub(r'[ \t]+', ' ', text)).strip()
@@ -206,7 +224,6 @@ def run_scraper(db_conn, config, ollama_config=None):
                 
                 is_listing = False
                 
-                # Un dettaglio contiene /listings/ e un'alta entropia nel last_part, non è la radice.
                 if '/listings/' in path_lower and last_part != 'listings':
                     is_listing = True
                 elif '-' in last_part and len(last_part) > 12:
@@ -215,7 +232,6 @@ def run_scraper(db_conn, config, ollama_config=None):
                 if not is_listing: 
                     continue
                 
-                # Salviamo url pulito da query per evitare duplicati causati da tag filter
                 if url_no_query in processed_urls: continue
                 processed_urls.add(url_no_query)
                 
@@ -225,23 +241,40 @@ def run_scraper(db_conn, config, ollama_config=None):
                     if det_resp.status_code != 200: continue
                     det_soup = BeautifulSoup(det_resp.text, 'html.parser')
                     
-                    # Elimino le sezioni che contengono recapiti ambigui (es. la mail "noleggio@groppetti")
-                    for hidden in det_soup(["script", "style", "nav", "footer", "header", "form"]): 
+                    # Elimina container laterali e correlati per non prelevare testi e prezzi di altri veicoli
+                    for hidden in det_soup(["script", "style", "nav", "footer", "header", "form", "aside"]): 
                         hidden.decompose()
+                    for elem in det_soup.find_all(class_=re.compile(r'(sidebar|related|suggested|widget|stm-more-cars|similar|stm-car-carousels)', re.I)):
+                        elem.decompose()
+                    for elem in det_soup.find_all(id=re.compile(r'(sidebar|related|suggested)', re.I)):
+                        elem.decompose()
                     
                     testo = clean_text(det_soup.get_text(separator="\n"))
                     prezzo = extract_price(testo)
                     
-                    # Salto solo i falsi prezzi bassi (come rate o ricambi), accetto gli "0" per trattativa riservata
                     if 0 < prezzo < 5000: 
                         continue
                     
                     img_url = None
-                    for img in det_soup.find_all('img'):
+                    # 1. Tenta prima di trovare l'immagine corretta all'interno dei box specifici (es. galleria o immagine principale WP)
+                    for img in det_soup.select('.stm-gallery img, .wp-post-image, .single-listing-gallery img, .gallery img'):
                         src = img.get('src') or img.get('data-src')
                         if src and not any(x in src.lower() for x in ['logo', 'icon', 'banner', 'avatar']):
                             img_url = src if src.startswith('http') else f"{BASE_URL}/{src.lstrip('/')}"
                             break
+                            
+                    # 2. Fallback generale per la prima immagine utile
+                    if not img_url:
+                        for img in det_soup.find_all('img'):
+                            src = img.get('src') or img.get('data-src')
+                            
+                            # Ignora immagini dichiaratamente piccole (es. thumbnail a fondo pagina o icone UI)
+                            w = img.get('width', '0')
+                            if str(w).isdigit() and int(w) > 0 and int(w) < 200: continue
+                            
+                            if src and not any(x in src.lower() for x in ['logo', 'icon', 'banner', 'avatar', 'thumb']):
+                                img_url = src if src.startswith('http') else f"{BASE_URL}/{src.lstrip('/')}"
+                                break
                     
                     scraper_utils.process_listing(
                         db_conn, config, url_no_query, SITE_NAME, f"--- DETTAGLI ---\n{testo}"[:3000], 
