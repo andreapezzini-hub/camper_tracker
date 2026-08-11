@@ -104,8 +104,6 @@ def run_scraper(db_conn, config, ollama_config=None):
     SITE_NAME = "Grosso Vacanze"
     BASE_URL = "https://www.grossovacanze.com"
     TARGET_URLS = [
-        f"{BASE_URL}/veicoli/usati/",
-        f"{BASE_URL}/veicoli/nuovi/",
         f"{BASE_URL}/camper-usati/",
         f"{BASE_URL}/camper-nuovi/"
     ]
