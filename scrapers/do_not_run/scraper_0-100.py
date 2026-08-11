@@ -104,8 +104,7 @@ def run_scraper(db_conn, config, ollama_config=None):
     SITE_NAME = "Zero a 100"
     BASE_URL = "https://www.zeroa100.com"
     TARGET_URLS = [
-        f"{BASE_URL}/categoria-prodotto/camper-usati/",
-        f"{BASE_URL}/categoria-prodotto/camper-nuovi/"
+        f"{BASE_URL}/categoria-prodotto/camper-usati/"
     ]
     DISTANCE_FROM_SEREGNO = 250 # Zero Branco TV -> Seregno
     MAX_ANNUNCI = 500
