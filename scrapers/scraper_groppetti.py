@@ -19,10 +19,12 @@ def regex_extract_camper_data(raw_text, current_price, db_conn):
     km = int(km_match.group(1).replace('.', '')) if km_match else None
     if km is None and ('nuovo' in testo or 'da immatricolare' in testo): km = 0
         
-    tipo_motorhome = bool(re.search(r'\bmotorhome\b|\bintegrale\b', testo))
+    # Risoluzione BUG: Impedisce a "semi integrale" di triggerare "integrale" (motorhome)
+    tipo_semintegrale = bool(re.search(r'\bsemi[\s-]?integral[ei]\b|\bprofilat[oi]\b', testo))
+    tipo_motorhome = bool(re.search(r'\bmotorhome\b', testo)) or (bool(re.search(r'\bintegrale\b', testo)) and not tipo_semintegrale)
+    
     tipo_mansardato = bool(re.search(r'\bmansardat[oi]\b', testo))
     tipo_furgonato = bool(re.search(r'(?:\r?\n|\r|\s)(van|furgonat[oi]|camper puro)', testo))
-    tipo_semintegrale = False
     
     # Gerarchia rigorosa: Motorhome -> Mansardato -> Furgonato -> Semintegrale
     if tipo_motorhome:
@@ -31,9 +33,6 @@ def regex_extract_camper_data(raw_text, current_price, db_conn):
         tipo_furgonato = tipo_semintegrale = False
     elif tipo_furgonato:
         tipo_semintegrale = False
-    else:
-        # Se non è nessuno dei 3, controllo se è semintegrale
-        tipo_semintegrale = bool(re.search(r'\bsemi[\s-]?integral[ei]\b|\bprofilat[oi]\b', testo))
     
     lunghezza = None
     # 1. Cerca esplicitamente la parola lunghezza e il valore, gestendo anche i cm (es. 699)
@@ -129,12 +128,11 @@ def extract_price(text):
         return 0
         
     max_p = max(prices)
-    # Filtro: un prezzo valido del camper non può essere inferiore al 30% del prezzo massimo trovato
-    # Questo scarta automaticamente l'importo dello "sconto" o del "risparmio" che è notevolmente inferiore al listino
+    # Filtro: scarta il solo importo dello "sconto", valutando valido solo un prezzo che sia almeno il 30% del massimo trovato
     valid_prices = [p for p in prices if p > (max_p * 0.3)]
     
     if valid_prices:
-        return min(valid_prices) # Tra i prezzi reali validi, prendo il più basso (es. prezzo scontato anziché listino)
+        return min(valid_prices) # Tra i prezzi reali validi, prendo il più basso
     return max_p
 
 def clean_text(text): 
@@ -250,34 +248,42 @@ def run_scraper(db_conn, config, ollama_config=None):
                         elem.decompose()
                     
                     testo = clean_text(det_soup.get_text(separator="\n"))
+                    
+                    # Rimuovo la sezione "Altre proposte" per evitare che avveleni l'estrazione dati
+                    idx_altre = testo.lower().find("altre proposte")
+                    if idx_altre != -1:
+                        testo = testo[:idx_altre].strip()
+                        
                     prezzo = extract_price(testo)
                     
                     if 0 < prezzo < 5000: 
                         continue
                     
                     img_url = None
-                    # 1. Tenta prima di trovare l'immagine corretta all'interno dei box specifici (es. galleria o immagine principale WP)
-                    for img in det_soup.select('.stm-gallery img, .wp-post-image, .single-listing-gallery img, .gallery img'):
-                        src = img.get('src') or img.get('data-src')
+                    # 1. Tenta prima di trovare l'immagine includendo anche i formati di lazy-loading tipici dei temi
+                    for img in det_soup.select('.stm-gallery img, .wp-post-image, .single-listing-gallery img, .gallery img, .owl-item img, .owl-stage img, .fotorama__img'):
+                        src = img.get('src') or img.get('data-src') or img.get('data-lazy-src') or img.get('data-opt-src')
                         if src and not any(x in src.lower() for x in ['logo', 'icon', 'banner', 'avatar']):
                             img_url = src if src.startswith('http') else f"{BASE_URL}/{src.lstrip('/')}"
                             break
                             
-                    # 2. Fallback generale per la prima immagine utile
+                    # 2. Fallback generale per la prima immagine utile con un severo controllo anti-icone
                     if not img_url:
                         for img in det_soup.find_all('img'):
-                            src = img.get('src') or img.get('data-src')
+                            src = img.get('src') or img.get('data-src') or img.get('data-lazy-src') or img.get('data-opt-src')
+                            if not src: continue
                             
-                            # Ignora immagini dichiaratamente piccole (es. thumbnail a fondo pagina o icone UI)
                             w = img.get('width', '0')
-                            if str(w).isdigit() and int(w) > 0 and int(w) < 200: continue
+                            # Ignora immagini dichiaratamente piccole (icone, thumb minuscole)
+                            if str(w).isdigit() and int(w) > 0 and int(w) < 250: continue
                             
-                            if src and not any(x in src.lower() for x in ['logo', 'icon', 'banner', 'avatar', 'thumb']):
+                            if not any(x in src.lower() for x in ['logo', 'icon', 'banner', 'avatar', 'thumb']):
                                 img_url = src if src.startswith('http') else f"{BASE_URL}/{src.lstrip('/')}"
                                 break
                     
+                    # Rimosso il limite aggressivo dei 3000 caratteri, espanso a 10000 per evitare troncamenti
                     scraper_utils.process_listing(
-                        db_conn, config, url_no_query, SITE_NAME, f"--- DETTAGLI ---\n{testo}"[:3000], 
+                        db_conn, config, url_no_query, SITE_NAME, f"--- DETTAGLI ---\n{testo}"[:10000], 
                         prezzo, DISTANCE_FROM_SEREGNO, img_url, regex_extract_camper_data, ollama_config
                     )
                     count_elaborati += 1
