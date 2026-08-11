@@ -106,7 +106,7 @@ def clean_text(text): return re.sub(r'\n\s*\n', '\n', re.sub(r'[ \t]+', ' ', tex
 def run_scraper(db_conn, config, ollama_config=None):
     SITE_NAME = "Camper Novara"
     BASE_URL = "https://www.campernovara.it"
-    TARGET_URLS = [f"{BASE_URL}/veicoli/usato/", f"{BASE_URL}/veicoli/nuovo/"]
+    TARGET_URLS = [f"{BASE_URL}/camper-usati/", f"{BASE_URL}/camper-nuovi/"]
     DISTANCE_FROM_SEREGNO = 70
     MAX_ANNUNCI = 500
     count_elaborati = 0
