@@ -241,10 +241,9 @@ def run_scraper(db_conn, config, ollama_config=None):
     SITE_NAME = "3C Srl"
     BASE_URL = "https://3csrl.com"
     TARGET_URLS = [
-        f"{BASE_URL}/categoria-prodotto/camper-usati/",
-        f"{BASE_URL}/categoria-prodotto/camper-nuovi/",
-        f"{BASE_URL}/veicoli-usati/",
-        f"{BASE_URL}/camper/"
+        f"{BASE_URL}/camper-nuovi-pronta-consegna/",
+        f"{BASE_URL}/camper-usati/",
+        f"{BASE_URL}/camper-nuovi/"
     ]
     DISTANCE_FROM_SEREGNO = 170 
     MAX_ANNUNCI = 500
