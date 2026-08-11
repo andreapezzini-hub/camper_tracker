@@ -104,10 +104,10 @@ def run_scraper(db_conn, config, ollama_config=None):
     SITE_NAME = "Caravan Market"
     BASE_URL = "https://www.caravanmarket.com"
     TARGET_URLS = [
-        f"{BASE_URL}/veicoli-usati/",
-        f"{BASE_URL}/veicoli-nuovi/",
-        f"{BASE_URL}/categoria-prodotto/camper-usati/",
-        f"{BASE_URL}/categoria-prodotto/camper-nuovi/"
+        f"{BASE_URL}/camper-usati",
+        f"{BASE_URL}/furgonati-usati",
+        f"{BASE_URL}/vendita-camper-nuovi",
+        f"{BASE_URL}/van-nuovi"
     ]
     DISTANCE_FROM_SEREGNO = 190 # Vicenza -> Seregno
     MAX_ANNUNCI = 500
