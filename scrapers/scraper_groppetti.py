@@ -142,8 +142,7 @@ def run_scraper(db_conn, config, ollama_config=None):
     SITE_NAME = "Groppetti"
     BASE_URL = "https://www.groppetti.net"
     TARGET_URLS = [
-        f"{BASE_URL}/camper/2/camper-usati-in-vendita/",
-        f"{BASE_URL}/camper/2/camper-nuovi-in-vendita/"
+        f"{BASE_URL}/camper/2/listings/"
     ]
     DISTANCE_FROM_SEREGNO = 50 
     MAX_ANNUNCI = 500
@@ -176,19 +175,29 @@ def run_scraper(db_conn, config, ollama_config=None):
             if response.status_code != 200: continue
             soup = BeautifulSoup(response.text, 'html.parser')
             
-            # Recupero di eventuali link di paginazione
-            for a in soup.find_all('a', href=True):
-                href_raw = a['href']
-                if not href_raw or href_raw.startswith('javascript'): continue
+            # --- NUOVA LOGICA DI PAGINAZIONE ---
+            # Trova la paginazione di WordPress/STM Motors per aggiungere tutte le pagine
+            pagination_links = soup.select('ul.page-numbers a, div.pagination a, .page-nav-link')
+            for a in pagination_links:
+                href_raw = a.get('href')
+                if not href_raw or href_raw.startswith('javascript'): 
+                    continue
                 
                 url_completo = href_raw if href_raw.startswith('http') else f"{BASE_URL}/{href_raw.lstrip('/')}"
-                if BASE_URL not in url_completo: continue
-                
                 url_no_query = url_completo.split('#')[0].split('?')[0]
                 
                 if '/page/' in url_no_query:
-                    if url_completo not in scanned_targets and url_completo not in urls_to_scan:
-                        urls_to_scan.append(url_completo)
+                    if url_no_query not in scanned_targets and url_no_query not in urls_to_scan:
+                        urls_to_scan.append(url_no_query)
+
+            # Fallback di sicurezza: se siamo nella pagina 1 di un Target URL e non trova la paginazione HTML,
+            # forza l'inserimento delle prime N pagine direttamente nel queue
+            if any(target.endswith(t) for t in ['/camper-usati-in-vendita/', '/camper-nuovi-in-vendita/']):
+                for p in range(2, 10): # Prova fino a pagina 9
+                    page_url = f"{target.rstrip('/')}/page/{p}/"
+                    if page_url not in scanned_targets and page_url not in urls_to_scan:
+                        urls_to_scan.append(page_url)
+            # ------------------------------------
             
             # Ricerca dei veri listing all'interno della pagina corrente
             for link in soup.find_all('a', href=True):
@@ -256,26 +265,22 @@ def run_scraper(db_conn, config, ollama_config=None):
                         continue
                     
                     img_url = None
-                    # 1. Tenta prima di trovare l'immagine includendo anche i formati di lazy-loading tipici dei temi
-                    for img in det_soup.select('.stm-gallery img, .wp-post-image, .single-listing-gallery img, .gallery img, .owl-item img, .owl-stage img, .fotorama__img'):
-                        src = img.get('src') or img.get('data-src') or img.get('data-lazy-src') or img.get('data-opt-src')
-                        if src and not any(x in src.lower() for x in ['logo', 'icon', 'banner', 'avatar']):
-                            img_url = src if src.startswith('http') else f"{BASE_URL}/{src.lstrip('/')}"
-                            break
-                            
-                    # 2. Fallback generale per la prima immagine utile con un severo controllo anti-icone
-                    if not img_url:
-                        for img in det_soup.find_all('img'):
-                            src = img.get('src') or img.get('data-src') or img.get('data-lazy-src') or img.get('data-opt-src')
-                            if not src: continue
-                            
-                            w = img.get('width', '0')
-                            # Ignora immagini dichiaratamente piccole (icone, thumb minuscole)
-                            if str(w).isdigit() and int(w) > 0 and int(w) < 250: continue
-                            
-                            if not any(x in src.lower() for x in ['logo', 'icon', 'banner', 'avatar', 'thumb']):
-                                img_url = src if src.startswith('http') else f"{BASE_URL}/{src.lstrip('/')}"
-                                break
+                    # Cerca il primo link della galleria che punta all'immagine originale
+                    main_img_link = det_soup.find('a', {'rel': 'stm-car-gallery'})
+                    
+                    if main_img_link and main_img_link.get('href'):
+                        img_url = main_img_link['href']
+                    else:
+                        # Fallback se non trova il tag specifico
+                        # Cerca all'interno di un eventuale div contenitore che ha l'immagine principale
+                        # Spesso è l'immagine con classe 'wp-post-image'
+                        img_tag = det_soup.find('img', class_='wp-post-image')
+                        if img_tag:
+                            img_url = img_tag.get('src') or img_tag.get('data-src')
+                    
+                    # Assicurati che img_url sia completo
+                    if img_url and not img_url.startswith('http'):
+                        img_url = f"{BASE_URL}{img_url}"
                     
                     # Rimosso il limite aggressivo dei 3000 caratteri, espanso a 10000 per evitare troncamenti
                     scraper_utils.process_listing(
