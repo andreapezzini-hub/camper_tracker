@@ -104,8 +104,8 @@ def run_scraper(db_conn, config, ollama_config=None):
     SITE_NAME = "Euro Vacanze"
     BASE_URL = "https://www.euro-vacanze.it"
     TARGET_URLS = [
-        f"{BASE_URL}/camper-usati/",
-        f"{BASE_URL}/camper-nuovi/"
+        f"{BASE_URL}/offerte-usato-camper-caravan-furgonati.html",
+        f"{BASE_URL}/vendita-caravan-autocaravan-semintegrali-motorhome-furgonati.html"
     ]
     DISTANCE_FROM_SEREGNO = 60 # Varallo Pombia -> Seregno
     MAX_ANNUNCI = 500
