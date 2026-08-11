@@ -209,7 +209,8 @@ def run_scraper(db_conn, config, ollama_config=None):
     BASE_URL = "https://www.caravanschiavolin.it"
     TARGET_URLS = [
         f"{BASE_URL}/veicolo-ricerca-list.php?cat=nuovo",
-        f"{BASE_URL}/veicolo-ricerca-list.php?cat=usato"
+        f"{BASE_URL}/veicolo-ricerca-list.php?cat=usato",
+        f"{BASE_URL}/offerte-del-mese.php"
     ]
     DISTANCE_FROM_SEREGNO = 60 
     
