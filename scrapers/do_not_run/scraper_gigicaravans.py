@@ -104,8 +104,7 @@ def run_scraper(db_conn, config, ollama_config=None):
     SITE_NAME = "Gigi Caravans"
     BASE_URL = "https://gigicaravans.it"
     TARGET_URLS = [
-        f"{BASE_URL}/veicoli-usati/",
-        f"{BASE_URL}/veicoli-nuovi/",
+        f"{BASE_URL}/camper-nuovi/",
         f"{BASE_URL}/camper-usati/"
     ]
     DISTANCE_FROM_SEREGNO = 20 # Caponago (MB) -> Seregno
