@@ -311,14 +311,20 @@ def run_scraper(db_conn, config, ollama_config=None):
                 if any(skip in path_lower for skip in skip_words):
                     continue
                 
-                is_product = ('/prodotto/' in path_lower or '/veicolo/' in path_lower or '/camper/' in path_lower or '-it-' in path_lower)
+                # Normalizza l'URL aggiungendo lo slash finale se manca
+                url_completo = url_completo.split('?')[0]
+                if not url_completo.endswith('/'):
+                    url_completo += '/'
+                path_lower = url_completo.lower()
+
+                # Verifica se è una pagina prodotto
+                is_product = any(x in path_lower for x in ['/prodotto/', '/veicolo/', '/camper/', '-it-'])
                 
-                if is_product:
-                    url_completo = url_completo.split('?')[0]
-                    if not url_completo.endswith('/'):
+                # Se NON è riconosciuto direttamente come prodotto, applica il filtro sulla lunghezza dello slug
+                if not is_product:
+                    slug = url_completo.strip('/').split('/')[-1]
+                    if len(slug) < 15:
                         continue
-                elif len(url_completo.split('/')[-1]) < 15:
-                    continue
                 
                 if url_completo in processed_urls or url_completo in scanned_targets:
                     continue
