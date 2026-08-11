@@ -154,8 +154,9 @@ def run_scraper(db_conn, config, ollama_config=None):
     SITE_NAME = "Giorgio Gatti"
     BASE_URL = "https://www.giorgiogatti.info"
     TARGET_URLS = [
-        f"{BASE_URL}/veicoli-nuovi/",
-        f"{BASE_URL}/veicoli-usati/"
+        f"{BASE_URL}/inventory/?condition=used-cars",
+        f"{BASE_URL}/inventory/?condition=new-cars",
+        f"{BASE_URL}/inventory/?condition=destocking"
     ]
     DISTANCE_FROM_SEREGNO = 130 # S. Michele A. -> Seregno
     MAX_ANNUNCI = 500
