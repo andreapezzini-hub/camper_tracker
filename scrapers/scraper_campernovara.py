@@ -14,9 +14,20 @@ def regex_extract_camper_data(raw_text, current_price, db_conn):
     anno_match = re.search(r'\b(199\d|20[0-2]\d)\b', testo)
     anno = int(anno_match.group(1)) if anno_match else None
     
-    km_match = re.search(r'km\s*(\d{1,3}(?:\.\d{3})+|\d{1,6})', testo)
-    km = int(km_match.group(1).replace('.', '')) if km_match else None
-    if km is None and ('nuovo' in testo or 'da immatricolare' in testo): km = 0
+    km = None
+    # 1. Prova prima il formato "80381 km" o "80.381 km"
+    km_match = re.search(r'(\d{1,3}(?:\.\d{3})+|\d{2,6})\s*km\b', testo, re.IGNORECASE)
+    if km_match:
+        km = int(km_match.group(1).replace('.', ''))
+    else:
+        # 2. Se fallisce, prova il formato "km 80381" o "km 80.381"
+        km_match_alt = re.search(r'\bkm\s*(\d{1,3}(?:\.\d{3})+|\d{2,6})', testo, re.IGNORECASE)
+        if km_match_alt:
+            km = int(km_match_alt.group(1).replace('.', ''))
+
+    # Fallback per i mezzi nuovi/da immatricolare
+    if km is None and ('nuovo' in testo.lower() or 'da immatricolare' in testo.lower()):
+        km = 0
         
     tipo_furgonato = bool(re.search(r'(?:\r?\n|\r|\s)(van|furgonat[oi]|camper puro)', testo))
     tipo_mansardato = bool(re.search(r'\bmansardat[oi]\b', testo))
@@ -127,8 +138,10 @@ def run_scraper(db_conn, config, ollama_config=None):
             
             for a in soup.find_all('a', href=True):
                 href = a['href']
-                if '?page=' in href and href not in scanned_targets and href not in urls_to_scan:
-                    urls_to_scan.append(BASE_URL + href if href.startswith('/') else href)
+                if ('/page/' in href or 'paged=' in href or '?page=' in href) and href not in scanned_targets and href not in urls_to_scan:
+                    full_p_url = href if href.startswith('http') else f"{BASE_URL}/{href.lstrip('/')}"
+                    if full_p_url not in scanned_targets and full_p_url not in urls_to_scan:
+                        urls_to_scan.append(full_p_url)
             
             for link in soup.find_all('a', href=True):
                 if count_elaborati >= MAX_ANNUNCI: break
@@ -136,7 +149,7 @@ def run_scraper(db_conn, config, ollama_config=None):
                 
                 path_lower = link['href'].lower()
                 if not ('/veicolo/' in path_lower or '/camper/' in path_lower): continue
-                if any(skip in path_lower for skip in ['noleggio', 'officina', 'contatti']): continue
+                if any(skip in path_lower for skip in ['noleggio', 'officina', 'contatti', 'camper-usati', 'camper-nuovi']): continue
                 
                 if url_completo in processed_urls: continue
                 processed_urls.add(url_completo)
@@ -145,17 +158,28 @@ def run_scraper(db_conn, config, ollama_config=None):
                     time.sleep(0.5)
                     det_resp = session.get(url_completo, headers=headers, timeout=20)
                     det_soup = BeautifulSoup(det_resp.text, 'html.parser')
-                    for hidden in det_soup(["script", "style", "nav", "footer", "header"]): hidden.decompose()
+                    
+                    # --- MODIFICA 2: ESTRAZIONE IMMAGINI (Lazy-load support) ---
+                    img_url = None
+                    for img in det_soup.find_all('img'):
+                        # Ispeziona data-src o data-lazy-src utilizzati dallo scroll JS
+                        candidate = img.get('data-src') or img.get('data-lazy-src') or img.get('src')
+                        if not candidate or candidate.startswith('data:'):
+                            continue
+                        
+                        if '/wp-content/uploads/' in candidate and not any(k in candidate.lower() for k in ['logo', 'icon', 'banner', 'avatar']):
+                            img_url = candidate if candidate.startswith('http') else f"{BASE_URL}/{candidate.lstrip('/')}"
+                            break
+
+                    # Pulizia DOM per estrazione testo
+                    for hidden in det_soup(["script", "style", "nav", "footer", "header"]): 
+                        hidden.decompose()
                     
                     testo = clean_text(det_soup.get_text(separator="\n"))
                     if re.search(r'\b(roulotte|noleggio)\b', testo.lower()): continue
                     prezzo = extract_price(testo)
                     if prezzo < 5000: continue
-                    
-                    img_url = None
-                    img = det_soup.find('img')
-                    if img and img.get('src'): img_url = img['src'] if img['src'].startswith('http') else f"{BASE_URL}/{img['src'].lstrip('/')}"
-                    
+                        
                     scraper_utils.process_listing(
                         db_conn, config, url_completo, SITE_NAME, f"--- DETTAGLI ---\n{testo}"[:3000], 
                         prezzo, DISTANCE_FROM_SEREGNO, img_url, regex_extract_camper_data, ollama_config
