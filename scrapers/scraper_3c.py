@@ -332,8 +332,15 @@ def run_scraper(db_conn, config, ollama_config=None):
                     det_resp = fetch_url_with_retry(session, url_completo, headers=headers)
                     if det_resp.status_code == 404:
                         continue
+                    
+                    # STRATEGIA ANTI-SPIDER TRAP: Troncare l'HTML alla dicitura "Sede centrale" 
+                    # per evitare link a veicoli correlati o ai footer pur estraendo eventuali sottomodelli
+                    html_content = det_resp.text
+                    match_sede = re.search(r'sede centrale', html_content, re.IGNORECASE)
+                    if match_sede:
+                        html_content = html_content[:match_sede.start()]
                         
-                    det_soup = BeautifulSoup(det_resp.text, 'html.parser')
+                    det_soup = BeautifulSoup(html_content, 'html.parser')
                     
                     for inner_link in det_soup.find_all('a', href=True):
                         inner_href = inner_link['href'].split('?')[0].split('#')[0]
