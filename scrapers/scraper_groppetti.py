@@ -143,11 +143,7 @@ def run_scraper(db_conn, config, ollama_config=None):
     BASE_URL = "https://www.groppetti.net"
     TARGET_URLS = [
         f"{BASE_URL}/camper/2/camper-usati-in-vendita/",
-        f"{BASE_URL}/camper/1/camper-nuovi-in-vendita/",
-        f"{BASE_URL}/camper/2/listings/",
-        f"{BASE_URL}/camper/1/listings/",
-        f"{BASE_URL}/camper/2/",
-        f"{BASE_URL}/camper/1/"
+        f"{BASE_URL}/camper/2/camper-nuovi-in-vendita/"
     ]
     DISTANCE_FROM_SEREGNO = 50 
     MAX_ANNUNCI = 500
