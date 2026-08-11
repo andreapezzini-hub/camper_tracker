@@ -195,10 +195,33 @@ def run_scraper(db_conn, config, ollama_config=None):
           if prezzo < 5000:
             continue
 
+          # Estrazione Immagine Principale (inline)
           img_url = None
-          img = det_soup.find("img")
-          if img and img.get("src"):
-            img_url = urljoin(BASE_URL, img["src"])
+          og_img = det_soup.find("meta", property="og:image") or det_soup.find(
+              "meta", attrs={"name": "twitter:image"}
+          )
+
+          if og_img and og_img.get("content"):
+            img_url = urljoin(BASE_URL, og_img["content"])
+          else:
+            k2_img = det_soup.select_one(".itemImageBlock img, .itemImage img")
+            if k2_img and k2_img.get("src"):
+              img_url = urljoin(BASE_URL, k2_img["src"])
+            else:
+              for img in det_soup.find_all("img", src=True):
+                src = img["src"]
+                if "/media/k2/items/cache/" in src or not any(
+                    skip in src.lower()
+                    for skip in [
+                        "logo",
+                        "icon",
+                        "posti.png",
+                        "letti.png",
+                        ".svg",
+                    ]
+                ):
+                  img_url = urljoin(BASE_URL, src)
+                  break
 
           scraper_utils.process_listing(
               db_conn,
