@@ -35,6 +35,13 @@ def export_to_json(db_conn):
     Esporta i dati da SQLite al formato JSON originale per mantenere 
     compatibile la dashboard index.html senza doverla modificare.
     """
+    try:
+    # Esegue una query veloce di keep-alive per riaprire lo stream se scaduto
+    db_conn.execute("SELECT 1")
+    except Exception as db_err:
+    print(f"Riconnessione al DB in corso per timeout stream: {db_err}")
+    db_conn = get_db_connection()
+    
     print(f"[*] Esportazione dati in {JSON_EXPORT_FILE} per il frontend...")
     cursor = db_conn.cursor()
     

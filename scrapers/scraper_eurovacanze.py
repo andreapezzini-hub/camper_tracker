@@ -178,7 +178,12 @@ def run_scraper(db_conn, config, ollama_config=None):
     MAX_ANNUNCI = 500
     count_elaborati = 0
     session = requests.Session()
-    headers = {"User-Agent": "Mozilla/5.0"}
+    headers = {
+        "User-Agent": (
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+            " (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+        )
+    }
 
     try:
         processed_urls, urls_to_scan, scanned_targets = (
@@ -195,22 +200,22 @@ def run_scraper(db_conn, config, ollama_config=None):
 
             try:
                 response = session.get(target, headers=headers, timeout=20)
+                if response.status_code != 200:
+                    continue
             except Exception:
                 continue
 
             soup = BeautifulSoup(response.text, "html.parser")
 
-            # 1. Paginazione (Normalizzazione preventiva dell'URL)
+            # 1. Paginazione (Corretto: urljoin su target, supporta start= / limitstart= di K2 Joomla)
             for a in soup.find_all("a", href=True):
-                href_abs = urljoin(BASE_URL, a["href"])
+                href_abs = urljoin(target, a["href"])
                 href_lower = href_abs.lower()
 
-                # Riconosce parametri di paginazione tipici (es. start=10, page=2, paged=2)
                 if (
-                    (
-                        "page" in href_lower
-                        or "paged" in href_lower
-                        or "start=" in href_lower
+                    any(
+                        p in href_lower
+                        for p in ["start=", "limitstart=", "page=", "paged="]
                     )
                     and BASE_URL in href_abs
                     and href_abs not in scanned_targets
@@ -223,10 +228,11 @@ def run_scraper(db_conn, config, ollama_config=None):
                 if count_elaborati >= MAX_ANNUNCI:
                     break
 
-                url_completo = urljoin(BASE_URL, link["href"])
+                # FONDAMENTALE: Usa 'target' per costruire il link completo, NON 'BASE_URL'
+                url_completo = urljoin(target, link["href"])
                 path_lower = url_completo.lower()
 
-                # Check se probabile pagina di dettaglio veicolo (incluso /item/ per Euro Vacanze)
+                # Verifica se si tratta della scheda dettaglio veicolo
                 is_detail_page = (
                     "/item/" in path_lower
                     or "/veicolo/" in path_lower
@@ -237,8 +243,11 @@ def run_scraper(db_conn, config, ollama_config=None):
                 if not is_detail_page:
                     continue
 
-                # Rimosso 'caravan' dallo skip per evitare di scartare la categoria vendita/usato
-                if any(skip in path_lower for skip in ["noleggio", "contatti"]):
+                # Escludi pagine istituzionali o form noleggio puri (ma non gli annunci usati/nuovi)
+                if any(
+                    skip in path_lower
+                    for skip in ["/noleggio-camper", "contatti", "privacy-policy"]
+                ):
                     continue
 
                 if url_completo in processed_urls:
@@ -251,8 +260,12 @@ def run_scraper(db_conn, config, ollama_config=None):
                     det_resp = session.get(
                         url_completo, headers=headers, timeout=20
                     )
+                    if det_resp.status_code != 200:
+                        continue
+
                     det_soup = BeautifulSoup(det_resp.text, "html.parser")
 
+                    # Rimuove elementi non inerenti al contenuto dell'annuncio
                     for hidden in det_soup(
                         ["script", "style", "nav", "footer", "header"]
                     ):
@@ -260,16 +273,19 @@ def run_scraper(db_conn, config, ollama_config=None):
 
                     testo = clean_text(det_soup.get_text(separator="\n"))
 
-                    # Filtro esclusioni sul testo dell'annuncio se non vuoi roulotte/noleggi
-                    if re.search(r"\b(roulotte|noleggio)\b", testo.lower()):
+                    # Estrazione Prezzo (con fallback per "VENDUTO" o "Trattativa riservata")
+                    prezzo = extract_price(testo) if "extract_price" in globals() else 0
+                    
+                    # N.B. Se vuoi includere anche i venduti o veicoli nuovi con prezzo su richiesta,
+                    # consenti prezzo = 0 o verifica se nel testo è presente "venduto"
+                    is_venduto = "venduto" in testo.lower()
+                    if prezzo and prezzo < 5000 and not is_venduto:
                         continue
 
-                    prezzo = extract_price(testo)
-                    if prezzo < 5000:
-                        continue
-
-                    # Estrazione Immagine Principale (inline)
+                    # 4. Estrazione Immagine Principale K2 / OpenGraph
                     img_url = None
+
+                    # Priorità 1: Meta Tag OpenGraph o Twitter Image
                     og_img = det_soup.find(
                         "meta", property="og:image"
                     ) or det_soup.find(
@@ -277,29 +293,25 @@ def run_scraper(db_conn, config, ollama_config=None):
                     )
 
                     if og_img and og_img.get("content"):
-                        img_url = urljoin(BASE_URL, og_img["content"])
-                    else:
+                        img_url = urljoin(url_completo, og_img["content"])
+
+                    # Priorità 2: Selettori specifici K2 (incluso l'immagine XL)
+                    if not img_url:
                         k2_img = det_soup.select_one(
-                            ".itemImageBlock img, .itemImage img"
+                            ".itemImageBlock img, .itemImage img, a.modal img"
                         )
                         if k2_img and k2_img.get("src"):
-                            img_url = urljoin(BASE_URL, k2_img["src"])
-                        else:
-                            for img in det_soup.find_all("img", src=True):
-                                src = img["src"]
-                                if "/media/k2/items/cache/" in src or not any(
-                                    skip in src.lower()
-                                    for skip in [
-                                        "logo",
-                                        "icon",
-                                        "posti.png",
-                                        "letti.png",
-                                        ".svg",
-                                    ]
-                                ):
-                                    img_url = urljoin(BASE_URL, src)
-                                    break
+                            img_url = urljoin(url_completo, k2_img["src"])
 
+                    # Priorità 3: Fallback ricerca immagini nella cache K2 (..._XL.jpg)
+                    if not img_url:
+                        for img in det_soup.find_all("img", src=True):
+                            src = img["src"]
+                            if "/media/k2/items/cache/" in src:
+                                img_url = urljoin(url_completo, src)
+                                break
+
+                    # Processamento finale
                     scraper_utils.process_listing(
                         db_conn,
                         config,
@@ -313,8 +325,9 @@ def run_scraper(db_conn, config, ollama_config=None):
                         ollama_config,
                     )
                     count_elaborati += 1
-                except Exception:
-                    pass
+
+                except Exception as e:
+                    print(f"[!] Errore su {url_completo}: {e}")
 
     except Exception as e:
         print(f"[!] Errore {SITE_NAME}: {e}")

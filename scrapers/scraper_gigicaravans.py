@@ -107,66 +107,126 @@ def run_scraper(db_conn, config, ollama_config=None):
         f"{BASE_URL}/camper-nuovi/",
         f"{BASE_URL}/camper-usati/"
     ]
-    DISTANCE_FROM_SEREGNO = 20 # Caponago (MB) -> Seregno
+    DISTANCE_FROM_SEREGNO = 20  # Caponago (MB) -> Seregno
     MAX_ANNUNCI = 500
     count_elaborati = 0
+
     session = requests.Session()
-    headers = {'User-Agent': 'Mozilla/5.0'}
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+    }
     
     try:
-        processed_urls, urls_to_scan, scanned_targets = set(), list(TARGET_URLS), set()
+        processed_urls = set()
+        urls_to_scan = list(TARGET_URLS)
+        scanned_targets = set()
         
         while urls_to_scan and count_elaborati < MAX_ANNUNCI:
             target = urls_to_scan.pop(0)
-            if target in scanned_targets: continue
+            if target in scanned_targets:
+                continue
             scanned_targets.add(target)
             
             print(f"    [{SITE_NAME}] Scansione sezione: {target}...")
-            try: response = session.get(target, headers=headers, timeout=20)
-            except Exception: continue
+            try:
+                response = session.get(target, headers=headers, timeout=20)
+                if response.status_code != 200:
+                    continue
+            except Exception:
+                continue
+
             soup = BeautifulSoup(response.text, 'html.parser')
             
+            # --- 1. ESTRAZIONE PAGINAZIONE CORRETTA ---
             for a in soup.find_all('a', href=True):
-                href = a['href']
-                if ('page' in href or 'paged' in href) and BASE_URL in href and href not in scanned_targets and href not in urls_to_scan:
-                    urls_to_scan.append(href)
+                href = a['href'].strip()
+                full_href = urljoin(BASE_URL, href)
+                
+                # Intercetta paginazione del tipo /camper-nuovi/page/2/ o /camper-usati/page/2/
+                if '/page/' in href and BASE_URL in full_href:
+                    if full_href not in scanned_targets and full_href not in urls_to_scan:
+                        urls_to_scan.append(full_href)
             
+            # --- 2. FILTRAGGIO LINK SCHEDE VEICOLI ---
             for link in soup.find_all('a', href=True):
-                if count_elaborati >= MAX_ANNUNCI: break
-                url_completo = link['href'] if link['href'].startswith('http') else f"{BASE_URL}/{link['href'].lstrip('/')}"
+                if count_elaborati >= MAX_ANNUNCI:
+                    break
+
+                href = link['href'].strip()
+                url_completo = urljoin(BASE_URL, href)
                 
-                path_lower = link['href'].lower()
-                # Verifica veicolo
-                if not ('/veicolo/' in path_lower or '/prodotto/' in path_lower or '/camper/' in path_lower or len(url_completo) > 40): continue
-                if any(skip in path_lower for skip in ['noleggio', 'contatti', 'caravan', 'chi-siamo']): continue
+                # Normalizza per controlli
+                path_lower = url_completo.lower()
                 
-                if url_completo in processed_urls: continue
+                # COntrollo chiave: La pagina veicolo deve contenere "/veicoli/" (plurale)
+                if '/veicoli/' not in path_lower:
+                    continue
+                
+                # Escludi pagine generiche o di sistema
+                if any(skip in path_lower for skip in ['noleggio', 'contatti', 'caravan', 'chi-siamo', 'category', 'tag']):
+                    continue
+                
+                if url_completo in processed_urls:
+                    continue
                 processed_urls.add(url_completo)
                 
+                # --- 3. SCRAPING SCHEDA DETTAGLIO ---
                 try:
                     time.sleep(0.5)
                     det_resp = session.get(url_completo, headers=headers, timeout=20)
+                    if det_resp.status_code != 200:
+                        continue
+
                     det_soup = BeautifulSoup(det_resp.text, 'html.parser')
-                    for hidden in det_soup(["script", "style", "nav", "footer", "header"]): hidden.decompose()
                     
-                    testo = clean_text(det_soup.get_text(separator="\n"))
-                    if re.search(r'\b(roulotte|noleggio|caravan)\b', testo.lower()): continue
-                    prezzo = extract_price(testo)
-                    if prezzo < 5000: continue
-                    
+                    # Estrazione URL Immagine Principale
                     img_url = None
-                    img = det_soup.find('img')
-                    if img and (img.get('src') or img.get('data-src')):
-                        src = img.get('src') or img.get('data-src')
-                        img_url = src if src.startswith('http') else f"{BASE_URL}/{src.lstrip('/')}"
                     
+                    # Priorità 1: Immagini dentro wp-content/uploads/
+                    for img in det_soup.find_all('img'):
+                        src = img.get('src') or img.get('data-src') or img.get('data-lazy-src')
+                        if src and '/wp-content/uploads/' in src:
+                            # Ignora icone, logo o elementi grafici di sistema
+                            if not any(badge in src.lower() for badge in ['logo', 'icon', 'banner', 'avatar', 'elementor']):
+                                img_url = urljoin(BASE_URL, src)
+                                break
+                    
+                    # Priorità 2: Meta tag OpenGraph (og:image) come fallback
+                    if not img_url:
+                        og_img = det_soup.find('meta', property='og:image')
+                        if og_img and og_img.get('content'):
+                            img_url = urljoin(BASE_URL, og_img['content'])
+
+                    # Estrazione e pulizia testo
+                    # Creiamo una copia per la pulizia del testo per non rovinare altre selezioni
+                    text_soup = BeautifulSoup(det_resp.text, 'html.parser')
+                    for hidden in text_soup(["script", "style", "nav", "footer", "header"]):
+                        hidden.decompose()
+                    
+                    testo = clean_text(text_soup.get_text(separator="\n"))
+                    
+                    # Verifica filtri di esclusione sul testo
+                    if re.search(r'\b(roulotte|noleggio|caravan)\b', testo.lower()):
+                        continue
+                        
+                    prezzo = extract_price(testo)
+                    if prezzo and prezzo < 5000:
+                        continue
+
+                    # Salva / Processa Annuncio
                     scraper_utils.process_listing(
-                        db_conn, config, url_completo, SITE_NAME, f"--- DETTAGLI ---\n{testo}"[:3000], 
-                        prezzo, DISTANCE_FROM_SEREGNO, img_url, regex_extract_camper_data, ollama_config
+                        db_conn, config, url_completo, SITE_NAME, 
+                        f"--- DETTAGLI ---\n{testo}"[:3000], 
+                        prezzo, DISTANCE_FROM_SEREGNO, img_url, 
+                        regex_extract_camper_data, ollama_config
                     )
                     count_elaborati += 1
-                except Exception as e: pass
-    except Exception as e: print(f"[!] Errore {SITE_NAME}: {e}")
+
+                except Exception as e:
+                    print(f"[!] Errore parsing scheda {url_completo}: {e}")
+
+    except Exception as e:
+        print(f"[!] Errore generale {SITE_NAME}: {e}")
 
 if __name__ == "__main__":
     import sys

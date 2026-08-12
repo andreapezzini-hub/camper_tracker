@@ -15,7 +15,7 @@ def regex_extract_camper_data(raw_text, current_price, db_conn):
     anno_match = re.search(r'\b(199\d|20[0-2]\d)\b', testo)
     anno = int(anno_match.group(1)) if anno_match else None
     
-    km_match = re.search(r'km\s*(\d{1,3}(?:\.\d{3})+|\d{1,6})', testo)
+    km_match = re.search(r'(?:Km|Chilometri|KM)\s*[:\-]?\s*([\d\.]+)', testo, re.IGNORECASE)
     km = int(km_match.group(1).replace('.', '')) if km_match else None
     if km is None and ('nuovo' in testo or 'da immatricolare' in testo): km = 0
         
@@ -47,7 +47,7 @@ def regex_extract_camper_data(raw_text, current_price, db_conn):
     match_letto = re.search(r'(?:letto|dormire)[\s:]*(\d)', testo) or re.search(r'(\d)\s*posti\s*letto', testo)
     if match_letto: posti_letto = int(match_letto.group(1))
 
-    cv_match = re.search(r'(\d{3})\s*cv', testo)
+    cv_match = re.search(r'(?:Cavalli|CV|Potenza)\s*[:\-]?\s*(\d+)', testo, re.IGNORECASE)
     potenza = int(cv_match.group(1)) if cv_match else None
     
     riscaldamento_gasolio = bool(re.search(r'webasto|eberspacher|riscaldamento\s*(?:a\s*)?gasolio', testo))
@@ -102,7 +102,7 @@ def clean_text(text): return re.sub(r'\n\s*\n', '\n', re.sub(r'[ \t]+', ' ', tex
 
 def run_scraper(db_conn, config, ollama_config=None):
     SITE_NAME = "Camperis"
-    BASE_URL = "https://www.camperis.it"
+    BASE_URL = "https://www.camperis.com" # Aggiornato con .com (se reindirizza a .com)
     TARGET_URLS = [
         f"{BASE_URL}/camper-usati/",
         f"{BASE_URL}/camper-nuovi/"
@@ -111,7 +111,7 @@ def run_scraper(db_conn, config, ollama_config=None):
     MAX_ANNUNCI = 500
     count_elaborati = 0
     session = requests.Session()
-    headers = {'User-Agent': 'Mozilla/5.0'}
+    headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'}
     
     try:
         processed_urls, urls_to_scan, scanned_targets = set(), list(TARGET_URLS), set()
@@ -121,11 +121,14 @@ def run_scraper(db_conn, config, ollama_config=None):
             if target in scanned_targets: continue
             scanned_targets.add(target)
             
-            try: response = session.get(target, headers=headers, timeout=20)
-            except Exception: continue
+            try: 
+                response = session.get(target, headers=headers, timeout=20)
+            except Exception: 
+                continue
+                
             soup = BeautifulSoup(response.text, 'html.parser')
             
-            # Paginazione standard (?page=, /page/)
+            # Paginazione standard
             for a in soup.find_all('a', href=True):
                 href = a['href']
                 if ('page' in href or 'paged' in href) and BASE_URL in href and href not in scanned_targets and href not in urls_to_scan:
@@ -133,10 +136,12 @@ def run_scraper(db_conn, config, ollama_config=None):
             
             for link in soup.find_all('a', href=True):
                 if count_elaborati >= MAX_ANNUNCI: break
-                url_completo = link['href'] if link['href'].startswith('http') else f"{BASE_URL}/{link['href'].lstrip('/')}"
                 
-                path_lower = link['href'].lower()
-                # Verifica camper (es. /camper/marca-modello)
+                href_val = link['href']
+                url_completo = href_val if href_val.startswith('http') else f"{BASE_URL}/{href_val.lstrip('/')}"
+                path_lower = href_val.lower()
+                
+                # Verifica camper
                 if not ('/camper/' in path_lower and len(path_lower.split('/')) > 4): continue
                 if any(skip in path_lower for skip in ['noleggio', 'contatti', 'blog', 'news']): continue
                 
@@ -147,24 +152,69 @@ def run_scraper(db_conn, config, ollama_config=None):
                     time.sleep(0.5)
                     det_resp = session.get(url_completo, headers=headers, timeout=20)
                     det_soup = BeautifulSoup(det_resp.text, 'html.parser')
-                    for hidden in det_soup(["script", "style", "nav", "footer", "header"]): hidden.decompose()
+                    
+                    # --- PROBLEMA 1: ESTRAZIONE IMMAGINE ---
+                    img_url = None
+                    # Tentativo 1: OpenGraph meta tag (Molto più affidabile)
+                    og_img = det_soup.find('meta', property='og:image') or det_soup.find('meta', attrs={'name': 'og:image'})
+                    if og_img and og_img.get('content'):
+                        img_url = og_img['content']
+                    
+                    # Tentativo 2: Cerca immagini nella gallery/media
+                    if not img_url:
+                        for img_tag in det_soup.find_all('img'):
+                            src = img_tag.get('src', '')
+                            # Filtra icone, logo e flag
+                            if '/media/' in src or ('/uploads/' in src and not any(k in src for k in ['logo', 'flag', 'icon'])):
+                                img_url = src if src.startswith('http') else f"{BASE_URL}/{src.lstrip('/')}"
+                                break
+
+                    # Prima di decomporre nav/footer, estraiamo informazioni utili come la condizione (Usato/Nuovo)
+                    testo_completo_grezzo = det_soup.get_text(separator=" ")
+                    
+                    # Rimuoviamo tag non necessari per il testo pulito
+                    for hidden in det_soup(["script", "style", "nav", "footer", "header"]): 
+                        hidden.decompose()
                     
                     testo = clean_text(det_soup.get_text(separator="\n"))
+                    
                     if re.search(r'\b(roulotte|noleggio)\b', testo.lower()): continue
                     prezzo = extract_price(testo)
                     if prezzo < 5000: continue
                     
-                    img_url = None
-                    img = det_soup.find('img')
-                    if img and img.get('src'): img_url = img['src']
+                    # --- PROBLEMA 2 & 5: TRONCAMENTO DEL TESTO ---
+                    # Troncamento se trova "Ti potrebbe interessare anche"
+                    if "ti potrebbe interessare anche" in testo.lower():
+                        testo = re.split(r'ti potrebbe interessare anche', testo, flags=re.IGNORECASE)[0]
+                        
+                    # Troncamento se trova la nota aziendale sull'impianto fotovoltaico
+                    if "la nostra società ha installato un impianto fotovoltaico" in testo.lower():
+                        testo = re.split(r'la nostra società ha installato un impianto fotovoltaico', testo, flags=re.IGNORECASE)[0]
+                    
+                    # --- PROBLEMA 3 & 4: CONDIZIONE, KM E CAVALLI ---
+                    # Prepariamo un blocco dati esplicito da passare all'estrattore/LLM
+                    # Aggiungiamo un prefisso al testo inviato a `process_listing`
+                    
+                    testo_estratto_finale = f"--- DETTAGLI ---\n{testo}"[:3000]
                     
                     scraper_utils.process_listing(
-                        db_conn, config, url_completo, SITE_NAME, f"--- DETTAGLI ---\n{testo}"[:3000], 
-                        prezzo, DISTANCE_FROM_SEREGNO, img_url, regex_extract_camper_data, ollama_config
+                        db_conn, 
+                        config, 
+                        url_completo, 
+                        SITE_NAME, 
+                        testo_estratto_finale, 
+                        prezzo, 
+                        DISTANCE_FROM_SEREGNO, 
+                        img_url, 
+                        regex_extract_camper_data, 
+                        ollama_config
                     )
                     count_elaborati += 1
-                except Exception: pass
-    except Exception as e: print(f"[!] Errore {SITE_NAME}: {e}")
+                except Exception as e:
+                    print(f"Errore dettaglio {url_completo}: {e}")
+                    pass
+    except Exception as e: 
+        print(f"[!] Errore {SITE_NAME}: {e}")
 
 if __name__ == "__main__":
     import sys

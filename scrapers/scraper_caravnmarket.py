@@ -2,6 +2,7 @@ import os
 import re
 import time
 import requests
+from urllib.parse import urljoin, urlparse, parse_qs
 from bs4 import BeautifulSoup
 
 import scraper_utils
@@ -103,73 +104,143 @@ def clean_text(text): return re.sub(r'\n\s*\n', '\n', re.sub(r'[ \t]+', ' ', tex
 def run_scraper(db_conn, config, ollama_config=None):
     SITE_NAME = "Caravan Market"
     BASE_URL = "https://www.caravanmarket.com"
-    TARGET_URLS = [
-        f"{BASE_URL}/camper-usati",
-        f"{BASE_URL}/furgonati-usati",
+    
+    # Sezioni principali da esplorare
+    TARGET_CATEGORIES = [
         f"{BASE_URL}/vendita-camper-nuovi",
-        f"{BASE_URL}/van-nuovi"
+        f"{BASE_URL}/camper-usati",
+        f"{BASE_URL}/van-nuovi",
+        f"{BASE_URL}/furgonati-usati",
+        f"{BASE_URL}/motorhome-usati",
+        f"{BASE_URL}/semintegrali-usati"
     ]
-    DISTANCE_FROM_SEREGNO = 190 # Vicenza -> Seregno
+    
+    DISTANCE_FROM_SEREGNO = 190  # Vicenza -> Seregno
     MAX_ANNUNCI = 500
     count_elaborati = 0
+    
     session = requests.Session()
-    headers = {'User-Agent': 'Mozilla/5.0'}
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+    }
+    
+    processed_urls = set()
+    scanned_pages = set()
+    urls_to_scan = list(TARGET_CATEGORIES)
     
     try:
-        processed_urls, urls_to_scan, scanned_targets = set(), list(TARGET_URLS), set()
-        
         while urls_to_scan and count_elaborati < MAX_ANNUNCI:
             target = urls_to_scan.pop(0)
-            if target in scanned_targets: continue
-            scanned_targets.add(target)
+            if target in scanned_pages:
+                continue
+            scanned_pages.add(target)
             
-            print(f"    [{SITE_NAME}] Scansione sezione: {target}...")
-            try: response = session.get(target, headers=headers, timeout=20)
-            except Exception: continue
+            print(f"    [{SITE_NAME}] Scansione pagina: {target}...")
+            
+            try:
+                response = session.get(target, headers=headers, timeout=20)
+                if response.status_code != 200:
+                    continue
+            except Exception as e:
+                print(f"    [{SITE_NAME}] Errore connessione a {target}: {e}")
+                continue
+                
             soup = BeautifulSoup(response.text, 'html.parser')
             
-            # Paginazione
+            # --- 1. Rilevamento Paginazione ---
             for a in soup.find_all('a', href=True):
-                href = a['href']
-                if ('page' in href or 'paged' in href) and BASE_URL in href and href not in scanned_targets and href not in urls_to_scan:
-                    urls_to_scan.append(href)
-            
+                href = a['href'].strip()
+                full_page_url = urljoin(BASE_URL, href)
+                
+                # Accetta solo pagine di paginazione appartenenti alle categorie target
+                if ('page=' in full_page_url or 'paged=' in full_page_url) and any(cat in full_page_url for cat in TARGET_CATEGORIES):
+                    if full_page_url not in scanned_pages and full_page_url not in urls_to_scan:
+                        urls_to_scan.append(full_page_url)
+
+            # --- 2. Rilevamento Annunci Veicoli ---
             for link in soup.find_all('a', href=True):
-                if count_elaborati >= MAX_ANNUNCI: break
-                url_completo = link['href'] if link['href'].startswith('http') else f"{BASE_URL}/{link['href'].lstrip('/')}"
+                if count_elaborati >= MAX_ANNUNCI:
+                    break
+                    
+                raw_href = link['href'].strip()
                 
-                path_lower = link['href'].lower()
-                # Prodotti/veicoli
-                if not ('/prodotto/' in path_lower or '/veicolo/' in path_lower or len(url_completo) > 55): continue
-                if any(skip in path_lower for skip in ['noleggio', 'contatti', 'caravan', 'rimorchi']): continue
+                # Salva solo link validi evitando '...', '#', 'javascript:', etc.
+                if not raw_href or raw_href.startswith(('#', 'javascript:', 'mailto:')):
+                    continue
+                    
+                url_completo = urljoin(BASE_URL, raw_href)
                 
-                if url_completo in processed_urls: continue
+                # Pulisce query string se non necessaria (es. rimozione di ?limit=... o parametri di tracciamento)
+                parsed_url = urlparse(url_completo)
+                path = parsed_url.path
+                
+                # Ignora link a se stessi, paginazioni o risorse di sistema
+                if path in ['/', '/index.php', ''] or 'page=' in url_completo:
+                    continue
+                    
+                # Regola di Matching Annuncio:
+                # Un annuncio valido deve iniziare con una delle categorie e avere una sottopath (il nome del veicolo)
+                is_valid_listing = False
+                for cat in TARGET_CATEGORIES:
+                    cat_path = urlparse(cat).path
+                    if path.startswith(cat_path + '/') and len(path) > len(cat_path) + 1:
+                        is_valid_listing = True
+                        break
+                        
+                if not is_valid_listing:
+                    continue
+                    
+                # Parole chiave da ignorare (filtri di navigazione/pagine statiche)
+                path_lower = path.lower()
+                if any(skip in path_lower for skip in [
+                    'noleggio', 'contatti', 'caravan', 'rimorchi', 'accessori', 
+                    'privacy', 'condizioni', 'chi-siamo', 'marchi', 'carrello'
+                ]):
+                    continue
+                    
+                if url_completo in processed_urls:
+                    continue
                 processed_urls.add(url_completo)
                 
+                # --- 3. Elaborazione Dettaglio Annuncio ---
                 try:
                     time.sleep(0.5)
                     det_resp = session.get(url_completo, headers=headers, timeout=20)
+                    if det_resp.status_code != 200:
+                        continue
+                        
                     det_soup = BeautifulSoup(det_resp.text, 'html.parser')
-                    for hidden in det_soup(["script", "style", "nav", "footer", "header"]): hidden.decompose()
                     
+                    # Rimuovi elementi non testuali
+                    for hidden in det_soup(["script", "style", "nav", "footer", "header", "form"]):
+                        hidden.decompose()
+                        
                     testo = clean_text(det_soup.get_text(separator="\n"))
-                    if re.search(r'\b(roulotte|noleggio)\b', testo.lower()): continue
+                    if re.search(r'\b(roulotte|noleggio)\b', testo.lower()):
+                        continue
+                        
                     prezzo = extract_price(testo)
-                    if prezzo < 5000: continue
-                    
+                    if prezzo and prezzo < 5000:
+                        continue
+                        
+                    # Estrazione Immagine principale
                     img_url = None
-                    img = det_soup.find('img')
-                    if img and (img.get('src') or img.get('data-src')):
+                    img = det_soup.find('img', {'src': True}) or det_soup.find('img', {'data-src': True})
+                    if img:
                         src = img.get('src') or img.get('data-src')
-                        img_url = src if src.startswith('http') else f"{BASE_URL}/{src.lstrip('/')}"
-                    
+                        img_url = urljoin(BASE_URL, src)
+                        
                     scraper_utils.process_listing(
-                        db_conn, config, url_completo, SITE_NAME, f"--- DETTAGLI ---\n{testo}"[:3000], 
+                        db_conn, config, url_completo, SITE_NAME, f"--- DETTAGLI ---\n{testo}"[:3000],
                         prezzo, DISTANCE_FROM_SEREGNO, img_url, regex_extract_camper_data, ollama_config
                     )
                     count_elaborati += 1
-                except Exception as e: pass
-    except Exception as e: print(f"[!] Errore {SITE_NAME}: {e}")
+                    
+                except Exception as e:
+                    print(f"    [{SITE_NAME}] Errore elaborazione {url_completo}: {e}")
+                    
+    except Exception as e:
+        print(f"[!] Errore {SITE_NAME}: {e}")
 
 if __name__ == "__main__":
     import sys

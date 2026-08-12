@@ -219,27 +219,36 @@ def run_scraper(db_conn, config, ollama_config=None):
 
     headers = {
         "User-Agent": (
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
-            " (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+            "(KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
         ),
         "Accept": (
-            "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8"
+            "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8"
         ),
         "Accept-Language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
-        "Accept-Encoding": "gzip, deflate, br",
         "Connection": "keep-alive",
         "Upgrade-Insecure-Requests": "1",
     }
 
     session = requests.Session()
+
+    # RIDOTTO TOTAL RETRIES: evita di bloccare l'esecuzione per 10 minuti se l'IP è bannato
     retries = Retry(
-        total=5,
-        backoff_factor=2,
+        total=2,
+        backoff_factor=1,
         status_forcelist=[403, 429, 500, 502, 503, 504, 408],
+        raise_on_status=False
     )
-    session.mount("https://", HTTPAdapter(max_retries=retries))
-    session.mount("http://", HTTPAdapter(max_retries=retries))
+    
+    adapter = HTTPAdapter(max_retries=retries)
+    session.mount("https://", adapter)
+    session.mount("http://", adapter)
     session.headers.update(headers)
+
+    # Se configurato nei settings, imposta un proxy (utile se GitHub Actions viene bloccato)
+    proxy_url = config.get("PROXY_URL") if isinstance(config, dict) else None
+    if proxy_url:
+        session.proxies = {"http": proxy_url, "https": proxy_url}
 
     try:
         processed_detail_urls = set()
@@ -259,8 +268,14 @@ def run_scraper(db_conn, config, ollama_config=None):
             print(f"    [{SITE_NAME}] Scansione pagina catalogo: {target}...")
 
             try:
-                response = session.get(target, timeout=30)
+                # MODIFICA CHIAVE: (connect_timeout, read_timeout)
+                # Se la connessione fallisce in 5 sec (es. IP bloccato su GitHub Actions),
+                # si interrompe subito senza far scadere la sessione Turso/Hrana DB.
+                response = session.get(target, timeout=(5, 20))
                 response.raise_for_status()
+            except requests.exceptions.ConnectTimeout:
+                print(f"    [!] Timeout Connessione su {target}. Probabile blocco IP DataCenter/GitHub Actions.")
+                continue
             except Exception as e:
                 print(
                     f"    [!] Errore durante il caricamento della pagina {target}: {e}"
@@ -350,7 +365,7 @@ def run_scraper(db_conn, config, ollama_config=None):
                 # Fetch della pagina di DETTAGLIO del veicolo
                 try:
                     time.sleep(1.5)  # Delay per evitare blocchi/rate limiting
-                    det_resp = session.get(url_completo, timeout=20)
+                    det_resp = session.get(url_completo, timeout=(5, 15))
                     det_soup = BeautifulSoup(det_resp.text, "html.parser")
 
                     # Recupera immagine di dettaglio se non trovata nella card

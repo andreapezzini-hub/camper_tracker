@@ -2,6 +2,7 @@ import os
 import re
 import time
 import requests
+from urllib.parse import urljoin
 from bs4 import BeautifulSoup
 import scraper_utils
 
@@ -180,6 +181,73 @@ def extract_price(text):
 def clean_text(text):
     return re.sub(r"\n\s*\n", "\n", re.sub(r"[ \t]+", " ", text)).strip()
 
+def extract_featured_image(det_soup, base_url):
+    """Estrae l'immagine principale dell'annuncio gestendo WordPress, OG tags,
+
+    srcset, tag picture e gallerie lightbox.
+    """
+    blacklisted = ["logo", "icon", "banner", "avatar", "placeholder", "default"]
+
+    def is_valid_url(url):
+        if not url or url.startswith("data:"):
+            return False
+        url_lower = url.lower()
+        if any(b in url_lower for b in blacklisted):
+            return False
+        return True
+
+    def make_full_url(url):
+        return url if url.startswith("http") else urljoin(base_url, url)
+
+    # 1. PRIORITÀ: Meta tag Open Graph o Twitter Card (il metodo più affidabile su WP)
+    og_img = det_soup.find("meta", property="og:image") or det_soup.find(
+        "meta", attrs={"name": "twitter:image"}
+    )
+    if og_img and og_img.get("content"):
+        candidate = og_img["content"].strip()
+        if is_valid_url(candidate):
+            return make_full_url(candidate)
+
+    # 2. PRIORITÀ: Link della galleria / Lightbox (tag <a href="...wp-content/uploads/...">)
+    for a in det_soup.find_all("a", href=True):
+        href = a["href"].strip()
+        if "/wp-content/uploads/" in href and re.search(
+            r"\.(webp|jpg|jpeg|png)(\?.*)?$", href, re.IGNORECASE
+        ):
+            if is_valid_url(href):
+                return make_full_url(href)
+
+    # 3. PRIORITÀ: Scansione <img> e <source> (supporto srcset e data-attributes)
+    for elem in det_soup.find_all(["img", "source"]):
+        # Raccoglie tutti i possibili attributi dove WP/Elementor nasconde l'URL
+        candidates = []
+
+        # Attributi srcset / data-srcset (spesso contengono "URL 1024w, URL 300w")
+        for attr in ["srcset", "data-srcset", "data-lazy-srcset"]:
+            srcset_val = elem.get(attr)
+            if srcset_val:
+                # Prende il primo URL dal valore srcset
+                parts = srcset_val.split(",")
+                for part in parts:
+                    url_part = part.strip().split(" ")[0]
+                    if url_part:
+                        candidates.append(url_part)
+
+        # Attributi src classici
+        for attr in ["data-src", "data-lazy-src", "data-original", "src"]:
+            val = elem.get(attr)
+            if val:
+                candidates.append(val)
+
+        for candidate in candidates:
+            candidate = candidate.strip()
+            if not is_valid_url(candidate):
+                continue
+
+            if "/wp-content/uploads/" in candidate:
+                return make_full_url(candidate)
+
+    return None
 
 def run_scraper(db_conn, config, ollama_config=None):
     SITE_NAME = "Camper Novara"
@@ -282,6 +350,8 @@ def run_scraper(db_conn, config, ollama_config=None):
                                 else f"{BASE_URL}/{candidate.lstrip('/')}"
                             )
                             break
+                    # --- ESTRAZIONE IMMAGINI (Integrazione della nuova funzione) ---
+                    img_url = extract_featured_image(det_soup, BASE_URL)
 
                     # Pulizia DOM per estrazione testo
                     for hidden in det_soup(

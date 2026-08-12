@@ -2,6 +2,7 @@ import os
 import re
 import time
 import requests
+from urllib.parse import urljoin
 from bs4 import BeautifulSoup
 
 import scraper_utils
@@ -101,73 +102,202 @@ def extract_price(text):
 def clean_text(text): return re.sub(r'\n\s*\n', '\n', re.sub(r'[ \t]+', ' ', text)).strip()
 
 def run_scraper(db_conn, config, ollama_config=None):
-    SITE_NAME = "Grosso Vacanze"
-    BASE_URL = "https://www.grossovacanze.com"
-    TARGET_URLS = [
-        f"{BASE_URL}/camper-usati/",
-        f"{BASE_URL}/camper-nuovi/"
-    ]
-    DISTANCE_FROM_SEREGNO = 180 # Genola (CN) -> Seregno
-    MAX_ANNUNCI = 500
-    count_elaborati = 0
-    session = requests.Session()
-    headers = {'User-Agent': 'Mozilla/5.0'}
-    
-    try:
-        processed_urls, urls_to_scan, scanned_targets = set(), list(TARGET_URLS), set()
-        
-        while urls_to_scan and count_elaborati < MAX_ANNUNCI:
-            target = urls_to_scan.pop(0)
-            if target in scanned_targets: continue
-            scanned_targets.add(target)
-            
-            print(f"    [{SITE_NAME}] Scansione sezione: {target}...")
-            try: response = session.get(target, headers=headers, timeout=20)
-            except Exception: continue
-            soup = BeautifulSoup(response.text, 'html.parser')
-            
-            # Paginazione
-            for a in soup.find_all('a', href=True):
-                href = a['href']
-                if ('page' in href or 'paged' in href) and BASE_URL in href and href not in scanned_targets and href not in urls_to_scan:
-                    urls_to_scan.append(href)
-            
-            for link in soup.find_all('a', href=True):
-                if count_elaborati >= MAX_ANNUNCI: break
-                url_completo = link['href'] if link['href'].startswith('http') else f"{BASE_URL}/{link['href'].lstrip('/')}"
-                
-                path_lower = link['href'].lower()
-                # Verifica camper
-                if not ('/veicolo/' in path_lower or '/prodotto/' in path_lower or '/camper/' in path_lower or len(url_completo) > 50): continue
-                if any(skip in path_lower for skip in ['noleggio', 'contatti', 'blog', 'news', 'officina', 'accessori']): continue
-                
-                if url_completo in processed_urls: continue
-                processed_urls.add(url_completo)
-                
-                try:
-                    time.sleep(0.5)
-                    det_resp = session.get(url_completo, headers=headers, timeout=20)
-                    det_soup = BeautifulSoup(det_resp.text, 'html.parser')
-                    for hidden in det_soup(["script", "style", "nav", "footer", "header"]): hidden.decompose()
-                    
-                    testo = clean_text(det_soup.get_text(separator="\n"))
-                    if re.search(r'\b(roulotte|noleggio|caravan)\b', testo.lower()): continue
-                    prezzo = extract_price(testo)
-                    if prezzo < 5000: continue
-                    
-                    img_url = None
-                    img = det_soup.find('img')
-                    if img and (img.get('src') or img.get('data-src')):
-                        src = img.get('src') or img.get('data-src')
-                        img_url = src if src.startswith('http') else f"{BASE_URL}/{src.lstrip('/')}"
-                    
-                    scraper_utils.process_listing(
-                        db_conn, config, url_completo, SITE_NAME, f"--- DETTAGLI ---\n{testo}"[:3000], 
-                        prezzo, DISTANCE_FROM_SEREGNO, img_url, regex_extract_camper_data, ollama_config
-                    )
-                    count_elaborati += 1
-                except Exception as e: pass
-    except Exception as e: print(f"[!] Errore {SITE_NAME}: {e}")
+  SITE_NAME = "Grosso Vacanze"
+  BASE_URL = "https://www.grossovacanze.com"
+  TARGET_URLS = [f"{BASE_URL}/camper-usati/", f"{BASE_URL}/camper-nuovi/"]
+  DISTANCE_FROM_SEREGNO = 180  # Genola (CN) -> Seregno
+  MAX_ANNUNCI = 500
+  count_elaborati = 0
+
+  session = requests.Session()
+  headers = {
+      "User-Agent": (
+          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+          " (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+      ),
+      "Accept-Language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
+  }
+
+  try:
+    processed_urls = set()
+    urls_to_scan = list(TARGET_URLS)
+    scanned_targets = set()
+
+    while urls_to_scan and count_elaborati < MAX_ANNUNCI:
+      target = urls_to_scan.pop(0)
+      if target in scanned_targets:
+        continue
+      scanned_targets.add(target)
+
+      print(f"    [{SITE_NAME}] Scansione sezione: {target}...")
+      try:
+        response = session.get(target, headers=headers, timeout=20)
+        response.raise_for_status()
+      except Exception as e:
+        print(f"    [!] Errore download {target}: {e}")
+        continue
+
+      soup = BeautifulSoup(response.text, "html.parser")
+
+      # 1. Paginazione: trasforma in URL assoluti prima della verifica
+      for a in soup.find_all("a", href=True):
+        href = a["href"].strip()
+        full_href = urljoin(target, href)
+
+        if ("/page/" in full_href or "paged=" in full_href) and (
+            "/camper-usati/" in full_href or "/camper-nuovi/" in full_href
+        ):
+          if (
+              full_href not in scanned_targets
+              and full_href not in urls_to_scan
+          ):
+            urls_to_scan.append(full_href)
+
+      # 2. Estrazione e filtro dei link agli annunci
+      for link in soup.find_all("a", href=True):
+        if count_elaborati >= MAX_ANNUNCI:
+          break
+
+        href = link["href"].strip()
+        url_completo = urljoin(BASE_URL, href)
+
+        # Pulizia URL da fragment e query string
+        url_completo = url_completo.split("#")[0].split("?")[0]
+        if not url_completo.endswith("/"):
+          url_completo += "/"
+
+        path_lower = url_completo.lower()
+
+        # Verifica che sia un link interno a /camper-usati/ o /camper-nuovi/
+        is_usato = "/camper-usati/" in path_lower
+        is_nuovo = "/camper-nuovi/" in path_lower
+
+        if not (is_usato or is_nuovo):
+          continue
+
+        # Escludi le home di sezione, paginazione e categorie/tag
+        if path_lower in [
+            f"{BASE_URL}/camper-usati/",
+            f"{BASE_URL}/camper-nuovi/",
+        ]:
+          continue
+
+        if any(
+            skip in path_lower
+            for skip in [
+                "/page/",
+                "/categoria/",
+                "/tag/",
+                "noleggio",
+                "contatti",
+                "blog",
+                "news",
+                "officina",
+                "accessori",
+                "shop",
+            ]
+        ):
+          continue
+
+        if url_completo in processed_urls:
+          continue
+        processed_urls.add(url_completo)
+
+        # 3. Scaricamento ed elaborazione dell'annuncio
+        try:
+          time.sleep(0.5)
+          det_resp = session.get(url_completo, headers=headers, timeout=20)
+          det_soup = BeautifulSoup(det_resp.text, "html.parser")
+
+          # Rimuovi elementi non necessari per la pulizia del testo
+          for hidden in det_soup(
+              ["script", "style", "nav", "footer", "header"]
+          ):
+            hidden.decompose()
+
+          testo = clean_text(det_soup.get_text(separator="\n"))
+
+          # Filtra solo se è specificatamente una roulotte isolata
+          if re.search(r"\b(roulotte)\b", testo.lower()) and not re.search(
+              r"\b(camper|autocaravan|motorhome|semintegrale|furgonato)\b",
+              testo.lower(),
+          ):
+            continue
+
+          prezzo = extract_price(testo)
+          if prezzo < 5000:
+            continue
+
+          # 4. Estrazione avanzata dell'immagine principale
+          img_url = None
+
+          # Cerca preferibilmente nel contenitore principale della scheda prodotto
+          main_area = (
+              det_soup.find("main")
+              or det_soup.find("article")
+              or det_soup.find(
+                  "div", class_=re.compile(r"product|gallery|entry", re.I)
+              )
+              or det_soup
+          )
+
+          for img in main_area.find_all("img"):
+            # Cerca tra i vari attributi usati da WordPress / Lazy-loading
+            candidate = (
+                img.get("data-lazy-src")
+                or img.get("data-src")
+                or img.get("data-full-src")
+                or img.get("src")
+            )
+
+            # Se usa srcset, prende la prima sorgente
+            if not candidate and img.get("srcset"):
+              candidate = img.get("srcset").split(",")[0].split()[0]
+
+            if candidate:
+              candidate = urljoin(url_completo, candidate.strip())
+
+              # Scarta immagini che sono icone, loghi, avatar o grafiche di sistema
+              if any(
+                  ign in candidate.lower()
+                  for ign in [
+                      "logo",
+                      "icon",
+                      "avatar",
+                      "badge",
+                      "payment",
+                      "svg",
+                      "1x1",
+                  ]
+              ):
+                continue
+
+              img_url = candidate
+              break
+
+          scraper_utils.process_listing(
+              db_conn,
+              config,
+              url_completo,
+              SITE_NAME,
+              f"--- DETTAGLI ---\n{testo}"[:3000],
+              prezzo,
+              DISTANCE_FROM_SEREGNO,
+              img_url,
+              regex_extract_camper_data,
+              ollama_config,
+          )
+          count_elaborati += 1
+          print(
+              f"    [{SITE_NAME}] Elaborato ({count_elaborati}):"
+              f" {url_completo} - €{prezzo}"
+          )
+
+        except Exception as e:
+          print(f"    [!] Errore dettaglio {url_completo}: {e}")
+
+  except Exception as e:
+    print(f"[!] Errore generico {SITE_NAME}: {e}")
 
 if __name__ == "__main__":
     import sys
