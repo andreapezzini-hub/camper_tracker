@@ -36,9 +36,10 @@ def export_to_json(db_conn):
     compatibile la dashboard index.html senza doverla modificare.
     """
     try:
-    # Esegue una query veloce di keep-alive per riaprire lo stream se scaduto
-    db_conn.execute("SELECT 1")
+        # Esegue una query veloce di keep-alive per riaprire lo stream se scaduto
+        db_conn.execute("SELECT 1")
     except Exception as db_err:
+    
     print(f"Riconnessione al DB in corso per timeout stream: {db_err}")
     db_conn = get_db_connection()
     
