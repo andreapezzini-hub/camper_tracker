@@ -244,10 +244,44 @@ def run_scraper(db_conn, config, ollama_config=None):
                     if det_resp.status_code != 200: continue
                     det_soup = BeautifulSoup(det_resp.text, 'html.parser')
                     
-                    # Elimina container laterali e correlati per non prelevare testi e prezzi di altri veicoli
+                    # ----------------------------------------------------
+                    # 1. ESTRAZIONE IMMAGINE (Prima della pulizia/decompose)
+                    # ----------------------------------------------------
+                    img_url = None
+                    
+                    # Approccio 1: Primo link della galleria STM Motors (link all'immagine HD)
+                    main_img_link = det_soup.select_one('a[rel="stm-car-gallery"], a[rel*="stm-car-gallery"], a[data-rel*="stm-car-gallery"]')
+                    if main_img_link and main_img_link.get('href'):
+                        img_url = main_img_link['href']
+                    
+                    # Approccio 2: Immagine dentro il contenitore della galleria o classe wp-post-image
+                    if not img_url:
+                        img_tag = det_soup.select_one('.stm-car-carousels img, .stm-single-image img, img.wp-post-image')
+                        if img_tag:
+                            img_url = img_tag.get('src') or img_tag.get('data-src')
+                    
+                    # Approccio 3: Fallback su Meta Tag OpenGraph (utilissimo per WordPress)
+                    if not img_url:
+                        og_img = det_soup.find('meta', property='og:image')
+                        if og_img and og_img.get('content'):
+                            img_url = og_img['content']
+                    
+                    # Normalizzazione URL dell'immagine
+                    if img_url:
+                        img_url = img_url.strip()
+                        if img_url.startswith('//'):
+                            img_url = f"https:{img_url}"
+                        elif not img_url.startswith('http'):
+                            img_url = f"{BASE_URL}/{img_url.lstrip('/')}"
+                    
+                    # ----------------------------------------------------
+                    # 2. PULIZIA DOM PER ESTRAZIONE TESTO E PREZZI
+                    # ----------------------------------------------------
                     for hidden in det_soup(["script", "style", "nav", "footer", "header", "form", "aside"]): 
                         hidden.decompose()
-                    for elem in det_soup.find_all(class_=re.compile(r'(sidebar|related|suggested|widget|stm-more-cars|similar|stm-car-carousels)', re.I)):
+                    
+                    # Rimosso stm-car-carousels per evitare che distrugga nodi correlati al layout
+                    for elem in det_soup.find_all(class_=re.compile(r'(sidebar|related|suggested|widget|stm-more-cars|similar)', re.I)):
                         elem.decompose()
                     for elem in det_soup.find_all(id=re.compile(r'(sidebar|related|suggested)', re.I)):
                         elem.decompose()
@@ -263,24 +297,6 @@ def run_scraper(db_conn, config, ollama_config=None):
                     
                     if 0 < prezzo < 5000: 
                         continue
-                    
-                    img_url = None
-                    # Cerca il primo link della galleria che punta all'immagine originale
-                    main_img_link = det_soup.find('a', {'rel': 'stm-car-gallery'})
-                    
-                    if main_img_link and main_img_link.get('href'):
-                        img_url = main_img_link['href']
-                    else:
-                        # Fallback se non trova il tag specifico
-                        # Cerca all'interno di un eventuale div contenitore che ha l'immagine principale
-                        # Spesso è l'immagine con classe 'wp-post-image'
-                        img_tag = det_soup.find('img', class_='wp-post-image')
-                        if img_tag:
-                            img_url = img_tag.get('src') or img_tag.get('data-src')
-                    
-                    # Assicurati che img_url sia completo
-                    if img_url and not img_url.startswith('http'):
-                        img_url = f"{BASE_URL}{img_url}"
                     
                     # Rimosso il limite aggressivo dei 3000 caratteri, espanso a 10000 per evitare troncamenti
                     scraper_utils.process_listing(
