@@ -2,6 +2,7 @@ import os
 import re
 import time
 import requests
+from urllib.parse import urljoin
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 from bs4 import BeautifulSoup
@@ -207,149 +208,218 @@ def clean_text_preserve_lists(text):
 def run_scraper(db_conn, config, ollama_config=None):
     SITE_NAME = "Caravan Schiavolin"
     BASE_URL = "https://www.caravanschiavolin.it"
-    TARGET_URLS = [
+
+    # URL di partenza (Sezioni principali)
+    START_URLS = [
         f"{BASE_URL}/veicolo-ricerca-list.php?cat=nuovo",
         f"{BASE_URL}/veicolo-ricerca-list.php?cat=usato",
-        f"{BASE_URL}/offerte-del-mese.php"
+        f"{BASE_URL}/offerte-del-mese.php",
     ]
-    DISTANCE_FROM_SEREGNO = 60 
-    
-    # Aggiunti header completi per mimetizzarsi come browser reale (Chrome)
+    DISTANCE_FROM_SEREGNO = 60
+
     headers = {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
-        'Accept-Language': 'it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7',
-        'Accept-Encoding': 'gzip, deflate, br',
-        'Connection': 'keep-alive',
-        'Upgrade-Insecure-Requests': '1',
-        'Sec-Fetch-Dest': 'document',
-        'Sec-Fetch-Mode': 'navigate',
-        'Sec-Fetch-Site': 'none',
-        'Sec-Fetch-User': '?1',
-        'DNT': '1'
+        "User-Agent": (
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+            " (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"
+        ),
+        "Accept": (
+            "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8"
+        ),
+        "Accept-Language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
+        "Accept-Encoding": "gzip, deflate, br",
+        "Connection": "keep-alive",
+        "Upgrade-Insecure-Requests": "1",
     }
-    
-    # Se continui a ricevere ConnectTimeoutError, decommenta le righe sotto per usare un Proxy 
-    # (è l'unica soluzione se l'IP del tuo server/computer è stato bloccato)
-    # PROXIES = {
-    #     'http': 'http://indirizzo_del_tuo_proxy:porta',
-    #     'https': 'http://indirizzo_del_tuo_proxy:porta'
-    # }
-    PROXIES = None
-    
-    # Configurazione Session con Retry automatici (inclusi gli errori 403 e 429 da firewall)
+
     session = requests.Session()
-    retries = Retry(total=5, backoff_factor=2, status_forcelist=[403, 429, 500, 502, 503, 504, 408])
-    session.mount('https://', HTTPAdapter(max_retries=retries))
-    session.mount('http://', HTTPAdapter(max_retries=retries))
+    retries = Retry(
+        total=5,
+        backoff_factor=2,
+        status_forcelist=[403, 429, 500, 502, 503, 504, 408],
+    )
+    session.mount("https://", HTTPAdapter(max_retries=retries))
+    session.mount("http://", HTTPAdapter(max_retries=retries))
     session.headers.update(headers)
-    
-    if PROXIES:
-        session.proxies.update(PROXIES)
-    
+
     try:
-        processed_urls = set()
+        processed_detail_urls = set()
+        pages_to_visit = list(START_URLS)
+        visited_pages = set()
         count_elaborati = 0
-        
-        for target in TARGET_URLS:
-            print(f"    [{SITE_NAME}] Scansione catalogo: {target}...")
+
+        # ----------------------------------------------------
+        # FASE 1: Scansione cataloghi e gestione paginazione
+        # ----------------------------------------------------
+        while pages_to_visit:
+            target = pages_to_visit.pop(0)
+            if target in visited_pages:
+                continue
+
+            visited_pages.add(target)
+            print(f"    [{SITE_NAME}] Scansione pagina catalogo: {target}...")
+
             try:
-                # Timeout alzato a 30 secondi
                 response = session.get(target, timeout=30)
                 response.raise_for_status()
             except Exception as e:
-                print(f"    [!] Errore durante il caricamento del catalogo {target}: {e}")
+                print(
+                    f"    [!] Errore durante il caricamento della pagina {target}: {e}"
+                )
                 continue
-                
-            soup = BeautifulSoup(response.text, 'html.parser')
-            
-            # Supporto per URL legacy (id=) e nuovi permalink SEO-friendly (veicolo/)
-            links_veicoli = soup.find_all('a', href=re.compile(r'veicolo-dettaglio\.php\?id=\d+|veicolo/\d+'))
-            
-            for link in links_veicoli:
-                url_parziale = link['href']
-                url_completo = BASE_URL + "/" + url_parziale if not url_parziale.startswith('http') else url_parziale
-                
-                if url_completo in processed_urls: continue
-                
-                container = link.find_parent('div', class_=re.compile(r'item|col-|card')) or link.find_parent('div')
-                if not container: continue
-                
-                testo_card = clean_text_preserve_lists(container.get_text(separator="\n"))
-                
-                # Esclusione caravan/roulotte/noleggio in modo sicuro
-                testo_lower = testo_card.lower()
-                if re.search(r'\b(roulotte|noleggio|noleggi)\b', testo_lower) or "categoria caravan" in testo_lower or "tipo: caravan" in testo_lower:
+
+            soup = BeautifulSoup(response.text, "html.parser")
+
+            # 1.1 Estrazione link alle PAGINE SUCCESSIVE (Paginazione)
+            pagination_links = soup.find_all(
+                "a", href=re.compile(r"veicolo-ricerca-list\.php\?")
+            )
+            for p_link in pagination_links:
+                href = p_link.get("href")
+                if href:
+                    full_p_url = urljoin(BASE_URL, href)
+                    if (
+                        full_p_url not in visited_pages
+                        and full_p_url not in pages_to_visit
+                    ):
+                        pages_to_visit.append(full_p_url)
+
+            # 1.2 Estrazione link di DETTAGLIO VEICOLI
+            candidate_links = soup.find_all(
+                "a",
+                href=re.compile(
+                    r"veicolo-dettaglio|veicolo/|scheda", re.IGNORECASE
+                ),
+            )
+
+            for a_tag in soup.find_all("a"):
+                txt = a_tag.get_text(strip=True).lower()
+                if "dettagli" in txt or "vedi" in txt:
+                    if a_tag not in candidate_links:
+                        candidate_links.append(a_tag)
+
+            # ----------------------------------------------------
+            # FASE 2: Analisi dei singoli veicoli trovati
+            # ----------------------------------------------------
+            for link in candidate_links:
+                url_parziale = link.get("href")
+                if not url_parziale or url_parziale.startswith("#"):
                     continue
-                
-                prezzo = extract_price(testo_card)
-                processed_urls.add(url_completo)
-                
-                print(f"    [{SITE_NAME}] Analisi: {url_completo}")
-                
+
+                url_completo = urljoin(BASE_URL, url_parziale)
+
+                # Evita di processare due volte lo stesso veicolo
+                if url_completo in processed_detail_urls:
+                    continue
+
+                # Individua la card genitore per estrarre le info preliminari
+                container = (
+                    link.find_parent("div", class_=re.compile(r"col|item|card|box"))
+                    or link.find_parent("div")
+                )
+                testo_card = ""
+                prezzo = 0
                 img_url = None
-                for img_tag in container.find_all('img'):
-                    src = img_tag.get('src') or img_tag.get('data-src')
-                    if src:
-                        img_url = src if src.startswith('http') else f"{BASE_URL}/{src.lstrip('/')}"
-                        break
-                
-                try:
-                    # Delay aumentato a 2 secondi per evitare rate limiting / blocchi IP
-                    time.sleep(2) 
-                    det_resp = session.get(url_completo, timeout=20)
-                    det_soup = BeautifulSoup(det_resp.text, 'html.parser')
-                    
-                    if not img_url:
-                        for img in det_soup.find_all('img'):
-                            src = img.get('src')
-                            if src and 'veicoli' in src.lower():
-                                img_url = src if src.startswith('http') else f"{BASE_URL}/{src.lstrip('/')}"
-                                break
-                    
-                    for hidden in det_soup(["script", "style", "nav", "footer", "header"]):
-                        hidden.decompose()
-                        
-                    testo_dettaglio = clean_text_preserve_lists(det_soup.get_text(separator="\n"))
-                    testo_dettaglio_lower = testo_dettaglio.lower()
-                    
-                    # Doppio check di sicurezza 
-                    if re.search(r'\b(roulotte|noleggio|noleggi)\b', testo_dettaglio_lower) or "categoria caravan" in testo_dettaglio_lower or "tipo: caravan" in testo_dettaglio_lower:
+
+                if container:
+                    testo_card = clean_text_preserve_lists(
+                        container.get_text(separator="\n")
+                    )
+                    testo_lower = testo_card.lower()
+
+                    # Esclusione precoce: caravan, roulotte e noleggio
+                    if (
+                        re.search(r"\b(roulotte|noleggio|noleggi)\b", testo_lower)
+                        or "categoria caravan" in testo_lower
+                        or "tipo: caravan" in testo_lower
+                    ):
+                        processed_detail_urls.add(url_completo)
                         continue
-                        
+
+                    prezzo = extract_price(testo_card)
+
+                    # Immagine dalla card
+                    for img_tag in container.find_all("img"):
+                        src = img_tag.get("src") or img_tag.get("data-src")
+                        if src and not src.endswith(".svg"):
+                            img_url = urljoin(BASE_URL, src)
+                            break
+
+                processed_detail_urls.add(url_completo)
+                print(f"    [{SITE_NAME}] Analisi scheda: {url_completo}")
+
+                # Fetch della pagina di DETTAGLIO del veicolo
+                try:
+                    time.sleep(1.5)  # Delay per evitare blocchi/rate limiting
+                    det_resp = session.get(url_completo, timeout=20)
+                    det_soup = BeautifulSoup(det_resp.text, "html.parser")
+
+                    # Recupera immagine di dettaglio se non trovata nella card
+                    if not img_url:
+                        for img in det_soup.find_all("img"):
+                            src = img.get("src") or img.get("data-src")
+                            if src and "veicol" in src.lower() and not src.endswith(".svg"):
+                                img_url = urljoin(BASE_URL, src)
+                                break
+
+                    # Pulizia tag non necessari per l'estrazione testo
+                    for hidden in det_soup(
+                        ["script", "style", "nav", "footer", "header"]
+                    ):
+                        hidden.decompose()
+
+                    testo_dettaglio = clean_text_preserve_lists(
+                        det_soup.get_text(separator="\n")
+                    )
+                    testo_dettaglio_lower = testo_dettaglio.lower()
+
+                    # Check di sicurezza su categoria/esclusioni nel dettaglio
+                    if (
+                        re.search(r"\b(roulotte|noleggio|noleggi)\b", testo_dettaglio_lower)
+                        or "categoria caravan" in testo_dettaglio_lower
+                        or "tipo: caravan" in testo_dettaglio_lower
+                    ):
+                        continue
+
                     if prezzo == 0:
                         prezzo = extract_price(testo_dettaglio)
-                        
-                    if prezzo < 5000:
+
+                    if prezzo < 5000:  # Salta annunci sotto i 5.000€
                         continue
-                        
-                    testo_finale = f"{testo_card}\n\n--- DETTAGLI ---\n{testo_dettaglio}"
-                    
+
+                    testo_finale = (
+                        f"{testo_card}\n\n--- DETTAGLI ---\n{testo_dettaglio}"
+                    )
+
                 except Exception as inner_e:
-                    print(f"      [!] Impossibile leggere dettaglio: {inner_e}. Fallback su dati card.")
+                    print(
+                        f"      [!] Impossibile leggere dettaglio: {inner_e}. Fallback su dati card."
+                    )
                     testo_finale = testo_card
 
-                # Utilizziamo la funzione modulare passando la NOSTRA funzione RegEx
+                # Salva/Elabora il veicolo
                 scraper_utils.process_listing(
-                    db_conn=db_conn, 
-                    config=config, 
-                    url=url_completo, 
-                    site_name=SITE_NAME, 
-                    raw_text=testo_finale, 
-                    current_price=prezzo, 
-                    distance=DISTANCE_FROM_SEREGNO, 
+                    db_conn=db_conn,
+                    config=config,
+                    url=url_completo,
+                    site_name=SITE_NAME,
+                    raw_text=testo_finale,
+                    current_price=prezzo,
+                    distance=DISTANCE_FROM_SEREGNO,
                     img_url=img_url,
                     regex_extractor_func=regex_extract_camper_data,
-                    ollama_config=ollama_config
+                    ollama_config=ollama_config,
                 )
-                
+
                 count_elaborati += 1
-                if count_elaborati >= 500: # Modifica qui per testare più o meno annunci
+                if count_elaborati >= 500:
                     break
-                    
+
+            if count_elaborati >= 500:
+                break
+
     except Exception as e:
         print(f"    [!] Errore fatale nello scraper {SITE_NAME}: {e}")
-
+    
 if __name__ == "__main__":
     import sys
     # Aggiungiamo la directory superiore per poter importare scraper_utils e score_calculator se eseguiamo da /scrapers
