@@ -51994,11 +51994,15 @@
             "modello": "",
             "allestimento": "",
             "distanza_seregno": 180,
-            "prezzo_attuale": 14900.0,
+            "prezzo_attuale": 22900.0,
             "storico_prezzi": [
                 {
                     "data": "2026-08-13",
                     "prezzo": 14900.0
+                },
+                {
+                    "data": "2026-08-13",
+                    "prezzo": 22900.0
                 }
             ],
             "dati_tecnici": {
