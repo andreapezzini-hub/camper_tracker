@@ -26,31 +26,32 @@ def regex_extract_camper_data(raw_text, current_price, db_conn):
     km = None
     is_nuovo = False
     
-    # Lettura rigorosa dei KM
-    match_km = re.search(r'\b(?:km|chilometri|chilometraggio)\s*[:\-]?\s*(\d{1,3}(?:\.\d{3})+|\d{1,6})\b', testo)
-    if not match_km:
-        match_km = re.search(r'\b(\d{1,3}(?:\.\d{3})+|\d{1,6})\s*(?:km|chilometri)\b', testo)
-        
+    # 1. Controllo primario tramite Keyword dirette nel testo (molto più affidabile)
+    testo_lower = testo.lower()
+
+    if "caratteristiche del camper nuovo" in testo_lower or "camper nuovo" in testo_lower:
+        is_nuovo = True
+    elif "caratteristiche del camper usato" in testo_lower or "camper usato" in testo_lower:
+        is_nuovo = False
+    else:
+        # 2. Fallback sul controllo KM se il tipo non è esplicito nel testo
+        # Pulisce/ignora frasi promozionali del footer (es. "10.000 veicoli")
+        testo_pulito = re.sub(r'10\.?000\s*(?:veicoli|euro|€)', '', testo, flags=re.IGNORECASE)
+
+        # Regex rigorosa: "KM: 15.000", "KM 15000", "15.000 km", "15000 chilometri"
+        # Utilizza boundary ed evita di prendere numeri isolati senza indicatore KM adiacente
+        match_km = re.search(r'(?:km|chilometri|chilometraggio)\s*[:\-]?\s*(\d{1,3}(?:\.\d{3})+|\d{1,6})\b|\b(\d{1,3}(?:\.\d{3})+|\d{1,6})\s*(?:km|chilometri)\b', testo_pulito, re.IGNORECASE)
+
     if match_km:
+        # Estrae il gruppo valorizzato
         val = match_km.group(1) if match_km.group(1) else match_km.group(2)
         km = int(val.replace('.', ''))
-        # Se ha più di 1000 km, lo consideriamo di base usato
-        if km > 1000:
-            is_nuovo = False
-        else:
-            is_nuovo = True
-            
-    # Ricerca di etichette esplicite nel testo (ignora la semplice parola "nuovo" per colpa dei footer del sito)
-    if re.search(r'caratteristiche del camper nuovo', testo) or re.search(r'\b(?:condizioni|condizione|stato)\s*[:\-]?\s*nuovo\b', testo) or 'da immatricolare' in testo:
-        is_nuovo = True
-        if km is None:
-            km = 0
-    elif re.search(r'caratteristiche del camper usato', testo) or re.search(r'\b(?:condizioni|condizione|stato)\s*[:\-]?\s*usato\b', testo):
-        is_nuovo = False
         
-    # Annulla anno falso positivo (es. 1996) se il camper è esplicitamente nuovo
-    if is_nuovo and anno and anno < 2023:
-        anno = None
+        # Considera usato solo se i km superano la soglia (es. 1000 km)
+        is_nuovo = False if km > 1000 else True
+    else:
+        # Se non vengono specificati i KM nel testo, di norma per i camper si tratta di un NUOVO
+        is_nuovo = True
         
     # 3. TIPOLOGIA
     tipo_furgonato = bool(re.search(r'(?:\r?\n|\r|\s)(van|furgonat[oi]|camper puro)', testo))
@@ -418,8 +419,8 @@ def run_scraper(db_conn, config, ollama_config=None):
                                         break
                     
                     testo_finale = f"--- DETTAGLI ---\n{testo_dettaglio}"
-                    if len(testo_finale) > 3000:
-                        testo_finale = testo_finale[:3000]
+                    if len(testo_finale) > 8000:
+                        testo_finale = testo_finale[:8000]
 
                     scraper_utils.process_listing(
                         db_conn=db_conn, 
