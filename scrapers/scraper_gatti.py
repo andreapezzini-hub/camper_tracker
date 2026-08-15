@@ -1,7 +1,7 @@
 import os
 import re
 import time
-import requests
+from curl_cffi import requests
 from urllib.parse import urljoin, urlparse
 from bs4 import BeautifulSoup
 
@@ -160,149 +160,112 @@ def run_scraper(db_conn, config, ollama_config=None):
     SITE_NAME = "Giorgio Gatti"
     BASE_URL = "https://www.giorgiogatti.info"
     
-    # URL di destinazione corretti del tema (con supporto sia ai filtri che all'archivio listings)
     TARGET_URLS = [
-        f"{BASE_URL}/listings/",
-        f"{BASE_URL}/?taxonomy=condition&term=used-cars",
-        f"{BASE_URL}/?taxonomy=condition&term=new-cars"
+        f"{BASE_URL}/inventory/?condition=used-cars",
+        f"{BASE_URL}/inventory/?condition=new-cars",
+        f"{BASE_URL}/inventory/?condition=destocking",
+        f"{BASE_URL}/listings/"
     ]
     
-    DISTANCE_FROM_SEREGNO = 130 # S. Michele A. -> Seregno
+    DISTANCE_FROM_SEREGNO = 130
     MAX_ANNUNCI = 500
     count_elaborati = 0
     
-    # Header completo da vero browser per superare il blocco 403
-    headers = {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8',
-        'Accept-Language': 'it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7',
-        'Accept-Encoding': 'gzip, deflate, br',
-        'Connection': 'keep-alive',
-        'Upgrade-Insecure-Requests': '1',
-        'Sec-Fetch-Dest': 'document',
-        'Sec-Fetch-Mode': 'navigate',
-        'Sec-Fetch-Site': 'none',
-        'Sec-Fetch-User': '?1'
-    }
+    # Crea una sessione che impersona in tutto e per tutto Chrome 124 a livello TLS/HTTP2
+    session = requests.Session(impersonate="chrome124")
     
-    # Se continui ad avere 403, usa: session = cloudscraper.create_scraper()
-    session = requests.Session()
-    session.headers.update(headers)
+    processed_urls = set()
+    urls_to_scan = list(TARGET_URLS)
+    scanned_targets = set()
     
-    try:
-        processed_urls = set()
-        urls_to_scan = list(TARGET_URLS)
-        scanned_targets = set()
+    while urls_to_scan:
+        if count_elaborati >= MAX_ANNUNCI:
+            break
+            
+        target = clean_url(urls_to_scan.pop(0))
+        if target in scanned_targets: 
+            continue
+        scanned_targets.add(target)
         
-        while urls_to_scan:
-            if count_elaborati >= MAX_ANNUNCI:
-                break
-                
-            target = urls_to_scan.pop(0)
-            target = clean_url(target)
-            
-            if target in scanned_targets: 
+        print(f"    [{SITE_NAME}] Scansione sezione: {target}...")
+        try:
+            # timeout in secondi e gestione automatica dei reindirizzamenti
+            response = session.get(target, timeout=15)
+            if response.status_code != 200:
+                print(f"    [!] Errore HTTP {response.status_code} su {target}")
                 continue
-            scanned_targets.add(target)
+        except Exception as e:
+            print(f"    [!] Errore connessione a {target}: {e}")
+            continue
             
-            print(f"    [{SITE_NAME}] Scansione sezione: {target}...")
+        soup = BeautifulSoup(response.text, 'html.parser')
+        
+        # Paginazione
+        for a in soup.find_all('a', href=True):
+            href = clean_url(a['href'])
+            url_pag = urljoin(target, href)
+            if ('page' in url_pag or 'paged' in url_pag) and BASE_URL in url_pag:
+                if url_pag not in scanned_targets and url_pag not in urls_to_scan:
+                    urls_to_scan.append(url_pag)
+        
+        # Link Annunci
+        for link in soup.find_all('a', href=True):
+            if count_elaborati >= MAX_ANNUNCI: break
+            
+            href = clean_url(link['href'])
+            url_completo = urljoin(target, href)
+            
+            if BASE_URL not in url_completo or url_completo.endswith('#'): 
+                continue
+            
+            path_lower = urlparse(url_completo).path.lower()
+            skip_words = ['chi-siamo', 'contatti', 'dove', 'noleggio', 'officina', 'rimorchi', 'privacy']
+            if any(skip in path_lower for skip in skip_words) or url_completo in scanned_targets: 
+                continue
+            
+            is_vehicle = ('/listings/' in path_lower and path_lower != '/listings/') or 'veicolo' in path_lower
+            if not is_vehicle or url_completo in processed_urls: 
+                continue
+                
+            processed_urls.add(url_completo)
+            print(f"    [{SITE_NAME}] Check URL: {url_completo}")
+            
             try:
-                response = fetch_url_with_retry(session, target, headers=headers)
-                if not response or response.status_code != 200:
-                    continue
-            except Exception as e:
-                print(f"    [!] Errore connessione a {target}: {e}")
-                continue
-                
-            soup = BeautifulSoup(response.text, 'html.parser')
-            
-            # --- 1. Estrazione Paginazione ---
-            for a in soup.find_all('a', href=True):
-                href = clean_url(a['href'])
-                url_pag = urljoin(target, href)
-                
-                # Cerca link con /page/ o paged nei risultati
-                if ('/page/' in url_pag or 'paged=' in url_pag) and BASE_URL in url_pag:
-                    if url_pag not in scanned_targets and url_pag not in urls_to_scan:
-                        urls_to_scan.append(url_pag)
-            
-            # --- 2. Estrazione Link Annunci ---
-            for link in soup.find_all('a', href=True):
-                if count_elaborati >= MAX_ANNUNCI: 
-                    break
-                
-                href = clean_url(link['href'])
-                url_completo = urljoin(target, href)
-                
-                # Ignora domini esterni o anchor link
-                if BASE_URL not in url_completo or url_completo.endswith('#'): 
-                    continue
-                
-                path_lower = urlparse(url_completo).path.lower()
-                
-                # Pagine generali da ignorare
-                skip_words = ['chi-siamo', 'contatti', 'dove', 'noleggio', 'officina', 'rimorchi', 'privacy', 'modern-inventory']
-                if any(skip in path_lower for skip in skip_words) or url_completo in scanned_targets: 
-                    continue
-                
-                # CORREZIONE CRUCIALE: include '/listings/' (struttura URL usata dal sito per i singoli veicoli)
-                is_vehicle = (
-                    '/listings/' in path_lower and path_lower != '/listings/' and not '/page/' in path_lower
-                ) or 'veicolo' in path_lower or 'prodotto' in path_lower
-                
-                if not is_vehicle: 
-                    continue
-                
-                if url_completo in processed_urls: 
-                    continue
-                processed_urls.add(url_completo)
-                
-                print(f"    [{SITE_NAME}] Check URL: {url_completo}")
-                
-                try:
-                    time.sleep(0.5) 
-                    det_resp = fetch_url_with_retry(session, url_completo, headers=headers)
-                    if not det_resp or det_resp.status_code != 200:
-                        continue
-                        
-                    det_soup = BeautifulSoup(det_resp.text, 'html.parser')
+                time.sleep(1) 
+                det_resp = session.get(url_completo, timeout=15)
+                if det_resp.status_code != 200: continue
                     
-                    # Pulizia DOM per estrazione testo pulito
-                    for hidden in det_soup(["script", "style", "nav", "footer", "header"]): 
-                        hidden.decompose()
-                    for menu in det_soup.find_all(['div', 'ul'], class_=re.compile(r'menu|nav|footer|sidebar', re.I)): 
-                        menu.decompose()
-                        
-                    testo_dettaglio = clean_text_preserve_lists(det_soup.get_text(separator="\n"))
-                    if re.search(r'\b(roulotte|noleggio|caravan)\b', testo_dettaglio.lower()): 
-                        continue
-                        
-                    prezzo = extract_price(testo_dettaglio)
-                    if prezzo < 5000 and "trattativa riservata" not in testo_dettaglio.lower(): 
-                        continue 
+                det_soup = BeautifulSoup(det_resp.text, 'html.parser')
+                
+                for hidden in det_soup(["script", "style", "nav", "footer", "header"]): 
+                    hidden.decompose()
+                
+                testo_dettaglio = clean_text_preserve_lists(det_soup.get_text(separator="\n"))
+                if re.search(r'\b(roulotte|noleggio|caravan)\b', testo_dettaglio.lower()): 
+                    continue
                     
-                    # Estrazione URL Immagine principale
-                    img_url = None
-                    for img in det_soup.find_all('img'):
-                        src = img.get('src') or img.get('data-src') or img.get('data-lazy-src')
-                        if src and ('wp-content/uploads' in src.lower() or 'gallery' in src.lower()):
-                            # Filtra icone/logo piccole
-                            if not any(icon in src.lower() for icon in ['logo', 'icon', 'avatar', 'payment']):
-                                img_url = urljoin(BASE_URL, src)
-                                break
-                    
-                    testo_finale = f"--- DETTAGLI ---\n{testo_dettaglio}"[:3000]
+                prezzo = extract_price(testo_dettaglio)
+                if prezzo < 5000 and "trattativa riservata" not in testo_dettaglio.lower(): 
+                    continue 
+                
+                img_url = None
+                for img in det_soup.find_all('img'):
+                    src = img.get('src') or img.get('data-src') or img.get('data-lazy-src')
+                    if src and ('wp-content/uploads' in src.lower() or 'gallery' in src.lower()):
+                        if not any(icon in src.lower() for icon in ['logo', 'icon', 'avatar']):
+                            img_url = urljoin(BASE_URL, src)
+                            break
+                
+                testo_finale = f"--- DETTAGLI ---\n{testo_dettaglio}"[:3000]
 
-                    scraper_utils.process_listing(
-                        db_conn=db_conn, config=config, url=url_completo, site_name=SITE_NAME, 
-                        raw_text=testo_finale, current_price=prezzo, distance=DISTANCE_FROM_SEREGNO, 
-                        img_url=img_url, regex_extractor_func=regex_extract_camper_data, ollama_config=ollama_config
-                    )
-                    count_elaborati += 1
-                except Exception as inner_e:
-                    print(f"      [!] Impossibile leggere dettaglio: {inner_e}")
-    except Exception as e:
-        print(f"    [!] Errore fatale nello scraper {SITE_NAME}: {e}")
+                scraper_utils.process_listing(
+                    db_conn=db_conn, config=config, url=url_completo, site_name=SITE_NAME, 
+                    raw_text=testo_finale, current_price=prezzo, distance=DISTANCE_FROM_SEREGNO, 
+                    img_url=img_url, regex_extractor_func=regex_extract_camper_data, ollama_config=ollama_config
+                )
+                count_elaborati += 1
+            except Exception as inner_e:
+                print(f"      [!] Errore dettaglio: {inner_e}")
 
 if __name__ == "__main__":
     import sys

@@ -24,34 +24,33 @@ def regex_extract_camper_data(raw_text, current_price, db_conn):
             
     # 2. CHILOMETRI E STATO (NUOVO/USATO)
     km = None
-    is_nuovo = False
-    
-    # 1. Controllo primario tramite Keyword dirette nel testo (molto più affidabile)
+    is_nuovo = None
+    match_km = None  # <-- CORREZIONE 1: Inizializzata qui per evitare UnboundLocalError
+
     testo_lower = testo.lower()
 
+    # Controllo primario tramite Keyword dirette nel testo
     if "caratteristiche del camper nuovo" in testo_lower or "camper nuovo" in testo_lower:
         is_nuovo = True
     elif "caratteristiche del camper usato" in testo_lower or "camper usato" in testo_lower:
         is_nuovo = False
-    else:
-        # 2. Fallback sul controllo KM se il tipo non è esplicito nel testo
-        # Pulisce/ignora frasi promozionali del footer (es. "10.000 veicoli")
-        testo_pulito = re.sub(r'10\.?000\s*(?:veicoli|euro|€)', '', testo, flags=re.IGNORECASE)
 
-        # Regex rigorosa: "KM: 15.000", "KM 15000", "15.000 km", "15000 chilometri"
-        # Utilizza boundary ed evita di prendere numeri isolati senza indicatore KM adiacente
-        match_km = re.search(r'(?:km|chilometri|chilometraggio)\s*[:\-]?\s*(\d{1,3}(?:\.\d{3})+|\d{1,6})\b|\b(\d{1,3}(?:\.\d{3})+|\d{1,6})\s*(?:km|chilometri)\b', testo_pulito, re.IGNORECASE)
+    # Pulisce/ignora frasi promozionali del footer (es. "10.000 veicoli")
+    testo_pulito = re.sub(r'10\.?000\s*(?:veicoli|euro|€)', '', testo, flags=re.IGNORECASE)
+
+    # Cerca i KM in ogni caso
+    match_km = re.search(r'(?:km|chilometri|chilometraggio)\s*[:\-]?\s*(\d{1,3}(?:\.\d{3})+|\d{1,6})\b|\b(\d{1,3}(?:\.\d{3})+|\d{1,6})\s*(?:km|chilometri)\b', testo_pulito, re.IGNORECASE)
 
     if match_km:
-        # Estrae il gruppo valorizzato
         val = match_km.group(1) if match_km.group(1) else match_km.group(2)
         km = int(val.replace('.', ''))
         
-        # Considera usato solo se i km superano la soglia (es. 1000 km)
-        is_nuovo = False if km > 1000 else True
-    else:
-        # Se non vengono specificati i KM nel testo, di norma per i camper si tratta di un NUOVO
-        is_nuovo = True
+    # CORREZIONE 2: Fallback logico per `is_nuovo` solo se le parole chiave NON lo hanno definito
+    if is_nuovo is None:
+        if km is not None:
+            is_nuovo = False if km > 1000 else True
+        else:
+            is_nuovo = True
         
     # 3. TIPOLOGIA
     tipo_furgonato = bool(re.search(r'(?:\r?\n|\r|\s)(van|furgonat[oi]|camper puro)', testo))

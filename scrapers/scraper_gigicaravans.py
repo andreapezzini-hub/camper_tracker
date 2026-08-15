@@ -2,6 +2,7 @@ import os
 import re
 import time
 import requests
+from urllib.parse import urljoin
 from bs4 import BeautifulSoup
 
 import scraper_utils

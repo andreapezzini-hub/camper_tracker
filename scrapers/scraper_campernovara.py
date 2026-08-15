@@ -4,7 +4,8 @@ import time
 import requests
 from urllib.parse import urljoin
 from bs4 import BeautifulSoup
-from playwright.sync_api import sync_playwright
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
 import scraper_utils
 
 
@@ -184,58 +185,62 @@ def clean_text(text):
 
 def get_all_active_listing_urls():
     """
-    Usa Playwright per simulare lo scroll e caricare tutti gli annunci attivi
-    realmente presenti a schermo nelle pagine 'camper-usati' e 'camper-nuovi'.
+    Usa Selenium in modalità headless per effettuare lo scroll
+    sulle pagine di Camper Novara e raccogliere tutti gli annunci attivi.
     """
     target_pages = [
         "https://www.campernovara.it/camper-usati/",
         "https://www.campernovara.it/camper-nuovi/"
     ]
-    
     collected_urls = set()
 
-    with sync_playwright() as p:
-        # Avviamo il browser headless
-        browser = p.chromium.launch(headless=True)
-        page = browser.new_page()
+    # Opzioni obbligatorie per GitHub Actions (senza interfaccia grafica)
+    chrome_options = Options()
+    chrome_options.add_argument("--headless=new")
+    chrome_options.add_argument("--no-sandbox")
+    chrome_options.add_argument("--disable-dev-shm-usage")
+    chrome_options.add_argument("--disable-gpu")
+    chrome_options.add_argument("window-size=1920,1080")
+    chrome_options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36")
 
+    # Inizializzazione Selenium (Selenium 4 gestisce il driver automaticamente)
+    driver = webdriver.Chrome(options=chrome_options)
+
+    try:
         for target_url in target_pages:
-            print(f"[*] Caricamento e scroll automatico su: {target_url}")
-            try:
-                page.goto(target_url, wait_until="networkidle", timeout=30000)
-                
-                # Simuliamo lo scroll progressivo verso il basso per attivare l'infinite scroll/AJAX
-                last_height = page.evaluate("document.body.scrollHeight")
-                for _ in range(10): # Tenta fino a 10 scroll
-                    page.evaluate("window.scrollTo(0, document.body.scrollHeight);")
-                    time.sleep(1.5)  # Attende il caricamento AJAX dei nuovi annunci
-                    new_height = page.evaluate("document.body.scrollHeight")
-                    if new_height == last_height:
-                        break  # Nessun nuovo contenuto caricato, siamo in fondo
-                    last_height = new_height
+            print(f"[*] Navigazione su: {target_url}")
+            driver.get(target_url)
+            time.sleep(3)
 
-                # Estraiamo tutti i link '<a>' presenti nella pagina completamente caricata
-                links = page.eval_on_selector_all("a[href]", "elements => elements.map(e => e.href)")
-                
-                for href in links:
-                    path_lower = href.lower()
-                    # Riconosciamo i link singoli alle schede camper (struttura /camper/nome-modello/)
-                    if "/camper/" in path_lower:
-                        # Escludiamo link di sistema o di navigazione
-                        if not any(skip in path_lower for skip in [
-                            "camper_categoria", "camper-usati", "camper-nuovi", 
-                            "vendi-il-tuo-camper", "marchi-camper", "cart", "checkout"
-                        ]):
-                            collected_urls.add(href.split('?')[0].rstrip('/') + '/')
+            # Scroll progressivo per azionare l'infinite scroll / caricamento AJAX
+            last_height = driver.execute_script("return document.body.scrollHeight")
+            for _ in range(12):
+                driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+                time.sleep(2)
+                new_height = driver.execute_script("return document.body.scrollHeight")
+                if new_height == last_height:
+                    break
+                last_height = new_height
 
-            except Exception as e:
-                print(f"[!] Errore durante lo scroll di {target_url}: {e}")
+            # Estrazione del DOM completo generato da JS
+            soup = BeautifulSoup(driver.page_source, "html.parser")
+            for a in soup.find_all("a", href=True):
+                href = a["href"].strip()
+                path_lower = href.lower()
 
-        browser.close()
+                if "/camper/" in path_lower:
+                    if not any(skip in path_lower for skip in [
+                        "camper_categoria", "camper-usati", "camper-nuovi", 
+                        "vendi-il-tuo-camper", "marchi-camper"
+                    ]):
+                        full_url = href if href.startswith("http") else f"https://www.campernovara.it/{href.lstrip('/')}"
+                        collected_urls.add(full_url.split('?')[0].rstrip('/') + '/')
+
+    finally:
+        driver.quit()
 
     return list(collected_urls)
-
-
+    
 def extract_hd_image_from_detail(det_soup, base_url):
     """
     Estrae l'immagine ad alta risoluzione direttamente dalla pagina del singolo annuncio.
