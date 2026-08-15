@@ -45,7 +45,7 @@ def clear_dati_sito(sito):
 if __name__ == "__main__":
 
     # Variabile per il sito specifico da cancellare (es. 'subito.it', 'bakeca.it', ecc.)
-    SITO_DA_CANCELLARE = "Camperis"
+    SITO_DA_CANCELLARE = "3C Srl"
 
     # Inizializza e ottiene connessione SQLite
     db_conn = get_db_connection()
