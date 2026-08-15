@@ -4,6 +4,7 @@ import time
 import requests
 from urllib.parse import urljoin
 from bs4 import BeautifulSoup
+from playwright.sync_api import sync_playwright
 import scraper_utils
 
 
@@ -181,208 +182,156 @@ def extract_price(text):
 def clean_text(text):
     return re.sub(r"\n\s*\n", "\n", re.sub(r"[ \t]+", " ", text)).strip()
 
-def extract_featured_image(det_soup, base_url):
-    """Estrae l'immagine principale dell'annuncio gestendo WordPress, OG tags,
-
-    srcset, tag picture e gallerie lightbox.
+def get_all_active_listing_urls():
     """
-    blacklisted = ["logo", "icon", "banner", "avatar", "placeholder", "default"]
+    Usa Playwright per simulare lo scroll e caricare tutti gli annunci attivi
+    realmente presenti a schermo nelle pagine 'camper-usati' e 'camper-nuovi'.
+    """
+    target_pages = [
+        "https://www.campernovara.it/camper-usati/",
+        "https://www.campernovara.it/camper-nuovi/"
+    ]
+    
+    collected_urls = set()
 
-    def is_valid_url(url):
-        if not url or url.startswith("data:"):
-            return False
-        url_lower = url.lower()
-        if any(b in url_lower for b in blacklisted):
-            return False
-        return True
+    with sync_playwright() as p:
+        # Avviamo il browser headless
+        browser = p.chromium.launch(headless=True)
+        page = browser.new_page()
 
-    def make_full_url(url):
-        return url if url.startswith("http") else urljoin(base_url, url)
+        for target_url in target_pages:
+            print(f"[*] Caricamento e scroll automatico su: {target_url}")
+            try:
+                page.goto(target_url, wait_until="networkidle", timeout=30000)
+                
+                # Simuliamo lo scroll progressivo verso il basso per attivare l'infinite scroll/AJAX
+                last_height = page.evaluate("document.body.scrollHeight")
+                for _ in range(10): # Tenta fino a 10 scroll
+                    page.evaluate("window.scrollTo(0, document.body.scrollHeight);")
+                    time.sleep(1.5)  # Attende il caricamento AJAX dei nuovi annunci
+                    new_height = page.evaluate("document.body.scrollHeight")
+                    if new_height == last_height:
+                        break  # Nessun nuovo contenuto caricato, siamo in fondo
+                    last_height = new_height
 
-    # 1. PRIORITÀ: Meta tag Open Graph o Twitter Card (il metodo più affidabile su WP)
-    og_img = det_soup.find("meta", property="og:image") or det_soup.find(
-        "meta", attrs={"name": "twitter:image"}
-    )
+                # Estraiamo tutti i link '<a>' presenti nella pagina completamente caricata
+                links = page.eval_on_selector_all("a[href]", "elements => elements.map(e => e.href)")
+                
+                for href in links:
+                    path_lower = href.lower()
+                    # Riconosciamo i link singoli alle schede camper (struttura /camper/nome-modello/)
+                    if "/camper/" in path_lower:
+                        # Escludiamo link di sistema o di navigazione
+                        if not any(skip in path_lower for skip in [
+                            "camper_categoria", "camper-usati", "camper-nuovi", 
+                            "vendi-il-tuo-camper", "marchi-camper", "cart", "checkout"
+                        ]):
+                            collected_urls.add(href.split('?')[0].rstrip('/') + '/')
+
+            except Exception as e:
+                print(f"[!] Errore durante lo scroll di {target_url}: {e}")
+
+        browser.close()
+
+    return list(collected_urls)
+
+
+def extract_hd_image_from_detail(det_soup, base_url):
+    """
+    Estrae l'immagine ad alta risoluzione direttamente dalla pagina del singolo annuncio.
+    """
+    # 1. Tenta prima dal Meta Tag OpenGraph (og:image) che ha quasi sempre l'immagine HD
+    og_img = det_soup.find("meta", property="og:image")
     if og_img and og_img.get("content"):
-        candidate = og_img["content"].strip()
-        if is_valid_url(candidate):
-            return make_full_url(candidate)
+        return og_img["content"]
 
-    # 2. PRIORITÀ: Link della galleria / Lightbox (tag <a href="...wp-content/uploads/...">)
+    # 2. Cerca nel blocco galleria/dettaglio un link <a> verso un'immagine in wp-content/uploads
     for a in det_soup.find_all("a", href=True):
-        href = a["href"].strip()
-        if "/wp-content/uploads/" in href and re.search(
-            r"\.(webp|jpg|jpeg|png)(\?.*)?$", href, re.IGNORECASE
-        ):
-            if is_valid_url(href):
-                return make_full_url(href)
+        href = a["href"]
+        if "/wp-content/uploads/" in href and any(ext in href.lower() for ext in [".jpg", ".jpeg", ".png"]):
+            if not any(k in href.lower() for k in ["logo", "icon", "banner", "avatar", "favicon"]):
+                return href if href.startswith("http") else f"{base_url}/{href.lstrip('/')}"
 
-    # 3. PRIORITÀ: Scansione <img> e <source> (supporto srcset e data-attributes)
-    for elem in det_soup.find_all(["img", "source"]):
-        # Raccoglie tutti i possibili attributi dove WP/Elementor nasconde l'URL
-        candidates = []
-
-        # Attributi srcset / data-srcset (spesso contengono "URL 1024w, URL 300w")
-        for attr in ["srcset", "data-srcset", "data-lazy-srcset"]:
-            srcset_val = elem.get(attr)
-            if srcset_val:
-                # Prende il primo URL dal valore srcset
-                parts = srcset_val.split(",")
-                for part in parts:
-                    url_part = part.strip().split(" ")[0]
-                    if url_part:
-                        candidates.append(url_part)
-
-        # Attributi src classici
-        for attr in ["data-src", "data-lazy-src", "data-original", "src"]:
-            val = elem.get(attr)
-            if val:
-                candidates.append(val)
-
-        for candidate in candidates:
-            candidate = candidate.strip()
-            if not is_valid_url(candidate):
-                continue
-
-            if "/wp-content/uploads/" in candidate:
-                return make_full_url(candidate)
+    # 3. Fallback sui tag <img>
+    for img in det_soup.find_all("img"):
+        candidate = img.get("data-src") or img.get("data-lazy-src") or img.get("src")
+        if candidate and "/wp-content/uploads/" in candidate and not candidate.startswith("data:"):
+            if not any(k in candidate.lower() for k in ["logo", "icon", "banner", "avatar", "favicon"]):
+                return candidate if candidate.startswith("http") else f"{base_url}/{candidate.lstrip('/')}"
 
     return None
+
 
 def run_scraper(db_conn, config, ollama_config=None):
     SITE_NAME = "Camper Novara"
     BASE_URL = "https://www.campernovara.it"
-    TARGET_URLS = [f"{BASE_URL}/camper-usati/", f"{BASE_URL}/camper-nuovi/"]
     DISTANCE_FROM_SEREGNO = 70
     MAX_ANNUNCI = 500
     count_elaborati = 0
+
     session = requests.Session()
-    headers = {"User-Agent": "Mozilla/5.0"}
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+    }
 
-    try:
-        processed_urls, urls_to_scan, scanned_targets = (
-            set(),
-            list(TARGET_URLS),
-            set(),
-        )
+    # FASE 1: Ottenimento degli URL REALI e ATTIVI tramite Playwright
+    annunci_urls = get_all_active_listing_urls()
+    print(f"[*] Trovati {len(annunci_urls)} annunci attivi a schermo!")
 
-        while urls_to_scan and count_elaborati < MAX_ANNUNCI:
-            target = urls_to_scan.pop(0)
-            if target in scanned_targets:
+    processed_urls = set()
+
+    # FASE 2: Parsing veloce dettagli con Requests & BeautifulSoup
+    for url_completo in annunci_urls:
+        if count_elaborati >= MAX_ANNUNCI:
+            break
+
+        if url_completo in processed_urls:
+            continue
+        processed_urls.add(url_completo)
+
+        try:
+            time.sleep(0.5)
+            det_resp = session.get(url_completo, headers=headers, timeout=20)
+            if det_resp.status_code != 200:
                 continue
-            scanned_targets.add(target)
 
-            try:
-                response = session.get(target, headers=headers, timeout=20)
-            except Exception:
+            det_soup = BeautifulSoup(det_resp.text, "html.parser")
+
+            # Estrazione immagine HD dalla scheda del singolo annuncio
+            img_url = extract_hd_image_from_detail(det_soup, BASE_URL)
+
+            # Pulizia DOM
+            for hidden in det_soup(["script", "style", "nav", "footer", "header"]):
+                hidden.decompose()
+
+            testo = clean_text(det_soup.get_text(separator="\n"))
+
+            if re.search(r"\b(roulotte|noleggio)\b", testo.lower()):
                 continue
-            soup = BeautifulSoup(response.text, "html.parser")
 
-            for a in soup.find_all("a", href=True):
-                href = a["href"]
-                if (
-                    "/page/" in href or "paged=" in href or "?page=" in href
-                ) and href not in scanned_targets and href not in urls_to_scan:
-                    full_p_url = (
-                        href
-                        if href.startswith("http")
-                        else f"{BASE_URL}/{href.lstrip('/')}"
-                    )
-                    if (
-                        full_p_url not in scanned_targets
-                        and full_p_url not in urls_to_scan
-                    ):
-                        urls_to_scan.append(full_p_url)
+            prezzo = extract_price(testo)
+            if prezzo and prezzo < 5000:
+                continue
 
-            for link in soup.find_all("a", href=True):
-                if count_elaborati >= MAX_ANNUNCI:
-                    break
-                url_completo = (
-                    link["href"]
-                    if link["href"].startswith("http")
-                    else f"{BASE_URL}/{link['href'].lstrip('/')}"
-                )
+            # Salvataggio
+            scraper_utils.process_listing(
+                db_conn,
+                config,
+                url_completo,
+                SITE_NAME,
+                f"--- DETTAGLI ---\n{testo}"[:3000],
+                prezzo,
+                DISTANCE_FROM_SEREGNO,
+                img_url,
+                regex_extract_camper_data,
+                ollama_config,
+            )
+            count_elaborati += 1
+            print(f"[+] [{count_elaborati}] Processato: {url_completo}")
+            print(f"    -> Immagine HD: {img_url}")
 
-                path_lower = link["href"].lower()
-                if not ("/veicolo/" in path_lower or "/camper/" in path_lower):
-                    continue
-                if any(
-                    skip in path_lower
-                    for skip in [
-                        "noleggio",
-                        "officina",
-                        "contatti",
-                        "camper-usati",
-                        "camper-nuovi",
-                    ]
-                ):
-                    continue
-
-                if url_completo in processed_urls:
-                    continue
-                processed_urls.add(url_completo)
-
-                try:
-                    time.sleep(0.5)
-                    det_resp = session.get(
-                        url_completo, headers=headers, timeout=20
-                    )
-                    det_soup = BeautifulSoup(det_resp.text, "html.parser")
-
-                    # --- ESTRAZIONE IMMAGINI (Lazy-load support) ---
-                    img_url = None
-                    for img in det_soup.find_all("img"):
-                        candidate = (
-                            img.get("data-src")
-                            or img.get("data-lazy-src")
-                            or img.get("src")
-                        )
-                        if not candidate or candidate.startswith("data:"):
-                            continue
-
-                        if "/wp-content/uploads/" in candidate and not any(
-                            k in candidate.lower()
-                            for k in ["logo", "icon", "banner", "avatar"]
-                        ):
-                            img_url = (
-                                candidate
-                                if candidate.startswith("http")
-                                else f"{BASE_URL}/{candidate.lstrip('/')}"
-                            )
-                            break
-                    # --- ESTRAZIONE IMMAGINI (Integrazione della nuova funzione) ---
-                    img_url = extract_featured_image(det_soup, BASE_URL)
-
-                    # Pulizia DOM per estrazione testo
-                    for hidden in det_soup(
-                        ["script", "style", "nav", "footer", "header"]
-                    ):
-                        hidden.decompose()
-
-                    testo = clean_text(det_soup.get_text(separator="\n"))
-                    if re.search(r"\b(roulotte|noleggio)\b", testo.lower()):
-                        continue
-                    prezzo = extract_price(testo)
-                    if prezzo < 5000:
-                        continue
-
-                    scraper_utils.process_listing(
-                        db_conn,
-                        config,
-                        url_completo,
-                        SITE_NAME,
-                        f"--- DETTAGLI ---\n{testo}"[:3000],
-                        prezzo,
-                        DISTANCE_FROM_SEREGNO,
-                        img_url,
-                        regex_extract_camper_data,
-                        ollama_config,
-                    )
-                    count_elaborati += 1
-                except Exception:
-                    pass
-    except Exception as e:
-        print(f"[!] Errore {SITE_NAME}: {e}")
+        except Exception as e:
+            print(f"[!] Errore su {url_completo}: {e}")
 
 
 if __name__ == "__main__":
