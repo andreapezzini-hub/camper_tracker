@@ -88,13 +88,29 @@ def export_to_json(db_conn):
         json.dump(db_json, f, indent=4, ensure_ascii=False)
     print(f"[+] Esportazione completata. {len(annunci)} annunci esportati.")
 
-def load_and_run_scrapers(db_conn):
+def load_and_run_scrapers(db_conn, target_scraper=None):
     if not os.path.exists(SCRAPERS_DIR):
         os.makedirs(SCRAPERS_DIR)
         print(f"Cartella '{SCRAPERS_DIR}' creata.")
         return
 
-    scraper_files = [f for f in glob.glob(os.path.join(SCRAPERS_DIR, "*.py")) if not f.endswith('__init__.py')]
+    # Se target_scraper è valorizzato via env o arg, verifica ed esegui solo quello
+    target = target_scraper or os.environ.get("TARGET_SCRAPER")
+    
+    if target:
+        # Rimuove l'estensione .py se presente
+        target_clean = target[:-3] if target.endswith('.py') else target
+        target_path = os.path.join(SCRAPERS_DIR, f"{target_clean}.py")
+        
+        if not os.path.exists(target_path):
+            print(f"[!] ERRORE: Lo scraper '{target_clean}' specificato non esiste in '{SCRAPERS_DIR}'.")
+            return
+            
+        scraper_files = [target_path]
+        print(f"[*] Esecuzione SINGOLO scraper: {target_clean}")
+    else:
+        scraper_files = [f for f in glob.glob(os.path.join(SCRAPERS_DIR, "*.py")) if not f.endswith('__init__.py')]
+        print(f"[*] Esecuzione di tutti gli scraper ({len(scraper_files)} trovati)...")
 
     if not scraper_files:
         print(f"Nessun file scraper trovato nella cartella '{SCRAPERS_DIR}'.")
@@ -128,7 +144,6 @@ def load_and_run_scrapers(db_conn):
             spec.loader.exec_module(modulo)
             
             if hasattr(modulo, 'run_scraper'):
-                # Passiamo la connessione db SQLite al posto del dizionario
                 modulo.run_scraper(db_conn, config, ollama_config=ollama_config)
             else:
                 print(f"  [!] Il file {file_path} non contiene la funzione 'run_scraper(db_conn, config)'.")
@@ -146,11 +161,14 @@ if __name__ == "__main__":
             pass
     print(f"[*] Avvio CamperTracker AI Engine - {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     
+    # Prende lo scraper target da argomento riga di comando (es. python main_engine.py campernovara)
+    target_from_args = sys.argv[1] if len(sys.argv) > 1 else None
+    
     # Inizializza e ottiene connessione SQLite
     db_conn = get_db_connection()
     
-    # Esegue gli scraper passando la connessione DB
-    load_and_run_scrapers(db_conn)
+    # Esegue gli scraper (passando l'eventuale target)
+    load_and_run_scrapers(db_conn, target_scraper=target_from_args)
     
     # Salva il file JSON per la dashboard web
     export_to_json(db_conn)

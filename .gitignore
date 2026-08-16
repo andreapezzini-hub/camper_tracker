@@ -7,3 +7,6 @@ local.env
 
 # Database SQLite del camper tracker
 camper_tracker.db
+
+# Dati storici locali del camper tracker
+dati_storici.json

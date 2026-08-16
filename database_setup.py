@@ -14,12 +14,17 @@ def get_db_connection():
         return libsql.connect(turso_url, auth_token=turso_token)
     else:
         print("[*] Connessione al database locale SQLite...")
-        if not os.path.exists(DB_FILE):
-            database_setup.setup_database()
-        return sqlite3.connect(DB_FILE)
+        db_exists = os.path.exists(DB_FILE)
+        conn = sqlite3.connect(DB_FILE)
+        
+        # Se il file .db non esisteva, inizializziamo le tabelle
+        if not db_exists:
+            setup_database(conn)
+            
+        return conn
 
-def setup_database():
-    print(f"[*] Inizializzazione database SQLite...")
+def setup_database(db_conn):
+    print(f"[*] Inizializzazione database...")
     cursor = db_conn.cursor()
 
     # Tabella Annunci
@@ -56,7 +61,7 @@ def setup_database():
     )
     ''')
 
-    # Nuova Tabella Catalogo (Aggiornata con i campi estesi dello scraper)
+    # Tabella Catalogo Modelli
     cursor.execute('''
     CREATE TABLE IF NOT EXISTS catalogo_modelli (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -72,8 +77,7 @@ def setup_database():
     )
     ''')
     
-    # NUOVA TABELLA: Proposte Catalogo (Con campi estesi richiesti)
-    # Serve come "area di parcheggio" per i nuovi modelli trovati dall'AI
+    # Tabella Proposte Catalogo
     cursor.execute('''
     CREATE TABLE IF NOT EXISTS proposte_catalogo (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -92,8 +96,7 @@ def setup_database():
     )
     ''')
 
-    # Tentativo di aggiornamento schema se la tabella esisteva già con la vecchia struttura
-    # Lista delle colonne da aggiungere con il rispettivo tipo
+    # Aggiornamento schema per tabelle preesistenti
     colonne_da_aggiungere = [
         "base TEXT",
         "dimensioni TEXT",
@@ -107,11 +110,10 @@ def setup_database():
         try:
             cursor.execute(f"ALTER TABLE catalogo_modelli ADD COLUMN {col}")
         except Exception as e:
-            # Ignora l'errore solo se la colonna esiste già (sia per SQLite standard che per Hrana/libSQL)
             if "duplicate column name" not in str(e):
                 raise e
 
-    # Popolamento iniziale di esempio del catalogo modelli
+    # Popolamento iniziale catalogo
     dati_iniziali = [
         ("Hymer", "B-Class", "644"),
         ("Hymer", "Exsis", "i 580"),
@@ -137,15 +139,15 @@ def setup_database():
         ''', dati_iniziali)
         db_conn.commit()
         print(f"[+] Inseriti {len(dati_iniziali)} modelli nel catalogo.")
-    else:
-        print("[+] Il catalogo modelli contiene già dati.")
-
-    db_conn.close()
+        
     print("[+] Setup del database completato con successo.")
 
 if __name__ == "__main__":
-    
-    # Inizializza e ottiene connessione SQLite
+    # Inizializza e ottiene connessione
     db_conn = get_db_connection()
     
-    setup_database()
+    # Assicura che le tabelle siano create anche se il file .db esisteva già
+    setup_database(db_conn)
+    
+    # Chiude la connessione alla fine dello script
+    db_conn.close()
