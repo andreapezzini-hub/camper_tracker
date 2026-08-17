@@ -24178,11 +24178,15 @@
             "modello": "",
             "allestimento": "",
             "distanza_seregno": 60,
-            "prezzo_attuale": 8202.0,
+            "prezzo_attuale": 0.0,
             "storico_prezzi": [
                 {
                     "data": "2026-08-12",
                     "prezzo": 8202.0
+                },
+                {
+                    "data": "2026-08-17",
+                    "prezzo": 0.0
                 }
             ],
             "dati_tecnici": {
@@ -24233,7 +24237,7 @@
             "status": "VALIDO",
             "motivo_scarto": "",
             "data_scoperta": "2026-08-12",
-            "data_ultimo_aggiornamento": "2026-08-12",
+            "data_ultimo_aggiornamento": "2026-08-17",
             "url_immagine": "EXT:theme/Resources/Public/Assets/img/opengraph.jpg",
             "ai_usata": true,
             "testo_originale": "--- DETTAGLI ---\nIl CaraBus EDITION [FIRE] 600 DQ | WEINSBERG\nCaraBus EDITION [FIRE]\nCaraBus EDITION [FIRE] 600 DQ\nGiorno\nNotte\n5\nN. posti letto\nLetto matrimoniale trasversale, Avere come letto matrimoniale il letto basculante\nTipologie di letto\n599 cm\nLunghezza totale\n205 cm\nLarghezza totale\n282 cm\nAltezza\nfino a 147 kg\nSpazio di carico franco fabbrica\nIl CaraBus EDITION [FIRE] 600 DQ nel dettaglio\nDati tecnici\nScarica i listini prezzi\nVeicolo\nDotazioni di serie\nAccessori opzionali\nPacchetti\nDotazione Di Base\nTelaio\nFIAT\nPotenza del motore\n103 kW / 140 PS\nTrasmissione\nman.\nLunghezza complessiva (cm)\n599\nLarghezza (esterna) (cm)\n205\nLarghezza (interna) (cm)\n187\nAltezza (esterna) (cm)\n282\nAltezza (interna) (cm)\n218\nMassa del veicolo in ordine di marcia (kg)\n2880\nMassa a pieno carico tecnicamente ammissibile (kg)\n3500\nMassa massima degli accessori opzionali (kg)\n147\nMassa rimorchiabile (kg)\n3000\nMassa complessiva tecnicamente ammessa nella configurazione del veicolo a pieno carico\n6500\nPasso (cm)\n403\nMisura pneumatici\n225/75 R 16 C 116 R, 215/70 R 15 C 109 R Allwetterreifen\nMisura cerchi\n6J x 16 H2\nPosti a sedere omologati in marcia\n4\nPosti letto (Nota: H141)\n5\nNumero massimo di possibili posti letto (Nota: H142)\n5\nCinture di sicurezza automatiche con ancoraggio a 3 punti, regolabili in altezza\n2\nNumero massimo di possibili posti omologati dotati di cinture di sicurezza\n4\nScocca\nNumero di finestre a compasso\n5\nSpessore pavimento (mm)\n25\nZona Abitativa\nCintura di sicurezza con ancoraggio a 3 punti fronte marcia\n2\nMisure letto basculante (cm) (Nota: H192)\n176 x 130\nMisure letto EasySlide nel tetto rialzato (cm) (Nota: H192)\n–\nMisure letto dinette (cm) (Nota: H192)\n180 x 70\nMisure letto ospiti - opzione (cm) (Nota: H192)\n180 x 70\nMisure letto nella parte posteriore (cm) (Nota: H192)\n194 x 152/140\nDimensioni letto tetto a soffietto (cm) (Nota: H192)\n–\nLetto singolo\n–\nLetto trasversale\ns\nLetto sollevabile\ns\nAcqua\nVolume serbatoio di recupero acque grigie (litri)\n90\nVolume serbatoio acque chiare (litri) (Nota: H711A,H712D)\n102\nCapacità serbatoio acque chiare in marcia\n20\nCucina\nFrigorifero (litri)\n95\nImpianto Elettrico\nBatteria di servizio (Ah)\n95\nNumero prese 12 V\n1\nNumero prese 230 V\n3\nNumero prese USB\n3\nMostra tutti i dati sul veicolo\nSi prega di prestare attenzione alle informazioni importanti ed alle note nei dati tecnici\nMotorizzazione / Propulsione / Trasmissione / Maggiorazioni Di Portata\nFIAT Ducato 3.500 kg*** MAXI (103 kW / 140 CV); trazione anteriore; Euro 6e-bis (Dipende da: ABH111488, ABH65219, ABH64586)\nCambio manuale a 6 marce\nChassis / Climatizzazione / Multimedia / Sistemi Di Trasporto\nAssali e sistema frenante rinforzati Incluso nell'opzione già selezionata: Cambio automatico a 8 velocità + 25 kg (Dipende da: ABH111497)\nGuida a sinistra\nColore chassis: Bianco\nFari con cornice color nero\nCopertura griglia del radiatore verniciata color nero\nParaurti anteriore verniciato nel colore del veicolo (Dipende da: ABH65222)\nPneumatici da 16\" (Di"
@@ -24310,11 +24314,15 @@
             "modello": "CaraBus",
             "allestimento": "540 MQ",
             "distanza_seregno": 60,
-            "prezzo_attuale": 8202.0,
+            "prezzo_attuale": 0.0,
             "storico_prezzi": [
                 {
                     "data": "2026-08-12",
                     "prezzo": 8202.0
+                },
+                {
+                    "data": "2026-08-17",
+                    "prezzo": 0.0
                 }
             ],
             "dati_tecnici": {
@@ -24365,7 +24373,7 @@
             "status": "VALIDO",
             "motivo_scarto": "",
             "data_scoperta": "2026-08-12",
-            "data_ultimo_aggiornamento": "2026-08-12",
+            "data_ultimo_aggiornamento": "2026-08-17",
             "url_immagine": "EXT:theme/Resources/Public/Assets/img/opengraph.jpg",
             "ai_usata": true,
             "testo_originale": "--- DETTAGLI ---\nIl CaraBus EDITION [FIRE] 540 MQ | WEINSBERG\nCaraBus EDITION [FIRE]\nCaraBus EDITION [FIRE] 540 MQ\nGiorno\nNotte\nfino a 4\nN. posti letto\nLetto matrimoniale trasversale\nTipologie di letto\n541 cm\nLunghezza totale\n205 cm\nLarghezza totale\n258 cm\nAltezza\nfino a 356 kg\nSpazio di carico franco fabbrica\nIl CaraBus EDITION [FIRE] 540 MQ nel dettaglio\nDati tecnici\nScarica i listini prezzi\nVeicolo\nDotazioni di serie\nAccessori opzionali\nPacchetti\nDotazione Di Base\nTelaio\nFIAT\nPotenza del motore\n103 kW / 140 PS\nTrasmissione\nman.\nLunghezza complessiva (cm)\n541\nLarghezza (esterna) (cm)\n205\nLarghezza (interna) (cm)\n187\nAltezza (esterna) (cm)\n258\nAltezza (interna) (cm)\n190\nMassa del veicolo in ordine di marcia (kg)\n2675\nMassa a pieno carico tecnicamente ammissibile (kg)\n3500\nMassa massima degli accessori opzionali (kg)\n355\nMassa rimorchiabile (kg)\n2500\nMassa complessiva tecnicamente ammessa nella configurazione del veicolo a pieno carico\n6000\nPasso (cm)\n345\nMisura pneumatici\n225/75 R 16 C 116 R, 215/70 R 15 C 109 R Allwetterreifen\nMisura cerchi\n6J x 16 H2\nPosti a sedere omologati in marcia\n4\nPosti letto (Nota: H141)\n2\nNumero massimo di possibili posti letto (Nota: H142)\n4\nCinture di sicurezza automatiche con ancoraggio a 3 punti, regolabili in altezza\n2\nNumero massimo di possibili posti omologati dotati di cinture di sicurezza\n4\nScocca\nNumero di finestre a compasso\n5\nSpessore pavimento (mm)\n25\nZona Abitativa\nCintura di sicurezza con ancoraggio a 3 punti fronte marcia\n2\nMisure letto basculante (cm) (Nota: H192)\n–\nMisure letto EasySlide nel tetto rialzato (cm) (Nota: H192)\n–\nMisure letto dinette (cm) (Nota: H192)\n145 x 70\nMisure letto ospiti - opzione (cm) (Nota: H192)\n180 x 70\nMisure letto nella parte posteriore (cm) (Nota: H192)\n194 x 140/125\nDimensioni letto tetto a soffietto (cm) (Nota: H192)\n135 x 200\nLetto singolo\n–\nLetto trasversale\ns\nLetto sollevabile\n–\nAcqua\nVolume serbatoio di recupero acque grigie (litri)\n90\nVolume serbatoio acque chiare (litri) (Nota: H711A,H712D)\n102\nCapacità serbatoio acque chiare in marcia\n20\nCucina\nFrigorifero (litri)\n75\nImpianto Elettrico\nBatteria di servizio (Ah)\n95\nNumero prese 12 V\n1\nNumero prese 230 V\n3\nNumero prese USB\n3\nMostra tutti i dati sul veicolo\nSi prega di prestare attenzione alle informazioni importanti ed alle note nei dati tecnici\nMotorizzazione / Propulsione / Trasmissione / Maggiorazioni Di Portata\nFIAT Ducato 3.500 kg *** (103 kW/140 CV); trazione anteriore; Euro 6e-bis (a seconda della planimetria) (Dipende da: ABH61577, ABH111487)\nCambio manuale a 6 marce\nChassis / Climatizzazione / Multimedia / Sistemi Di Trasporto\nGuida a sinistra\nColore chassis: Bianco\nLamelle dello spoiler (skid-plate) (a seconda della planimetria) (Dipende da: ABH64576, ABH65220)\nFari con cornice color nero\nCopertura griglia del radiatore verniciata color nero\nParaurti anteriore verniciato nel colore del veicolo (Dipende da: ABH65222)\nPneumatici da 16\" (Dipende da: ABH111500, ABH106838)\nPneumatici 4 stagioni. Adatti a tutte "
