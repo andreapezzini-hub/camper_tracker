@@ -65,13 +65,8 @@ def regex_extract_camper_data(raw_text, current_price, db_conn):
     letti_gemelli = bool(re.search(r'letti\s*gemelli|letto\s*gemello', testo))
     letti_a_castello = bool(re.search(r'letti\s*a\s*castello|\bcastello\b', testo))
     
-    # 4. Pannello Solare / Fotovoltaico
     pannelli_solari = bool(re.search(r'pannell[oi]\s*(?:solar[ei]|fotovoltaic[oi])|solare', testo))
-    
-    # 5. Sospensioni ad aria / pneumatiche
     sospensioni_aria = bool(re.search(r'sospension[ei]\s*(?:ad?\s*aria|pneumatic[he])', testo))
-    
-    # 3. Climatizzatore cellula (solo se specificato cellula/abitacolo)
     aria_condizionata_cellula = bool(re.search(r'(?:clima|climatizzatore|aria\s*condizionata)\s*(?:cellula|abitacolo|stazionari[oa]|viti5|truma)', testo))
     
     peso = 3500
@@ -174,124 +169,128 @@ def run_scraper(db_conn, config, ollama_config=None):
                 print(f"[*] Apertura sezione: {base_target_url}")
                 page.goto(base_target_url, wait_until="domcontentloaded", timeout=40000)
                 
-                ha_prossima_pagina = True
-                pagina_corrente = 1
-                
-                while ha_prossima_pagina and count_elaborati < MAX_ANNUNCI:
-                    print(f"   -> Elaborazione Pagina {pagina_corrente} di {condizione_veicolo}...")
+                # Attende che almeno un risultato sia visibile in pagina
+                try:
+                    page.wait_for_selector(".fwpl-result.r1", timeout=15000)
+                except Exception:
+                    print(f"   [!] Nessun annuncio iniziale trovato per {condizione_veicolo}")
+                    continue
+
+                # Clicca "Carica altri risultati" finché il pulsante è visibile e non ha classe .d-none
+                click_count = 0
+                while count_elaborati < MAX_ANNUNCI:
+                    # Cerca il pulsante "Carica altri risultati" specifico di FacetWP
+                    load_more_btn = page.query_selector('.facetwp-load-more')
+                    load_more_wrapper = page.query_selector('.facetwp-facet-load_more')
                     
+                    # Controlla se il wrapper possiede la classe d-none o se il bottone non è più disponibile
+                    if not load_more_btn or not load_more_btn.is_visible():
+                        break
+                        
+                    if load_more_wrapper:
+                        wrapper_class = load_more_wrapper.get_attribute('class') or ''
+                        if 'd-none' in wrapper_class:
+                            break
+
                     try:
-                        page.wait_for_selector(".fwpl-result.r1", timeout=15000)
-                    except Exception:
-                        print(f"   [!] Nessun annuncio trovato in pagina {pagina_corrente}")
+                        click_count += 1
+                        print(f"   [+] Clic su 'Carica altri risultati' (#{click_count})...")
+                        load_more_btn.scroll_into_view_if_needed()
+                        load_more_btn.click()
+                        
+                        # Pausa tattica e attesa del termine caricamento AJAX
+                        time.sleep(1.5)
+                        page.wait_for_selector(".facetwp-loading, #ajax-loader", state="detached", timeout=10000)
+                    except Exception as p_err:
+                        print(f"   [*] Fine espansione risultati o nessun altro elemento disponibile: {p_err}")
                         break
 
-                    html_content = page.content()
-                    soup = BeautifulSoup(html_content, 'html.parser')
-                    
-                    links_pagina = []
-                    for link in soup.find_all('a', href=True):
-                        href_val = link['href']
-                        url_completo = href_val if href_val.startswith('http') else f"{BASE_URL}/{href_val.lstrip('/')}"
-                        
-                        match = re.search(r'/camper/([^/]+)', url_completo.lower())
-                        if not match:
-                            continue
-                            
-                        slug = match.group(1)
-                        if slug in EXCLUDED_SLUGS or slug.startswith('javascript:'):
-                            continue
-                            
-                        if url_completo not in processed_urls:
-                            processed_urls.add(url_completo)
-                            links_pagina.append(url_completo)
-                    
-                    # Elabora tutti i dettagli degli annunci trovati nella pagina corrente
-                    for url_completo in links_pagina:
-                        if count_elaborati >= MAX_ANNUNCI:
-                            break
-                        try:
-                            time.sleep(0.3)
-                            det_resp = session.get(url_completo, headers=headers, timeout=20)
-                            if det_resp.status_code != 200:
-                                continue
-                                
-                            det_soup = BeautifulSoup(det_resp.text, 'html.parser')
-                            
-                            for hidden in det_soup(["script", "style", "nav", "footer", "header"]): 
-                                hidden.decompose()
-                            
-                            testo = clean_text(det_soup.get_text(separator="\n"))
-                            
-                            # Filtro Roulotte/Caravan e Noleggio
-                            if re.search(r'\b(roulotte|caravan|noleggio)\b', testo.lower()): 
-                                continue
-                                
-                            prezzo = extract_price(det_soup)
-                            if prezzo < 5000: 
-                                continue
-                            
-                            img_url = None
-                            og_img = det_soup.find('meta', property='og:image') or det_soup.find('meta', attrs={'name': 'og:image'})
-                            if og_img and og_img.get('content'):
-                                img_url = og_img['content']
-                            
-                            if not img_url:
-                                for img_tag in det_soup.find_all('img'):
-                                    src = img_tag.get('data-src') or img_tag.get('data-lazy-src') or img_tag.get('src', '')
-                                    if ('/media/' in src or '/uploads/' in src) and not any(k in src for k in ['logo', 'flag', 'icon']):
-                                        img_url = src if src.startswith('http') else f"{BASE_URL}/{src.lstrip('/')}"
-                                        break
-                            
-                            if "ti potrebbe interessare anche" in testo.lower():
-                                testo = re.split(r'ti potrebbe interessare anche', testo, flags=re.IGNORECASE)[0]
-                                
-                            if "la nostra società ha installato un impianto fotovoltaico" in testo.lower():
-                                testo = re.split(r'la nostra società ha installato un impianto fotovoltaico', testo, flags=re.IGNORECASE)[0]
-                            
-                            testo_estratto_finale = f"Condizione: {condizione_veicolo}\n--- DETTAGLI ---\n{testo.strip()}"[:3000]
-                            
-                            scraper_utils.process_listing(
-                                db_conn, 
-                                config, 
-                                url_completo, 
-                                SITE_NAME, 
-                                testo_estratto_finale, 
-                                prezzo, 
-                                DISTANCE_FROM_SEREGNO, 
-                                img_url, 
-                                regex_extract_camper_data, 
-                                ollama_config
-                            )
-                            count_elaborati += 1
-                            
-                        except Exception as e:
-                            print(f"Errore dettaglio {url_completo}: {e}")
+                print(f"   [*] Caricamento DOM completato per {condizione_veicolo}. Inizio estrazione link...")
 
-                    # --- GESTIONE PAGINAZIONE FACETWP IN-PAGE ---
-                    # Cerca il pulsante "Next" o il numero di pagina successivo in FacetWP
-                    next_button = page.query_selector('.facetwp-page.next, a.next.page-numbers, .facetwp-pager .next')
+                # Estrazione di tutti i link accumulati nella pagina completa
+                html_content = page.content()
+                soup = BeautifulSoup(html_content, 'html.parser')
+                
+                links_pagina = []
+                for link in soup.find_all('a', href=True):
+                    href_val = link['href']
+                    url_completo = href_val if href_val.startswith('http') else f"{BASE_URL}/{href_val.lstrip('/')}"
                     
-                    if not next_button:
-                        # Se non c'è il pulsante "next", cerca la pagina successiva per numero (es. pagina 2, 3...)
-                        next_button = page.query_selector(f'.facetwp-page[data-page="{pagina_corrente + 1}"]')
-                    
-                    if next_button and next_button.is_visible():
-                        try:
-                            # Scroll fino al pulsante e click
-                            next_button.scroll_into_view_if_needed()
-                            next_button.click()
+                    match = re.search(r'/camper/([^/]+)', url_completo.lower())
+                    if not match:
+                        continue
+                        
+                    slug = match.group(1)
+                    if slug in EXCLUDED_SLUGS or slug.startswith('javascript:'):
+                        continue
+                        
+                    if url_completo not in processed_urls:
+                        processed_urls.add(url_completo)
+                        links_pagina.append(url_completo)
+
+                print(f"   [->] Trovati {len(links_pagina)} annunci totali per {condizione_veicolo}. Elaborazione in corso...")
+                
+                # Processing di ciascun annuncio estratto
+                for url_completo in links_pagina:
+                    if count_elaborati >= MAX_ANNUNCI:
+                        break
+                    try:
+                        time.sleep(0.3)
+                        det_resp = session.get(url_completo, headers=headers, timeout=20)
+                        if det_resp.status_code != 200:
+                            continue
                             
-                            # Attende che lo spinner di caricamento di FacetWP svanisca
-                            time.sleep(1.5)
-                            page.wait_for_selector(".facetwp-loading", state="detached", timeout=10000)
-                            pagina_corrente += 1
-                        except Exception as p_err:
-                            print(f"   [!] Fine paginazione o errore nel cambio pagina: {p_err}")
-                            ha_prossima_pagina = False
-                    else:
-                        print(f"   [*] Paginazione completata per {condizione_veicolo}. Totale pagine scansionate: {pagina_corrente}")
-                        ha_prossima_pagina = False
+                        det_soup = BeautifulSoup(det_resp.text, 'html.parser')
+                        
+                        for hidden in det_soup(["script", "style", "nav", "footer", "header"]): 
+                            hidden.decompose()
+                        
+                        testo = clean_text(det_soup.get_text(separator="\n"))
+                        
+                        # Filtro Roulotte/Caravan e Noleggio
+                        if re.search(r'\b(roulotte|caravan|noleggio)\b', testo.lower()): 
+                            continue
+                            
+                        prezzo = extract_price(det_soup)
+                        if prezzo < 5000: 
+                            continue
+                        
+                        img_url = None
+                        og_img = det_soup.find('meta', property='og:image') or det_soup.find('meta', attrs={'name': 'og:image'})
+                        if og_img and og_img.get('content'):
+                            img_url = og_img['content']
+                        
+                        if not img_url:
+                            for img_tag in det_soup.find_all('img'):
+                                src = img_tag.get('data-src') or img_tag.get('data-lazy-src') or img_tag.get('src', '')
+                                if ('/media/' in src or '/uploads/' in src) and not any(k in src for k in ['logo', 'flag', 'icon']):
+                                    img_url = src if src.startswith('http') else f"{BASE_URL}/{src.lstrip('/')}"
+                                    break
+                        
+                        if "ti potrebbe interessare anche" in testo.lower():
+                            testo = re.split(r'ti potrebbe interessare anche', testo, flags=re.IGNORECASE)[0]
+                            
+                        if "la nostra società ha installato un impianto fotovoltaico" in testo.lower():
+                            testo = re.split(r'la nostra società ha installato un impianto fotovoltaico', testo, flags=re.IGNORECASE)[0]
+                        
+                        testo_estratto_finale = f"Condizione: {condizione_veicolo}\n--- DETTAGLI ---\n{testo.strip()}"[:3000]
+                        
+                        scraper_utils.process_listing(
+                            db_conn, 
+                            config, 
+                            url_completo, 
+                            SITE_NAME, 
+                            testo_estratto_finale, 
+                            prezzo, 
+                            DISTANCE_FROM_SEREGNO, 
+                            img_url, 
+                            regex_extract_camper_data, 
+                            ollama_config
+                        )
+                        count_elaborati += 1
+                        
+                    except Exception as e:
+                        print(f"Errore dettaglio {url_completo}: {e}")
 
             browser.close()
 
