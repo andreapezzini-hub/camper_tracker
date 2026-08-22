@@ -3,6 +3,7 @@ import re
 import time
 import requests
 from bs4 import BeautifulSoup
+from datetime import datetime
 
 import scraper_utils
 
@@ -12,52 +13,65 @@ import scraper_utils
 def regex_extract_camper_data(raw_text, current_price, db_conn):
     testo = str(raw_text).lower()
     
-    # 1. ANNO (Protezione da "Cilindrata 1996")
+    # 1. ANNO
     anno = None
-    match_anno_explicit = re.search(r'anno\s*[:]?\s*(20[0-2]\d|199\d)', testo)
+    match_anno_explicit = re.search(r'(?:anno|immatricolazione)\s*[:\.-]?\s*(20[0-2]\d|199\d)', testo)
     if match_anno_explicit:
         anno = int(match_anno_explicit.group(1))
     else:
-        anno_match = re.search(r'(?<!cilindrata\s)(?<!cilindrata)(?<!cc\s)\b(199\d|20[0-2]\d)\b', testo)
+        # Cerca anno escludendo casi in cui è preceduto da 'Cilindrata' anche con a-capo (\s* gestisce \n)
+        anno_match = re.search(r'(?<!cilindrata)(?<!cilindrata\s)\b(199\d|20[0-2]\d)\b(?!\s*(?:cc|cm3|multijet|dci|hdi|tdci))', testo)
         if anno_match:
-            anno = int(anno_match.group(1))
-            
+            candidato = int(anno_match.group(1))
+            # Ulteriore verifica: controlla che la parola cilindrata non sia nelle immediate vicinanze prima del numero
+            if not re.search(r'cilindrata\s*[\n\r:]*\s*' + str(candidato), testo):
+                anno = candidato
+
     # 2. CHILOMETRI E STATO (NUOVO/USATO)
     km = None
     is_nuovo = None
-    match_km = None  # <-- CORREZIONE 1: Inizializzata qui per evitare UnboundLocalError
 
-    testo_lower = testo.lower()
-
-    # Controllo primario tramite Keyword dirette nel testo
-    if "caratteristiche del camper nuovo" in testo_lower or "camper nuovo" in testo_lower:
+    if "caratteristiche del camper nuovo" in testo or "/camper/nuovo/" in testo:
         is_nuovo = True
-    elif "caratteristiche del camper usato" in testo_lower or "camper usato" in testo_lower:
+    elif "caratteristiche del camper usato" in testo or "/camper/usato/" in testo:
         is_nuovo = False
 
-    # Pulisce/ignora frasi promozionali del footer (es. "10.000 veicoli")
-    testo_pulito = re.sub(r'10\.?000\s*(?:veicoli|euro|€)', '', testo, flags=re.IGNORECASE)
-
-    # Cerca i KM in ogni caso
-    match_km = re.search(r'(?:km|chilometri|chilometraggio)\s*[:\-]?\s*(\d{1,3}(?:\.\d{3})+|\d{1,6})\b|\b(\d{1,3}(?:\.\d{3})+|\d{1,6})\s*(?:km|chilometri)\b', testo_pulito, re.IGNORECASE)
-
+    match_km = re.search(r'(?:km|chilometri|chilometraggio)\s*[:\-]?\s*(\d{1,3}(?:\.\d{3})+|\d{1,6})\b|\b(\d{1,3}(?:\.\d{3})+|\d{1,6})\s*(?:km|chilometri)\b', testo)
     if match_km:
         val = match_km.group(1) if match_km.group(1) else match_km.group(2)
         km = int(val.replace('.', ''))
-        
-    # CORREZIONE 2: Fallback logico per `is_nuovo` solo se le parole chiave NON lo hanno definito
+
     if is_nuovo is None:
-        if km is not None:
-            is_nuovo = False if km > 1000 else True
+        if km is not None and km > 100:
+            is_nuovo = False
         else:
             is_nuovo = True
-        
+
+    # Se è nuovo, imposta l'anno corrente
+    if is_nuovo:
+        anno = datetime.now().year
+
     # 3. TIPOLOGIA
-    tipo_furgonato = bool(re.search(r'(?:\r?\n|\r|\s)(van|furgonat[oi]|camper puro)', testo))
-    tipo_mansardato = bool(re.search(r'\bmansardat[oi]\b', testo))
-    tipo_motorhome = bool(re.search(r'\bmotorhome\b|\bintegrale\b', testo))
-    tipo_semintegrale = bool(re.search(r'\bsemi[\s-]?integral[ei]\b|\bprofilat[oi]\b', testo))
     
+    # Primi 1000 caratteri dell'annuncio per concentrarsi sul titolo/specifiche ed evitare rumore di fondo
+    testo_testata = testo[:1000].lower()
+
+    # VAN / FURGONATO
+    tipo_furgonato = bool(re.search(r'\b(van|furgonat[oi]|camper\s*puro|horizon\s*h|livingstone|menfys|v\s*114)\b', testo_testata))
+    
+    # MANSARDATO (Serie A / Serie 70 / 'M' nella sigla + Altezza > 300cm)
+    tipo_mansardato = bool(re.search(r'\b(mansardat[oi]|serie\s*a|overcab)\b', testo_testata))
+    if not tipo_mansardato:
+        if re.search(r'\b(serie\s*a|a\s*70|290\s*m)\b', testo_testata) or ('309cm' in testo and 'letti\n7' in testo):
+            tipo_mansardato = True
+
+    # MOTORHOME / INTEGRALE
+    tipo_motorhome = bool(re.search(r'\b(motorhome|integrale|lyseo\s*i)\b', testo_testata))
+    
+    # SEMINTEGRALE / PROFILATO
+    tipo_semintegrale = bool(re.search(r'\b(semi[\s-]?integral[ei]|profilat[oi]|kronos\s*fit|mc4|zefiro|s\s*217|s\s*194)\b', testo_testata))
+
+    # Risoluzione gerarchica delle priorità
     if tipo_furgonato:
         tipo_semintegrale = False
         tipo_motorhome = False
@@ -65,10 +79,11 @@ def regex_extract_camper_data(raw_text, current_price, db_conn):
     elif tipo_mansardato:
         tipo_semintegrale = False
         tipo_motorhome = False
-    elif tipo_semintegrale:
-        tipo_motorhome = False
-    elif tipo_motorhome and not re.search(r'\bsemi[\s-]?integral[ei]\b', testo):
+        tipo_furgonato = False
+    elif tipo_motorhome:
         tipo_semintegrale = False
+        tipo_mansardato = False
+        tipo_furgonato = False
     
     # 4. LUNGHEZZA (Gestione cm e m)
     lunghezza = None
@@ -338,12 +353,11 @@ def run_scraper(db_conn, config, ollama_config=None):
                     if det_resp.status_code == 404:
                         continue
                     
-                    # STRATEGIA ANTI-SPIDER TRAP: Troncare l'HTML alla dicitura "Sede centrale" 
-                    # per evitare link a veicoli correlati o ai footer pur estraendo eventuali sottomodelli
+                    # STRATEGIA ANTI-SPIDER TRAP & FOOTER CUT: Tronca l'HTML alla sezione "Ovunque vivi"
                     html_content = det_resp.text
-                    match_sede = re.search(r'sede centrale', html_content, re.IGNORECASE)
-                    if match_sede:
-                        html_content = html_content[:match_sede.start()]
+                    match_footer = re.search(r'ovunque\s+vivi,\s+assistenza\s+vicino\s+a\s+te', html_content, re.IGNORECASE)
+                    if match_footer:
+                        html_content = html_content[:match_footer.start()]
                         
                     det_soup = BeautifulSoup(html_content, 'html.parser')
                     
