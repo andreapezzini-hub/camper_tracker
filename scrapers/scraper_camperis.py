@@ -1,24 +1,30 @@
 import os
 import re
 import time
+import datetime
 import requests
 from bs4 import BeautifulSoup
 import sqlite3
+from playwright.sync_api import sync_playwright
 import scraper_utils
 
 # ==========================================
-# 1. LOGICA REGEX (Condivisa)
+# 1. LOGICA REGEX
 # ==========================================
 def regex_extract_camper_data(raw_text, current_price, db_conn):
     testo = str(raw_text).lower()
     
+    # 1. Anno: Se non disponibile, usa l'anno corrente (2026)
     anno_match = re.search(r'\b(199\d|20[0-2]\d)\b', testo)
-    anno = int(anno_match.group(1)) if anno_match else None
+    anno = int(anno_match.group(1)) if anno_match else datetime.datetime.now().year
     
+    # 2. Chilometri
     km_match = re.search(r'(?:Km|Chilometri|KM)\s*[:\-]?\s*([\d\.]+)', testo, re.IGNORECASE)
     km = int(km_match.group(1).replace('.', '')) if km_match else None
-    if km is None and ('nuovo' in testo or 'da immatricolare' in testo): km = 0
+    if km is None and ('nuovo' in testo or 'da immatricolare' in testo):
+        km = 0
         
+    # Tipologia veicolo
     tipo_furgonato = bool(re.search(r'(?:\r?\n|\r|\s)(van|furgonat[oi]|camper puro)', testo))
     tipo_mansardato = bool(re.search(r'\bmansardat[oi]\b', testo))
     tipo_motorhome = bool(re.search(r'\bmotorhome\b|\bintegrale\b', testo))
@@ -59,6 +65,15 @@ def regex_extract_camper_data(raw_text, current_price, db_conn):
     letti_gemelli = bool(re.search(r'letti\s*gemelli|letto\s*gemello', testo))
     letti_a_castello = bool(re.search(r'letti\s*a\s*castello|\bcastello\b', testo))
     
+    # 4. Pannello Solare / Fotovoltaico
+    pannelli_solari = bool(re.search(r'pannell[oi]\s*(?:solar[ei]|fotovoltaic[oi])|solare', testo))
+    
+    # 5. Sospensioni ad aria / pneumatiche
+    sospensioni_aria = bool(re.search(r'sospension[ei]\s*(?:ad?\s*aria|pneumatic[he])', testo))
+    
+    # 3. Climatizzatore cellula (solo se specificato cellula/abitacolo)
+    aria_condizionata_cellula = bool(re.search(r'(?:clima|climatizzatore|aria\s*condizionata)\s*(?:cellula|abitacolo|stazionari[oa]|viti5|truma)', testo))
+    
     peso = 3500
     match_peso = re.search(r'(\d{4})\s*kg', testo)
     if match_peso:
@@ -81,10 +96,10 @@ def regex_extract_camper_data(raw_text, current_price, db_conn):
         "posti_omologati": posti_omologati, "posti_letto": posti_letto,
         "telaio_alko": 'alko' in testo, "doppio_pavimento": 'doppio pavimento' in testo,
         "cambio_automatico": 'automatico' in testo, "emissioni_euro6": bool(re.search(r'euro\s*6', testo)),
-        "pannelli_solari": 'pannell' in testo and 'solar' in testo, "batterie_litio": batterie_litio,
-        "sospensioni_aria": 'sospensioni' in testo and 'aria' in testo,
+        "pannelli_solari": pannelli_solari, "batterie_litio": batterie_litio,
+        "sospensioni_aria": sospensioni_aria,
         "predisposizione_invernale": predisposizione_invernale, "doppia_batteria": doppia_batteria,
-        "aria_condizionata": 'clima' in testo, "riscaldamento_gasolio": riscaldamento_gasolio,
+        "aria_condizionata": aria_condizionata_cellula, "riscaldamento_gasolio": riscaldamento_gasolio,
         "riscaldatore_gasolio": riscaldamento_gasolio, "riscaldamento_alde": riscaldamento_alde,
         "piedini_autolivellanti": piedini_autolivellanti, "letto_nautico": 'letto nautico' in testo,
         "letti_gemelli": letti_gemelli, "letti_a_castello": letti_a_castello
@@ -93,126 +108,193 @@ def regex_extract_camper_data(raw_text, current_price, db_conn):
 # ==========================================
 # 2. CORE SCRAPER - CAMPERIS
 # ==========================================
-def extract_price(text):
-    match = re.search(r'€?\s*(\d{2,3}[\.,]\d{3})(?:[\.,]\d{2})?\s*€?', text)
-    if match: return int(match.group(1).replace('.', '').replace(',', ''))
-    return 0
+def extract_price(soup_or_text):
+    """Estrae il prezzo più basso (prezzo in offerta/scontato) se presenti più prezzi"""
+    if isinstance(soup_or_text, BeautifulSoup):
+        prezzi_trovati = []
+        for tag_prezzo in soup_or_text.find_all(['span', 'p', 'div'], class_=re.compile(r'price|prezzo|amount', re.I)):
+            testo_p = tag_prezzo.get_text()
+            matches = re.findall(r'€?\s*(\d{2,3}[\.,]\d{3})(?:[\.,]\d{2})?\s*€?', testo_p)
+            for m in matches:
+                val = int(m.replace('.', '').replace(',', ''))
+                if val >= 5000:
+                    prezzi_trovati.append(val)
+        
+        if prezzi_trovati:
+            return min(prezzi_trovati)
+        text = soup_or_text.get_text()
+    else:
+        text = str(soup_or_text)
 
-def clean_text(text): return re.sub(r'\n\s*\n', '\n', re.sub(r'[ \t]+', ' ', text)).strip()
+    matches = re.findall(r'€?\s*(\d{2,3}[\.,]\d{3})(?:[\.,]\d{2})?\s*€?', text)
+    prezzi = [int(m.replace('.', '').replace(',', '')) for m in matches if int(m.replace('.', '').replace(',', '')) >= 5000]
+    return min(prezzi) if prezzi else 0
+
+def clean_text(text): 
+    return re.sub(r'\n\s*\n', '\n', re.sub(r'[ \t]+', ' ', text)).strip()
 
 def run_scraper(db_conn, config, ollama_config=None):
     SITE_NAME = "Camperis"
-    BASE_URL = "https://www.camperis.com" # Aggiornato con .com (se reindirizza a .com)
-    TARGET_URLS = [
-        f"{BASE_URL}/camper-usati/",
-        f"{BASE_URL}/camper-nuovi/"
+    BASE_URL = "https://www.camperis.com"
+    
+    TARGET_CONFIGS = [
+        {"url": f"{BASE_URL}/usato/", "condizione": "Usato"},
+        {"url": f"{BASE_URL}/nuovo/", "condizione": "Nuovo"}
     ]
-    DISTANCE_FROM_SEREGNO = 200 # Modena -> Seregno
+    
+    DISTANCE_FROM_SEREGNO = 200
     MAX_ANNUNCI = 500
     count_elaborati = 0
+    
     session = requests.Session()
-    headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'}
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+    }
+    
+    EXCLUDED_SLUGS = {
+        'usato', 'nuovo', 'noleggio', 'contatti', 'blog', 'news', 'guida-usato-camperis',
+        'chi-siamo', 'officina', 'privacy-policy', 'cookie-policy', 'vendita-camper'
+    }
     
     try:
-        processed_urls, urls_to_scan, scanned_targets = set(), list(TARGET_URLS), set()
-        
-        while urls_to_scan and count_elaborati < MAX_ANNUNCI:
-            target = urls_to_scan.pop(0)
-            if target in scanned_targets: continue
-            scanned_targets.add(target)
-            
-            try: 
-                response = session.get(target, headers=headers, timeout=20)
-            except Exception: 
-                continue
-                
-            soup = BeautifulSoup(response.text, 'html.parser')
-            
-            # Paginazione standard
-            for a in soup.find_all('a', href=True):
-                href = a['href']
-                if ('page' in href or 'paged' in href) and BASE_URL in href and href not in scanned_targets and href not in urls_to_scan:
-                    urls_to_scan.append(href)
-            
-            for link in soup.find_all('a', href=True):
-                if count_elaborati >= MAX_ANNUNCI: break
-                
-                href_val = link['href']
-                url_completo = href_val if href_val.startswith('http') else f"{BASE_URL}/{href_val.lstrip('/')}"
-                path_lower = href_val.lower()
-                
-                # Verifica camper
-                if not ('/camper/' in path_lower and len(path_lower.split('/')) > 4): continue
-                if any(skip in path_lower for skip in ['noleggio', 'contatti', 'blog', 'news']): continue
-                
-                if url_completo in processed_urls: continue
-                processed_urls.add(url_completo)
-                
-                try:
-                    time.sleep(0.5)
-                    det_resp = session.get(url_completo, headers=headers, timeout=20)
-                    det_soup = BeautifulSoup(det_resp.text, 'html.parser')
-                    
-                    # --- PROBLEMA 1: ESTRAZIONE IMMAGINE ---
-                    img_url = None
-                    # Tentativo 1: OpenGraph meta tag (Molto più affidabile)
-                    og_img = det_soup.find('meta', property='og:image') or det_soup.find('meta', attrs={'name': 'og:image'})
-                    if og_img and og_img.get('content'):
-                        img_url = og_img['content']
-                    
-                    # Tentativo 2: Cerca immagini nella gallery/media
-                    if not img_url:
-                        for img_tag in det_soup.find_all('img'):
-                            src = img_tag.get('src', '')
-                            # Filtra icone, logo e flag
-                            if '/media/' in src or ('/uploads/' in src and not any(k in src for k in ['logo', 'flag', 'icon'])):
-                                img_url = src if src.startswith('http') else f"{BASE_URL}/{src.lstrip('/')}"
-                                break
+        processed_urls = set()
 
-                    # Prima di decomporre nav/footer, estraiamo informazioni utili come la condizione (Usato/Nuovo)
-                    testo_completo_grezzo = det_soup.get_text(separator=" ")
+        with sync_playwright() as p:
+            browser = p.chromium.launch(headless=True)
+            context = browser.new_context(user_agent=headers['User-Agent'])
+            page = context.new_page()
+
+            for target in TARGET_CONFIGS:
+                if count_elaborati >= MAX_ANNUNCI:
+                    break
                     
-                    # Rimuoviamo tag non necessari per il testo pulito
-                    for hidden in det_soup(["script", "style", "nav", "footer", "header"]): 
-                        hidden.decompose()
+                base_target_url = target["url"]
+                condizione_veicolo = target["condizione"]
+                
+                print(f"[*] Apertura sezione: {base_target_url}")
+                page.goto(base_target_url, wait_until="domcontentloaded", timeout=40000)
+                
+                ha_prossima_pagina = True
+                pagina_corrente = 1
+                
+                while ha_prossima_pagina and count_elaborati < MAX_ANNUNCI:
+                    print(f"   -> Elaborazione Pagina {pagina_corrente} di {condizione_veicolo}...")
                     
-                    testo = clean_text(det_soup.get_text(separator="\n"))
+                    try:
+                        page.wait_for_selector(".fwpl-result.r1", timeout=15000)
+                    except Exception:
+                        print(f"   [!] Nessun annuncio trovato in pagina {pagina_corrente}")
+                        break
+
+                    html_content = page.content()
+                    soup = BeautifulSoup(html_content, 'html.parser')
                     
-                    if re.search(r'\b(roulotte|noleggio)\b', testo.lower()): continue
-                    prezzo = extract_price(testo)
-                    if prezzo < 5000: continue
-                    
-                    # --- PROBLEMA 2 & 5: TRONCAMENTO DEL TESTO ---
-                    # Troncamento se trova "Ti potrebbe interessare anche"
-                    if "ti potrebbe interessare anche" in testo.lower():
-                        testo = re.split(r'ti potrebbe interessare anche', testo, flags=re.IGNORECASE)[0]
+                    links_pagina = []
+                    for link in soup.find_all('a', href=True):
+                        href_val = link['href']
+                        url_completo = href_val if href_val.startswith('http') else f"{BASE_URL}/{href_val.lstrip('/')}"
                         
-                    # Troncamento se trova la nota aziendale sull'impianto fotovoltaico
-                    if "la nostra società ha installato un impianto fotovoltaico" in testo.lower():
-                        testo = re.split(r'la nostra società ha installato un impianto fotovoltaico', testo, flags=re.IGNORECASE)[0]
+                        match = re.search(r'/camper/([^/]+)', url_completo.lower())
+                        if not match:
+                            continue
+                            
+                        slug = match.group(1)
+                        if slug in EXCLUDED_SLUGS or slug.startswith('javascript:'):
+                            continue
+                            
+                        if url_completo not in processed_urls:
+                            processed_urls.add(url_completo)
+                            links_pagina.append(url_completo)
                     
-                    # --- PROBLEMA 3 & 4: CONDIZIONE, KM E CAVALLI ---
-                    # Prepariamo un blocco dati esplicito da passare all'estrattore/LLM
-                    # Aggiungiamo un prefisso al testo inviato a `process_listing`
+                    # Elabora tutti i dettagli degli annunci trovati nella pagina corrente
+                    for url_completo in links_pagina:
+                        if count_elaborati >= MAX_ANNUNCI:
+                            break
+                        try:
+                            time.sleep(0.3)
+                            det_resp = session.get(url_completo, headers=headers, timeout=20)
+                            if det_resp.status_code != 200:
+                                continue
+                                
+                            det_soup = BeautifulSoup(det_resp.text, 'html.parser')
+                            
+                            for hidden in det_soup(["script", "style", "nav", "footer", "header"]): 
+                                hidden.decompose()
+                            
+                            testo = clean_text(det_soup.get_text(separator="\n"))
+                            
+                            # Filtro Roulotte/Caravan e Noleggio
+                            if re.search(r'\b(roulotte|caravan|noleggio)\b', testo.lower()): 
+                                continue
+                                
+                            prezzo = extract_price(det_soup)
+                            if prezzo < 5000: 
+                                continue
+                            
+                            img_url = None
+                            og_img = det_soup.find('meta', property='og:image') or det_soup.find('meta', attrs={'name': 'og:image'})
+                            if og_img and og_img.get('content'):
+                                img_url = og_img['content']
+                            
+                            if not img_url:
+                                for img_tag in det_soup.find_all('img'):
+                                    src = img_tag.get('data-src') or img_tag.get('data-lazy-src') or img_tag.get('src', '')
+                                    if ('/media/' in src or '/uploads/' in src) and not any(k in src for k in ['logo', 'flag', 'icon']):
+                                        img_url = src if src.startswith('http') else f"{BASE_URL}/{src.lstrip('/')}"
+                                        break
+                            
+                            if "ti potrebbe interessare anche" in testo.lower():
+                                testo = re.split(r'ti potrebbe interessare anche', testo, flags=re.IGNORECASE)[0]
+                                
+                            if "la nostra società ha installato un impianto fotovoltaico" in testo.lower():
+                                testo = re.split(r'la nostra società ha installato un impianto fotovoltaico', testo, flags=re.IGNORECASE)[0]
+                            
+                            testo_estratto_finale = f"Condizione: {condizione_veicolo}\n--- DETTAGLI ---\n{testo.strip()}"[:3000]
+                            
+                            scraper_utils.process_listing(
+                                db_conn, 
+                                config, 
+                                url_completo, 
+                                SITE_NAME, 
+                                testo_estratto_finale, 
+                                prezzo, 
+                                DISTANCE_FROM_SEREGNO, 
+                                img_url, 
+                                regex_extract_camper_data, 
+                                ollama_config
+                            )
+                            count_elaborati += 1
+                            
+                        except Exception as e:
+                            print(f"Errore dettaglio {url_completo}: {e}")
+
+                    # --- GESTIONE PAGINAZIONE FACETWP IN-PAGE ---
+                    # Cerca il pulsante "Next" o il numero di pagina successivo in FacetWP
+                    next_button = page.query_selector('.facetwp-page.next, a.next.page-numbers, .facetwp-pager .next')
                     
-                    testo_estratto_finale = f"--- DETTAGLI ---\n{testo}"[:3000]
+                    if not next_button:
+                        # Se non c'è il pulsante "next", cerca la pagina successiva per numero (es. pagina 2, 3...)
+                        next_button = page.query_selector(f'.facetwp-page[data-page="{pagina_corrente + 1}"]')
                     
-                    scraper_utils.process_listing(
-                        db_conn, 
-                        config, 
-                        url_completo, 
-                        SITE_NAME, 
-                        testo_estratto_finale, 
-                        prezzo, 
-                        DISTANCE_FROM_SEREGNO, 
-                        img_url, 
-                        regex_extract_camper_data, 
-                        ollama_config
-                    )
-                    count_elaborati += 1
-                except Exception as e:
-                    print(f"Errore dettaglio {url_completo}: {e}")
-                    pass
+                    if next_button and next_button.is_visible():
+                        try:
+                            # Scroll fino al pulsante e click
+                            next_button.scroll_into_view_if_needed()
+                            next_button.click()
+                            
+                            # Attende che lo spinner di caricamento di FacetWP svanisca
+                            time.sleep(1.5)
+                            page.wait_for_selector(".facetwp-loading", state="detached", timeout=10000)
+                            pagina_corrente += 1
+                        except Exception as p_err:
+                            print(f"   [!] Fine paginazione o errore nel cambio pagina: {p_err}")
+                            ha_prossima_pagina = False
+                    else:
+                        print(f"   [*] Paginazione completata per {condizione_veicolo}. Totale pagine scansionate: {pagina_corrente}")
+                        ha_prossima_pagina = False
+
+            browser.close()
+
     except Exception as e: 
         print(f"[!] Errore {SITE_NAME}: {e}")
 
