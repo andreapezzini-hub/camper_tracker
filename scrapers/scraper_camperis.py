@@ -176,33 +176,21 @@ def run_scraper(db_conn, config, ollama_config=None):
                     print(f"   [!] Nessun annuncio iniziale trovato per {condizione_veicolo}")
                     continue
 
-                # Clicca "Carica altri risultati" finché il pulsante è visibile e non ha classe .d-none
-                click_count = 0
-                while count_elaborati < MAX_ANNUNCI:
-                    # Cerca il pulsante "Carica altri risultati" specifico di FacetWP
-                    load_more_btn = page.query_selector('.facetwp-load-more')
-                    load_more_wrapper = page.query_selector('.facetwp-facet-load_more')
+                max_annunci_target = 200
+                while True:
+                    annunci_correnti = len(page.query_selector_all('.fwpl-result.r1'))
+                    if annunci_correnti >= max_annunci_target:
+                        break
                     
-                    # Controlla se il wrapper possiede la classe d-none o se il bottone non è più disponibile
-                    if not load_more_btn or not load_more_btn.is_visible():
+                    load_more = page.query_selector('.facetwp-facet-load_more:not(.d-none) .facetwp-load-more')
+                    if not load_more or not load_more.is_visible():
                         break
                         
-                    if load_more_wrapper:
-                        wrapper_class = load_more_wrapper.get_attribute('class') or ''
-                        if 'd-none' in wrapper_class:
-                            break
-
-                    try:
-                        click_count += 1
-                        print(f"   [+] Clic su 'Carica altri risultati' (#{click_count})...")
-                        load_more_btn.scroll_into_view_if_needed()
-                        load_more_btn.click()
-                        
-                        # Pausa tattica e attesa del termine caricamento AJAX
-                        time.sleep(1.5)
-                        page.wait_for_selector(".facetwp-loading, #ajax-loader", state="detached", timeout=10000)
-                    except Exception as p_err:
-                        print(f"   [*] Fine espansione risultati o nessun altro elemento disponibile: {p_err}")
+                    load_more.click()
+                    page.wait_for_timeout(2000)
+                    
+                    # Verifica se dopo il click non sono stati aggiunti nuovi annunci
+                    if len(page.query_selector_all('.fwpl-result.r1')) == annunci_correnti:
                         break
 
                 print(f"   [*] Caricamento DOM completato per {condizione_veicolo}. Inizio estrazione link...")
