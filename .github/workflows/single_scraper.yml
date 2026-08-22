@@ -41,6 +41,10 @@ jobs:
           python -m pip install --upgrade pip
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
+      - name: 4.1 Installa browser e dipendenze di sistema (per Playwright)
+        run: |
+          playwright install --with-deps chromium
+
       - name: 5. Installa e avvia Ollama
         run: |
           curl -fsSL https://ollama.com/install.sh | sh
