@@ -68,7 +68,7 @@ def extract_camper_data_ai(raw_text, ollama_config=None):
     }
     
     try:
-        response = requests.post(ollama_url, json=payload, timeout=180)
+        response = requests.post(ollama_url, json=payload, timeout=45)
         response.raise_for_status()
         data_json = response.json()
         raw_response = data_json.get("response", "").strip()

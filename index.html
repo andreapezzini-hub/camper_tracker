@@ -258,7 +258,7 @@
         let compareList = new Set();
         
         // Filtri Base
-        const allTypes = ["Motorhome", "Mansardato", "Semintegrale"];
+        const allTypes = ["Motorhome", "Mansardato", "Semintegrale", "Van"];
         let activeTypes = new Set(allTypes);
         const allStatuses = ["Nuovo", "Usato"];
         let activeStatuses = new Set(allStatuses);
@@ -334,6 +334,7 @@
                     let tipologiaDedotta = "Semintegrale";
                     if (dt.tipo_motorhome) tipologiaDedotta = "Motorhome";
                     else if (dt.tipo_mansardato) tipologiaDedotta = "Mansardato";
+                    else if (dt.tipo_furgonato) tipologiaDedotta = "Van";
 
                     const marca_modello_str = `${row.marca || ''} ${row.modello || ''} ${row.allestimento || ''}`.trim() || "Sconosciuto";
 
@@ -807,7 +808,7 @@
                     <div class="p-4 bg-slate-50 flex items-center justify-between mt-auto rounded-b-2xl border-t border-slate-100">
                         <div>
                             <p class="text-[10px] uppercase font-bold text-slate-500 tracking-wider">Prezzo</p>
-                            <p class="text-xl font-black text-brand-700">€ ${formatNumber(camper.prezzo)}</p>
+                            <p class="text-xl font-black text-brand-700">${camper.prezzo === 0 ? 'Trattativa riservata' : '€ ' + formatNumber(camper.prezzo)}</p>
                         </div>
                         
                         <!-- 4. Preferiti a sx della comparativa -->
@@ -907,9 +908,9 @@
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-100">
-                            <!-- Prezzo & Score -->
+                           <!-- Prezzo & Score -->
                             <tr class="hover:bg-slate-50"><td class="p-3 font-semibold text-slate-500"><i class="fa-solid fa-euro-sign mr-1"></i> Prezzo</td>
-                                ${list.map(c => `<td class="p-3 font-black text-xl text-brand-700">€ ${formatNumber(c.prezzo)}</td>`).join('')}</tr>
+                                ${list.map(c => `<td class="p-3 font-black text-xl text-brand-700">${c.prezzo === 0 ? 'Trattativa riservata' : '€ ' + formatNumber(c.prezzo)}</td>`).join('')}</tr>
                             <tr class="hover:bg-slate-50"><td class="p-3 font-semibold text-slate-500"><i class="fa-solid fa-ranking-star mr-1"></i> Score IA</td>
                                 ${list.map(c => `<td class="p-3"><span class="${getScoreColor(c.punteggio)} px-2.5 py-1 rounded text-sm font-black border shadow-sm">${c.punteggio}</span></td>`).join('')}</tr>
                             
@@ -1036,7 +1037,7 @@
                     priceHistoryHTML += `
                         <div class="flex justify-between items-center text-sm border-b border-slate-200 last:border-0 pb-1.5 last:pb-0">
                             <span class="text-slate-500 font-medium"><i class="fa-regular fa-calendar-days mr-1 text-slate-400"></i> ${sp.data}</span>
-                            <span class="font-black text-brand-700">€ ${formatNumber(sp.prezzo)}</span>
+                            <span class="font-black text-brand-700">${sp.prezzo === 0 ? 'Trattativa riservata' : '€ ' + formatNumber(sp.prezzo)}</span>
                         </div>`;
                 });
                 priceHistoryHTML += `</div></div>`;
@@ -1077,7 +1078,7 @@
                 <div class="bg-slate-50 border-b border-slate-200 px-6 py-4 flex flex-col sm:flex-row justify-between items-center gap-4 sticky top-0 z-20 shadow-sm">
                     <div class="flex flex-col items-center sm:items-start w-full sm:w-auto">
                         <p class="text-[10px] uppercase font-bold text-slate-500 tracking-wider mb-0.5">Prezzo Richiesto</p>
-                        <p class="text-3xl font-black text-brand-700 leading-none">€ ${formatNumber(camper.prezzo)}</p>
+                        <p class="text-3xl font-black text-brand-700 leading-none">${camper.prezzo === 0 ? 'Trattativa riservata' : '€ ' + formatNumber(camper.prezzo)}</p>
                     </div>
                     <div class="flex items-center gap-4 w-full sm:w-auto justify-between sm:justify-end">
                         

@@ -6,6 +6,7 @@ from urllib.parse import urljoin
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 from bs4 import BeautifulSoup
+import datetime
 
 # Importiamo il modulo di utilità condiviso
 import scraper_utils
@@ -18,42 +19,43 @@ def regex_extract_camper_data(raw_text, current_price, db_conn):
     testo = str(raw_text).lower()
     
     anno_match = re.search(r'\b(199\d|20[0-3]\d)\b', testo)
-    anno = int(anno_match.group(1)) if anno_match else None
+    anno = int(anno_match.group(1)) if anno_match else datetime.datetime.now().year
     
-    # Estrazione chilometri migliorata
-    km_matches = re.findall(r'(?:km|chilometri|km percorsi)[\s\n:]*(\d{1,3}(?:\.\d{3})+|\d{1,6})|(\d{1,3}(?:\.\d{3})+|\d{1,6})[\s\n]*(?:km|chilometri)', testo)
-    km_values = []
-    for match in km_matches:
-        for group in match:
-            if group:
-                km_values.append(int(group.replace('.', '')))
-                
+    # Estrazione chilometri migliorata (gestisce 'Km percorsi\n39798' e formati con separatore)
     km = None
-    valid_kms = [v for v in km_values if not (1990 <= v <= 2030)] # Evita di confondere l'anno con i km
-    if valid_kms:
-        km = valid_kms[0]
+    # Cerca prima l'etichetta esplicita 'km percorsi' seguita da numero (anche a capo)
+    km_label_match = re.search(r'km\s+percorsi[:\s\n]*([\d\.]+)', testo)
+    if km_label_match:
+        val_str = km_label_match.group(1).replace('.', '')
+        if val_str.isdigit():
+            km = int(val_str)
+
+    if km is None:
+        km_matches = re.findall(r'(?:km|chilometri|km\.)[\s\n:]*(\d{1,3}(?:\.\d{3})+|\d{1,6})|(\d{1,3}(?:\.\d{3})+|\d{1,6})[\s\n]*(?:km|chilometri)', testo)
+        km_values = []
+        for match in km_matches:
+            for group in match:
+                if group:
+                    km_values.append(int(group.replace('.', '')))
+        valid_kms = [v for v in km_values if not (1990 <= v <= 2030)]
+        if valid_kms:
+            km = valid_kms[0]
         
     if km is None and ('nuovo' in testo or 'da immatricolare' in testo or 'km 0' in testo):
         km = 0
         
-    tipo_furgonato = bool(re.search(r'(?:\r?\n|\r|\s)(van|furgonat[oi]|camper puro)', testo))
+    tipo_furgonato = bool(re.search(r'\b(van|furgonat[oi]|camper puri)\b', testo))
     tipo_mansardato = bool(re.search(r'\bmansardat[oi]\b', testo))
-    tipo_motorhome = bool(re.search(r'\bmotorhome\b|\bintegrale\b', testo))
+    tipo_motorhome = bool(re.search(r'\bmotorhome\b|\bintegrale\b', testo)) and not bool(re.search(r'\bsemi[\s-]?integral[ei]\b', testo))
     tipo_semintegrale = bool(re.search(r'\bsemi[\s-]?integral[ei]\b|\bprofilat[oi]\b', testo))
-    
-    # LOGICA AFFINATA PER LE CATEGORIE: GERARCHIA RIGOROSA
+
+    # Esclusività delle categorie
     if tipo_furgonato:
-        tipo_semintegrale = False
-        tipo_motorhome = False
-        tipo_mansardato = False
-    elif tipo_semintegrale:
-        # Priorità al semintegrale per evitare false categorizzazioni in presenza di comparative (es. "non è mansardato")
-        tipo_mansardato = False
-        tipo_motorhome = False
-    elif tipo_motorhome and not re.search(r'\bsemi[\s-]?integral[ei]\b', testo):
-        tipo_mansardato = False
+        tipo_semintegrale = tipo_motorhome = tipo_mansardato = False
+    elif tipo_motorhome:
+        tipo_semintegrale = tipo_mansardato = False
     elif tipo_mansardato:
-        tipo_motorhome = False
+        tipo_semintegrale = False
     
     # Estrazione lunghezza migliorata
     lunghezza = None
@@ -209,12 +211,9 @@ def run_scraper(db_conn, config, ollama_config=None):
     SITE_NAME = "Caravan Schiavolin"
     BASE_URL = "https://www.caravanschiavolin.it"
 
-    # URL di partenza (Sezioni principali)
-    START_URLS = [
-        f"{BASE_URL}/veicolo-ricerca-list.php?cat=nuovo",
-        f"{BASE_URL}/veicolo-ricerca-list.php?cat=usato",
-        f"{BASE_URL}/offerte-del-mese.php",
-    ]
+    # URL di partenza inclusa la lista generale senza filtro cat per catturare tutto
+    START_URLS = [f"{BASE_URL}/veicolo-ricerca-list.php?page={i}" for i in range(1, 20)]
+    
     DISTANCE_FROM_SEREGNO = 60
 
     headers = {
@@ -232,7 +231,6 @@ def run_scraper(db_conn, config, ollama_config=None):
 
     session = requests.Session()
 
-    # RIDOTTO TOTAL RETRIES: evita di bloccare l'esecuzione per 10 minuti se l'IP è bannato
     retries = Retry(
         total=2,
         backoff_factor=1,
@@ -245,7 +243,6 @@ def run_scraper(db_conn, config, ollama_config=None):
     session.mount("http://", adapter)
     session.headers.update(headers)
 
-    # Se configurato nei settings, imposta un proxy (utile se GitHub Actions viene bloccato)
     proxy_url = config.get("PROXY_URL") if isinstance(config, dict) else None
     if proxy_url:
         session.proxies = {"http": proxy_url, "https": proxy_url}
@@ -256,9 +253,6 @@ def run_scraper(db_conn, config, ollama_config=None):
         visited_pages = set()
         count_elaborati = 0
 
-        # ----------------------------------------------------
-        # FASE 1: Scansione cataloghi e gestione paginazione
-        # ----------------------------------------------------
         while pages_to_visit:
             target = pages_to_visit.pop(0)
             if target in visited_pages:
@@ -268,30 +262,27 @@ def run_scraper(db_conn, config, ollama_config=None):
             print(f"    [{SITE_NAME}] Scansione pagina catalogo: {target}...")
 
             try:
-                # MODIFICA CHIAVE: (connect_timeout, read_timeout)
-                # Se la connessione fallisce in 5 sec (es. IP bloccato su GitHub Actions),
-                # si interrompe subito senza far scadere la sessione Turso/Hrana DB.
                 response = session.get(target, timeout=(5, 20))
+                if response.status_code == 404:
+                    continue
                 response.raise_for_status()
             except requests.exceptions.ConnectTimeout:
-                print(f"    [!] Timeout Connessione su {target}. Probabile blocco IP DataCenter/GitHub Actions.")
+                print(f"    [!] Timeout Connessione su {target}.")
                 continue
             except Exception as e:
-                print(
-                    f"    [!] Errore durante il caricamento della pagina {target}: {e}"
-                )
+                print(f"    [!] Errore durante il caricamento della pagina {target}: {e}")
                 continue
 
             soup = BeautifulSoup(response.text, "html.parser")
 
-            # 1.1 Estrazione link alle PAGINE SUCCESSIVE (Paginazione)
-            pagination_links = soup.find_all(
-                "a", href=re.compile(r"veicolo-ricerca-list\.php\?")
-            )
-            for p_link in pagination_links:
-                href = p_link.get("href")
-                if href:
-                    full_p_url = urljoin(BASE_URL, href)
+            # 1.1 Estrazione link PAGINAZIONE e OFFERTE
+            for a_tag in soup.find_all("a", href=True):
+                href = a_tag.get("href")
+                if "veicolo-ricerca-list.php" in href or "offerte-del-mese.php" in href:
+                    clean_href = href.split('#')[0]
+                    if not clean_href:
+                        continue
+                    full_p_url = urljoin(BASE_URL, clean_href)
                     if (
                         full_p_url not in visited_pages
                         and full_p_url not in pages_to_visit
@@ -302,15 +293,19 @@ def run_scraper(db_conn, config, ollama_config=None):
             candidate_links = soup.find_all(
                 "a",
                 href=re.compile(
-                    r"veicolo-dettaglio|veicolo/|scheda", re.IGNORECASE
+                    r"veicolo/\d+|veicolo-dettaglio", re.IGNORECASE
                 ),
             )
-
-            for a_tag in soup.find_all("a"):
+                        
+            for a_tag in soup.find_all("a", href=True):
                 txt = a_tag.get_text(strip=True).lower()
-                if "dettagli" in txt or "vedi" in txt:
+                href = a_tag.get("href")
+                if ("dettagli" in txt or "vedi" in txt) and "/veicolo/" in href:
                     if a_tag not in candidate_links:
                         candidate_links.append(a_tag)
+                    
+            if not candidate_links:
+                continue
 
             # ----------------------------------------------------
             # FASE 2: Analisi dei singoli veicoli trovati
@@ -322,11 +317,9 @@ def run_scraper(db_conn, config, ollama_config=None):
 
                 url_completo = urljoin(BASE_URL, url_parziale)
 
-                # Evita di processare due volte lo stesso veicolo
                 if url_completo in processed_detail_urls:
                     continue
 
-                # Individua la card genitore per estrarre le info preliminari
                 container = (
                     link.find_parent("div", class_=re.compile(r"col|item|card|box"))
                     or link.find_parent("div")
@@ -341,18 +334,16 @@ def run_scraper(db_conn, config, ollama_config=None):
                     )
                     testo_lower = testo_card.lower()
 
-                    # Esclusione precoce: caravan, roulotte e noleggio
                     if (
                         re.search(r"\b(roulotte|noleggio|noleggi)\b", testo_lower)
-                        or "categoria caravan" in testo_lower
                         or "tipo: caravan" in testo_lower
+                        or "tipologia: caravan" in testo_lower
                     ):
                         processed_detail_urls.add(url_completo)
                         continue
 
                     prezzo = extract_price(testo_card)
 
-                    # Immagine dalla card
                     for img_tag in container.find_all("img"):
                         src = img_tag.get("src") or img_tag.get("data-src")
                         if src and not src.endswith(".svg"):
@@ -362,13 +353,11 @@ def run_scraper(db_conn, config, ollama_config=None):
                 processed_detail_urls.add(url_completo)
                 print(f"    [{SITE_NAME}] Analisi scheda: {url_completo}")
 
-                # Fetch della pagina di DETTAGLIO del veicolo
                 try:
-                    time.sleep(1.5)  # Delay per evitare blocchi/rate limiting
+                    time.sleep(1.5)
                     det_resp = session.get(url_completo, timeout=(5, 15))
                     det_soup = BeautifulSoup(det_resp.text, "html.parser")
 
-                    # Recupera immagine di dettaglio se non trovata nella card
                     if not img_url:
                         for img in det_soup.find_all("img"):
                             src = img.get("src") or img.get("data-src")
@@ -376,7 +365,6 @@ def run_scraper(db_conn, config, ollama_config=None):
                                 img_url = urljoin(BASE_URL, src)
                                 break
 
-                    # Pulizia tag non necessari per l'estrazione testo
                     for hidden in det_soup(
                         ["script", "style", "nav", "footer", "header"]
                     ):
@@ -385,9 +373,16 @@ def run_scraper(db_conn, config, ollama_config=None):
                     testo_dettaglio = clean_text_preserve_lists(
                         det_soup.get_text(separator="\n")
                     )
+                    
+                    # TRONCAMENTO TESTO DIRETTAMENTE nello scraper prima del salvataggio nel DB
                     testo_dettaglio_lower = testo_dettaglio.lower()
+                    for marker in ["ti potrebbe interessare anche", "ti potrebbe interressare anche", "veicoli correlati"]:
+                        if marker in testo_dettaglio_lower:
+                            idx = testo_dettaglio_lower.find(marker)
+                            testo_dettaglio = testo_dettaglio[:idx]
+                            testo_dettaglio_lower = testo_dettaglio_lower[:idx]
+                            break
 
-                    # Check di sicurezza su categoria/esclusioni nel dettaglio
                     if (
                         re.search(r"\b(roulotte|noleggio|noleggi)\b", testo_dettaglio_lower)
                         or "categoria caravan" in testo_dettaglio_lower
@@ -398,7 +393,9 @@ def run_scraper(db_conn, config, ollama_config=None):
                     if prezzo == 0:
                         prezzo = extract_price(testo_dettaglio)
 
-                    if prezzo < 5000:  # Salta annunci sotto i 5.000€
+                    # Se ha un prezzo valido ed è inferiore a 20.000€, oppure è venduto a sotto i 20k, scarta
+                    if 0 < prezzo < 20000:
+                        print(f"      [-] Scartato: prezzo sotto 20.000€ ({prezzo}€)")
                         continue
 
                     testo_finale = (
@@ -411,7 +408,6 @@ def run_scraper(db_conn, config, ollama_config=None):
                     )
                     testo_finale = testo_card
 
-                # Salva/Elabora il veicolo
                 scraper_utils.process_listing(
                     db_conn=db_conn,
                     config=config,
@@ -426,10 +422,10 @@ def run_scraper(db_conn, config, ollama_config=None):
                 )
 
                 count_elaborati += 1
-                if count_elaborati >= 500:
+                if count_elaborati >= 200:
                     break
 
-            if count_elaborati >= 500:
+            if count_elaborati >= 200:
                 break
 
     except Exception as e:
