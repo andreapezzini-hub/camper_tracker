@@ -10,80 +10,71 @@ import scraper_utils
 # ==========================================
 # 1. LOGICA REGEX (Adattata per DB)
 # ==========================================
+# ==========================================
+# 1. LOGICA REGEX (Adattata per DB)
+# ==========================================
 def regex_extract_camper_data(raw_text, current_price, db_conn):
     testo = str(raw_text).lower()
     
-    # 1. ANNO
-    anno = None
-    match_anno_explicit = re.search(r'(?:anno|immatricolazione)\s*[:\.-]?\s*(20[0-2]\d|199\d)', testo)
-    if match_anno_explicit:
-        anno = int(match_anno_explicit.group(1))
-    else:
-        # Cerca anno escludendo casi in cui è preceduto da 'Cilindrata' anche con a-capo (\s* gestisce \n)
-        anno_match = re.search(r'(?<!cilindrata)(?<!cilindrata\s)\b(199\d|20[0-2]\d)\b(?!\s*(?:cc|cm3|multijet|dci|hdi|tdci))', testo)
-        if anno_match:
-            candidato = int(anno_match.group(1))
-            # Ulteriore verifica: controlla che la parola cilindrata non sia nelle immediate vicinanze prima del numero
-            if not re.search(r'cilindrata\s*[\n\r:]*\s*' + str(candidato), testo):
-                anno = candidato
-
-    # 2. CHILOMETRI E STATO (NUOVO/USATO)
+    # 1. STATO (NUOVO / USATO) E CHILOMETRI
     km = None
     is_nuovo = None
-
-    if "caratteristiche del camper nuovo" in testo or "/camper/nuovo/" in testo:
-        is_nuovo = True
-    elif "caratteristiche del camper usato" in testo or "/camper/usato/" in testo:
-        is_nuovo = False
 
     match_km = re.search(r'(?:km|chilometri|chilometraggio)\s*[:\-]?\s*(\d{1,3}(?:\.\d{3})+|\d{1,6})\b|\b(\d{1,3}(?:\.\d{3})+|\d{1,6})\s*(?:km|chilometri)\b', testo)
     if match_km:
         val = match_km.group(1) if match_km.group(1) else match_km.group(2)
         km = int(val.replace('.', ''))
 
-    if is_nuovo is None:
-        if km is not None and km > 100:
-            is_nuovo = False
-        else:
-            is_nuovo = True
+    if "caratteristiche del camper usato" in testo or "/camper/usato/" in testo or re.search(r'\busato\b', testo[:500]):
+        is_nuovo = False
+    elif "caratteristiche del camper nuovo" in testo or "/camper/nuovo/" in testo or re.search(r'\bnuovo\b', testo[:500]):
+        is_nuovo = True
+    elif km is not None and km > 100:
+        is_nuovo = False
+    else:
+        is_nuovo = True
 
-    # Se è nuovo, imposta l'anno corrente
+    # 2. ANNO (Gestione avanzata vs 2000 e veicoli nuovi)
+    anno = None
     if is_nuovo:
         anno = datetime.now().year
+    else:
+        # Cerca il formato "Anno MM/YYYY" o "Anno YYYY" tipico della scheda tecnica
+        match_scheda = re.search(r'anno\s*(?:\d{2}/)?(19\d{2}|20[0-2]\d)', testo)
+        if match_scheda:
+            anno = int(match_scheda.group(1))
+        else:
+            match_anno_explicit = re.search(r'(?:immatricolazione)\s*[:\.-]?\s*(20[0-2]\d|199\d)', testo)
+            if match_anno_explicit:
+                anno = int(match_anno_explicit.group(1))
+            else:
+                # Esclude numeri preceduti da termini legati ai costi/acconti o cilindrata
+                testo_senza_prezzi = re.sub(r'(?:€|euro|trasporto|acconto|messa\s+su\s+strada|cilindrata)\s*[:\.-]?\s*\d+', '', testo)
+                anno_match = re.search(r'\b(199\d|20[0-2]\d)\b(?!\s*(?:cc|cm3|multijet|dci|hdi|tdci|€|euro))', testo_senza_prezzi)
+                if anno_match:
+                    anno = int(anno_match.group(1))
+        
+        # Fallback se non viene trovato o se è rimasto il default errato
+        if anno is None or anno == 2000:
+            anno = datetime.now().year
 
-    # 3. TIPOLOGIA
-    
-    # Primi 1000 caratteri dell'annuncio per concentrarsi sul titolo/specifiche ed evitare rumore di fondo
-    testo_testata = testo[:1000].lower()
+    # 3. TIPOLOGIA (Analisi estesa dell'intero testo e mutua esclusività)
+    tipo_mansardato = False
+    tipo_semintegrale = False
+    tipo_motorhome = False
+    tipo_furgonato = False
 
-    # VAN / FURGONATO
-    tipo_furgonato = bool(re.search(r'\b(van|furgonat[oi]|camper\s*puro|horizon\s*h|livingstone|menfys|v\s*114)\b', testo_testata))
-    
-    # MANSARDATO (Serie A / Serie 70 / 'M' nella sigla + Altezza > 300cm)
-    tipo_mansardato = bool(re.search(r'\b(mansardat[oi]|serie\s*a|overcab)\b', testo_testata))
-    if not tipo_mansardato:
-        if re.search(r'\b(serie\s*a|a\s*70|290\s*m)\b', testo_testata) or ('309cm' in testo and 'letti\n7' in testo):
-            tipo_mansardato = True
-
-    # MOTORHOME / INTEGRALE
-    tipo_motorhome = bool(re.search(r'\b(motorhome|integrale|lyseo\s*i)\b', testo_testata))
-    
-    # SEMINTEGRALE / PROFILATO
-    tipo_semintegrale = bool(re.search(r'\b(semi[\s-]?integral[ei]|profilat[oi]|kronos\s*fit|mc4|zefiro|s\s*217|s\s*194)\b', testo_testata))
-
-    # Risoluzione gerarchica delle priorità
-    if tipo_furgonato:
-        tipo_semintegrale = False
-        tipo_motorhome = False
-        tipo_mansardato = False
-    elif tipo_mansardato:
-        tipo_semintegrale = False
-        tipo_motorhome = False
-        tipo_furgonato = False
-    elif tipo_motorhome:
-        tipo_semintegrale = False
-        tipo_mansardato = False
-        tipo_furgonato = False
+    # Verifica presenza keyword (con priorità gerarchica su tutto il testo del dettaglio)
+    if any(k in testo for k in ["caravan", "roulotte"]):
+        pass
+    elif any(k in testo for k in ["mansardato", "mansardati", "alkoven", "letto in mansarda"]) or re.search(r'\b(serie\s*a|overcab|europeo\s*ng)\b', testo):
+        tipo_mansardato = True
+    elif any(k in testo for k in ["motorhome", "integrale"]) or re.search(r'\b(lyseo\s*i|exsis\s*i|nevis|rexosline|ismove|k-yacht|teknoline)\b', testo):
+        tipo_motorhome = True
+    elif any(k in testo for k in ["profilato", "profilati", "semintegrale", "semintegrali", "parzialmente integrato"]) or re.search(r'\b(kronos\s*fit|mc4|zefiro|granduca|therry|smove)\b', testo):
+        tipo_semintegrale = True
+    elif any(k in testo for k in ["furgonato", "camper van", "campervan", "puro"]) or re.search(r'\b(van|horizon\s*h|livingstone|menfys|v\s*114|twin|boxlife|caratour)\b', testo):
+        tipo_furgonato = True
     
     # 4. LUNGHEZZA (Gestione cm e m)
     lunghezza = None
@@ -135,7 +126,7 @@ def regex_extract_camper_data(raw_text, current_price, db_conn):
     riscaldamento_alde = bool(re.search(r'\balde\b', testo))
     
     batterie_litio = bool(re.search(r'batteri[ea]\s*(?:al\s*)?litio|\blitio\b', testo))
-    predisposizione_invernale = bool(re.search(r'winter\s*pack|pack\s*winter|pacchetto\s*invernale|predisposizione\s*invernale', testo))
+    predisposizione_invernale = bool(re.search(r'winter\s*pack|pack\s*winter|pack\s*invern[oa]|p(?:acchetto|redisposizione|reparazione)\s*invern[oa]|isolamento\s*invern[oa]|serbatoio.*(?:coibent|riscaldat)|coibentat[oa].*riscaldat[oa]', testo, re.IGNORECASE))
     doppia_batteria = bool(re.search(r'doppi[oa]\s*batteri[ea]|seconda\s*batteria|due\s*batterie|2\s*batterie', testo))
     piedini_autolivellanti = bool(re.search(r'piedini\s*(?:auto)?livellanti|piedini\s*idraulici|autolivellanti', testo))
     
@@ -186,13 +177,13 @@ def regex_extract_camper_data(raw_text, current_price, db_conn):
         "telaio_alko": 'alko' in testo or 'al-ko' in testo,
         "doppio_pavimento": 'doppio pavimento' in testo,
         "cambio_automatico": 'automatico' in testo,
-        "emissioni_euro6": bool(re.search(r'euro\s*6', testo)) or (anno is not None and anno >= 2017),
+        "emissioni_euro6": (bool(re.search(r'euro\s*6', testo)) and (anno is None or anno >= 2016)) or (anno is not None and anno >= 2016 and 'euro' not in testo) or is_nuovo,
         "pannelli_solari": 'pannell' in testo and 'solar' in testo,
         "batterie_litio": batterie_litio,
         "sospensioni_aria": 'sospensioni' in testo and ('aria' in testo or 'pneumat' in testo),
         "predisposizione_invernale": predisposizione_invernale,
         "doppia_batteria": doppia_batteria,
-        "aria_condizionata": 'clima' in testo or 'condizionata' in testo,
+        "aria_condizionata": bool(re.search(r'clima\s*(?:cellula|abitacolo|stazionario)|condizionarore\s*(?:cellula|abitacolo|stazionario)|viti|viesa', testo)),
         "riscaldamento_gasolio": riscaldamento_gasolio,
         "riscaldatore_gasolio": riscaldamento_gasolio,
         "riscaldamento_alde": riscaldamento_alde,
@@ -256,9 +247,8 @@ def run_scraper(db_conn, config, ollama_config=None):
     SITE_NAME = "3C Srl"
     BASE_URL = "https://3csrl.com"
     TARGET_URLS = [
-        f"{BASE_URL}/camper-nuovi-pronta-consegna/",
         f"{BASE_URL}/camper-usati/",
-        f"{BASE_URL}/camper-nuovi/"
+        f"{BASE_URL}/camper-nuovi-pronta-consegna/",
     ]
     DISTANCE_FROM_SEREGNO = 170 
     MAX_ANNUNCI = 500
@@ -287,7 +277,7 @@ def run_scraper(db_conn, config, ollama_config=None):
                 continue
             scanned_targets.add(target)
             
-            print(f"    [{SITE_NAME}] Scansione: {target}...")
+            print(f"    [{SITE_NAME}] Scansione indice: {target}...")
             try:
                 response = fetch_url_with_retry(session, target, headers=headers)
                 if response.status_code == 404:
@@ -297,19 +287,35 @@ def run_scraper(db_conn, config, ollama_config=None):
                 
             soup = BeautifulSoup(response.text, 'html.parser')
             
+            # 1. Estrazione Link Paginazione
             for page_link in soup.find_all('a', href=True):
-                href = page_link['href'].split('#')[0] 
-                if ('/page/' in href or '?paged=' in href) and BASE_URL in href and href not in scanned_targets:
-                    if href not in urls_to_scan:
+                href = page_link['href'].split('#')[0].split('?')[0]
+                if ('/page/' in href or '?paged=' in href) and BASE_URL in href:
+                    if not href.endswith('/'):
+                        href += '/'
+                    if href not in scanned_targets and href not in urls_to_scan:
                         urls_to_scan.append(href)
 
-            links_veicoli = soup.find_all('a', href=True)
-            for link in links_veicoli:
+            # 2. Estrazione Prioritaria dei Link Annuncio dalle Card HTML
+            cards_links = soup.select('.card-lista-us26__heading a, .card-lista-us26 a[href*="/camper/"]')
+            candidate_urls = []
+            
+            if cards_links:
+                for a in cards_links:
+                    href = a.get('href', '').split('#')[0].split('?')[0]
+                    if href:
+                        candidate_urls.append(href)
+            else:
+                # Fallback se le classi CSS cambiano: cerca tutti i tag <a>
+                for a in soup.find_all('a', href=True):
+                    href = a['href'].split('#')[0].split('?')[0]
+                    candidate_urls.append(href)
+
+            # 3. Processamento degli URL Candidati
+            for url_parziale in candidate_urls:
                 if count_elaborati >= MAX_ANNUNCI:
                     break
                     
-                url_parziale = link['href'].split('#')[0] 
-                
                 if re.search(r'\.(webp|jpg|jpeg|png|gif|pdf|zip|rar)$', url_parziale, re.IGNORECASE):
                     continue
                     
@@ -322,30 +328,36 @@ def run_scraper(db_conn, config, ollama_config=None):
                     continue
                 
                 path_lower = url_completo.lower()
-                skip_words = ['chi-siamo', 'contatti', 'dove', 'noleggio', 'officina', 'servizi', 'privacy', 'cookie', 'index', 'caravan', 'rimorchi', 'barca', 'carrelli', 'login', 'cart', 'checkout', 'carrello', 'my-account', 'feed']
+                skip_words = [
+                    'chi-siamo', 'contatti', 'dove', 'noleggio', 'officina', 
+                    'servizi', 'privacy', 'cookie', 'index', 'caravan', 
+                    'rimorchi', 'barca', 'carrelli', 'login', 'cart', 
+                    'checkout', 'carrello', 'my-account', 'feed', 'sottocosto'
+                ]
                 if any(skip in path_lower for skip in skip_words):
                     continue
                 
-                # Normalizza l'URL aggiungendo lo slash finale se manca
-                url_completo = url_completo.split('?')[0]
                 if not url_completo.endswith('/'):
                     url_completo += '/'
                 path_lower = url_completo.lower()
 
-                # Verifica se è una pagina prodotto
-                is_product = any(x in path_lower for x in ['/prodotto/', '/veicolo/', '/camper/', '-it-'])
-                
-                # Se NON è riconosciuto direttamente come prodotto, applica il filtro sulla lunghezza dello slug
-                if not is_product:
-                    slug = url_completo.strip('/').split('/')[-1]
-                    if len(slug) < 15:
-                        continue
-                
-                if url_completo in processed_urls or url_completo in scanned_targets:
+                # Filtro esplicito: accetta solo URL di dettaglio camper ed esclude categorie/archivi
+                is_detail_url = bool(re.search(r'/camper/(?:usato/)?[a-z0-9-]+/', path_lower)) and not any(
+                    x in path_lower for x in ['/camper-usati/', '/camper-nuovi/', '/categoria-prodotto/', '/marca/']
+                )
+
+                if not is_detail_url:
+                    # Se è un'ulteriore pagina di archivio non ancora tracciata, la inseriamo nella coda
+                    if any(x in path_lower for x in ['/camper-nuovi/', '/camper-usati/', '/categoria-prodotto/']):
+                        if url_completo not in scanned_targets and url_completo not in urls_to_scan:
+                            urls_to_scan.append(url_completo)
                     continue
-                processed_urls.add(url_completo)
+
+                if url_completo in processed_urls:
+                    continue
                 
-                print(f"    [{SITE_NAME}] Check URL: {url_completo}")
+                processed_urls.add(url_completo)
+                print(f"    [{SITE_NAME}] Check URL Dettaglio: {url_completo}")
                 
                 try:
                     time.sleep(1.0) 
@@ -353,23 +365,12 @@ def run_scraper(db_conn, config, ollama_config=None):
                     if det_resp.status_code == 404:
                         continue
                     
-                    # STRATEGIA ANTI-SPIDER TRAP & FOOTER CUT: Tronca l'HTML alla sezione "Ovunque vivi"
                     html_content = det_resp.text
                     match_footer = re.search(r'ovunque\s+vivi,\s+assistenza\s+vicino\s+a\s+te', html_content, re.IGNORECASE)
                     if match_footer:
                         html_content = html_content[:match_footer.start()]
                         
                     det_soup = BeautifulSoup(html_content, 'html.parser')
-                    
-                    for inner_link in det_soup.find_all('a', href=True):
-                        inner_href = inner_link['href'].split('?')[0].split('#')[0]
-                        if inner_href.startswith('/'):
-                            inner_href = f"{BASE_URL.rstrip('/')}{inner_href}"
-                            
-                        if BASE_URL in inner_href and ('/camper/' in inner_href or '/prodotto/' in inner_href):
-                            if inner_href.endswith('/') and not re.search(r'\.(webp|jpg|jpeg|png|pdf)$', inner_href, re.IGNORECASE):
-                                if inner_href not in processed_urls and inner_href not in urls_to_scan and inner_href not in scanned_targets:
-                                    urls_to_scan.append(inner_href)
                     
                     for hidden in det_soup(["script", "style", "nav", "footer", "header"]):
                         hidden.decompose()
@@ -381,12 +382,12 @@ def run_scraper(db_conn, config, ollama_config=None):
                     testo_dettaglio = clean_text_preserve_lists(det_soup.get_text(separator="\n"))
                     testo_dettaglio_lower = testo_dettaglio.lower()
                     
-                    if 'dotazioni' not in testo_dettaglio_lower:
-                        print("      [!] Saltato: Non contiene la parola chiave 'dotazioni'. Pagina non di dettaglio.")
+                    if 'dotazioni' not in testo_dettaglio_lower and 'scheda tecnica' not in testo_dettaglio_lower:
+                        print("      [!] Saltato: Non contiene le parole chiave di dettaglio.")
                         continue
                     
                     h1_testo = " ".join([h1.get_text(separator=" ") for h1 in det_soup.find_all('h1')]).lower()
-                    if re.search(r'\b(roulotte|noleggio|noleggi|caravan)\b', h1_testo) or re.search(r'\b(roulotte|noleggio|noleggi|caravan)\b', url_completo.lower()):
+                    if re.search(r'\b(roulotte|noleggio|noleggi|caravan)\b', h1_testo) or re.search(r'\b(roulotte|noleggio|noleggi|caravan)\b', url_completo.lower()) or "pxb" in url_completo.lower() or "caravan" in testo_dettaglio_lower[:300]:
                         print("      [!] Saltato: Trovate parole chiave vietate nell'intestazione o nell'URL.")
                         continue
                         
@@ -398,10 +399,8 @@ def run_scraper(db_conn, config, ollama_config=None):
                     
                     print(f"    [{SITE_NAME}] >>> Avvio estrazione dati per: {url_completo}")
                     
-                    # LOGICA IMMAGINI (Totalmente rivista e potenziata)
+                    # Estrazione Immagini
                     img_url = None
-                    
-                    # 1. Cerca Meta tag di condivisione (estremamente affidabili se presenti)
                     for meta in det_soup.find_all(['meta', 'link']):
                         if meta.get('property') in ['og:image', 'og:image:url'] or meta.get('name') == 'twitter:image':
                             img_url = meta.get('content')
@@ -410,21 +409,18 @@ def run_scraper(db_conn, config, ollama_config=None):
                             img_url = meta.get('href')
                             break
                     
-                    # 2. Fallback su tag img generici scandagliando attributi "lazy" (risolve il problema delle immagini mancanti)
                     if not img_url:
                         img_tags = det_soup.find_all('img', class_=re.compile(r'wp-post-image|woocommerce-main-image|attachment-shop_single|gallery|slider|main|product', re.I))
                         if not img_tags:
                             img_tags = det_soup.find_all('img')
                             
                         for img in img_tags:
-                            # Controlla attributi tipici di lazy loading o slider
                             src = img.get('src') or img.get('data-src') or img.get('data-lazy-src') or img.get('data-large_image')
                             if not src and img.get('srcset'):
                                 src = img.get('srcset').split(',')[0].split(' ')[0]
                                 
                             if src:
                                 src_lower = src.lower()
-                                # Filtro anti-rumore: evita loghi, icone, sfondi o placeholder
                                 selettori_esclusi = ['logo', 'icon', 'spinner', 'avatar', 'blank', 'placeholder', 'svg']
                                 if not any(x in src_lower for x in selettori_esclusi):
                                     if '.jpg' in src_lower or '.webp' in src_lower or '.jpeg' in src_lower or '.png' in src_lower:
