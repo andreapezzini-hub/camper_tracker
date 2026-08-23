@@ -101,7 +101,7 @@ def extract_price(text):
 
 def clean_text(text): return re.sub(r'\n\s*\n', '\n', re.sub(r'[ \t]+', ' ', text)).strip()
 
-def run_scraper(db_conn, config, ollama_config=None):
+def run_scraper(db_conn, config, ollama_config=None, skip_ai=False):
   SITE_NAME = "Grosso Vacanze"
   BASE_URL = "https://www.grossovacanze.com"
   TARGET_URLS = [f"{BASE_URL}/camper-usati/", f"{BASE_URL}/camper-nuovi/"]
@@ -286,6 +286,7 @@ def run_scraper(db_conn, config, ollama_config=None):
               img_url,
               regex_extract_camper_data,
               ollama_config,
+              skip_ai=skip_ai
           )
           count_elaborati += 1
           print(

@@ -247,7 +247,7 @@ def clean_and_extract_detail_text(det_soup):
 # ==========================================
 # 3. CORE SCRAPER - CARAVAN MARKET
 # ==========================================
-def run_scraper(db_conn, config, ollama_config=None):
+def run_scraper(db_conn, config, ollama_config=None, skip_ai=False):
     SITE_NAME = "Caravan Market"
     BASE_URL = "https://www.caravanmarket.com"
     
@@ -402,7 +402,8 @@ def run_scraper(db_conn, config, ollama_config=None):
                     # Passa il testo esteso con limite incrementato a 50.000 caratteri
                     scraper_utils.process_listing(
                         db_conn, config, url_completo, SITE_NAME, f"--- DETTAGLI ---\n{testo}"[:50000],
-                        prezzo, DISTANCE_FROM_SEREGNO, img_url, custom_extractor, ollama_config
+                        prezzo, DISTANCE_FROM_SEREGNO, img_url, custom_extractor, ollama_config,
+                        skip_ai=skip_ai
                     )
                     count_elaborati += 1
                     

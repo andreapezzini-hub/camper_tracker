@@ -207,7 +207,7 @@ def clean_text_preserve_lists(text):
     text = re.sub(r'[ \t]+', ' ', text)
     return text.strip()
 
-def run_scraper(db_conn, config, ollama_config=None):
+def run_scraper(db_conn, config, ollama_config=None, skip_ai=False):
     SITE_NAME = "Caravan Schiavolin"
     BASE_URL = "https://www.caravanschiavolin.it"
 
@@ -217,16 +217,13 @@ def run_scraper(db_conn, config, ollama_config=None):
     DISTANCE_FROM_SEREGNO = 60
 
     headers = {
-        "User-Agent": (
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
-            "(KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
-        ),
-        "Accept": (
-            "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8"
-        ),
-        "Accept-Language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
-        "Connection": "keep-alive",
-        "Upgrade-Insecure-Requests": "1",
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36",
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8",
+    "Accept-Language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
+    "Sec-Ch-Ua": '"Not/A)Brand";v="8", "Chromium";v="126", "Google Chrome";v="126"',
+    "Sec-Ch-Ua-Mobile": "?0",
+    "Sec-Ch-Ua-Platform": '"Windows"',
+    "Upgrade-Insecure-Requests": "1",
     }
 
     session = requests.Session()
@@ -249,16 +246,13 @@ def run_scraper(db_conn, config, ollama_config=None):
 
     try:
         processed_detail_urls = set()
-        pages_to_visit = list(START_URLS)
-        visited_pages = set()
         count_elaborati = 0
 
-        while pages_to_visit:
-            target = pages_to_visit.pop(0)
-            if target in visited_pages:
-                continue
+        # Iterazione sequenziale diretta e pulita sulle pagine
+        for target in START_URLS:
+            if count_elaborati >= 200:
+                break
 
-            visited_pages.add(target)
             print(f"    [{SITE_NAME}] Scansione pagina catalogo: {target}...")
 
             try:
@@ -275,21 +269,7 @@ def run_scraper(db_conn, config, ollama_config=None):
 
             soup = BeautifulSoup(response.text, "html.parser")
 
-            # 1.1 Estrazione link PAGINAZIONE e OFFERTE
-            for a_tag in soup.find_all("a", href=True):
-                href = a_tag.get("href")
-                if "veicolo-ricerca-list.php" in href or "offerte-del-mese.php" in href:
-                    clean_href = href.split('#')[0]
-                    if not clean_href:
-                        continue
-                    full_p_url = urljoin(BASE_URL, clean_href)
-                    if (
-                        full_p_url not in visited_pages
-                        and full_p_url not in pages_to_visit
-                    ):
-                        pages_to_visit.append(full_p_url)
-
-            # 1.2 Estrazione link di DETTAGLIO VEICOLI
+            # Estrazione link di DETTAGLIO VEICOLI
             candidate_links = soup.find_all(
                 "a",
                 href=re.compile(
@@ -305,6 +285,7 @@ def run_scraper(db_conn, config, ollama_config=None):
                         candidate_links.append(a_tag)
                     
             if not candidate_links:
+                print(f"    [!] Nessun link veicolo trovato nella pagina {target}.")
                 continue
 
             # ----------------------------------------------------
@@ -419,14 +400,12 @@ def run_scraper(db_conn, config, ollama_config=None):
                     img_url=img_url,
                     regex_extractor_func=regex_extract_camper_data,
                     ollama_config=ollama_config,
+                    skip_ai=skip_ai
                 )
 
                 count_elaborati += 1
                 if count_elaborati >= 200:
                     break
-
-            if count_elaborati >= 200:
-                break
 
     except Exception as e:
         print(f"    [!] Errore fatale nello scraper {SITE_NAME}: {e}")

@@ -267,7 +267,7 @@ def extract_hd_image_from_detail(det_soup, base_url):
     return None
 
 
-def run_scraper(db_conn, config, ollama_config=None):
+def run_scraper(db_conn, config, ollama_config=None, skip_ai=False):
     SITE_NAME = "Camper Novara"
     BASE_URL = "https://www.campernovara.it"
     DISTANCE_FROM_SEREGNO = 70
@@ -330,6 +330,7 @@ def run_scraper(db_conn, config, ollama_config=None):
                 img_url,
                 regex_extract_camper_data,
                 ollama_config,
+                skip_ai=skip_ai
             )
             count_elaborati += 1
             print(f"[+] [{count_elaborati}] Processato: {url_completo}")

@@ -138,7 +138,7 @@ def extract_price(text):
 def clean_text(text): 
     return re.sub(r'\n\s*\n', '\n', re.sub(r'[ \t]+', ' ', text)).strip()
 
-def run_scraper(db_conn, config, ollama_config=None):
+def run_scraper(db_conn, config, ollama_config=None, skip_ai=False):
     SITE_NAME = "Groppetti"
     BASE_URL = "https://www.groppetti.net"
     TARGET_URLS = [
@@ -301,7 +301,8 @@ def run_scraper(db_conn, config, ollama_config=None):
                     # Rimosso il limite aggressivo dei 3000 caratteri, espanso a 10000 per evitare troncamenti
                     scraper_utils.process_listing(
                         db_conn, config, url_no_query, SITE_NAME, f"--- DETTAGLI ---\n{testo}"[:10000], 
-                        prezzo, DISTANCE_FROM_SEREGNO, img_url, regex_extract_camper_data, ollama_config
+                        prezzo, DISTANCE_FROM_SEREGNO, img_url, regex_extract_camper_data, ollama_config,
+                        skip_ai=skip_ai
                     )
                     count_elaborati += 1
                 except Exception as e: 

@@ -10,9 +10,6 @@ import scraper_utils
 # ==========================================
 # 1. LOGICA REGEX (Adattata per DB)
 # ==========================================
-# ==========================================
-# 1. LOGICA REGEX (Adattata per DB)
-# ==========================================
 def regex_extract_camper_data(raw_text, current_price, db_conn):
     testo = str(raw_text).lower()
     
@@ -243,7 +240,7 @@ def fetch_url_with_retry(session, url, headers, max_retries=3, timeout=25):
             print(f"      [!] Timeout o Disconnessione, riprovo...")
             time.sleep(2 * attempt)
 
-def run_scraper(db_conn, config, ollama_config=None):
+def run_scraper(db_conn, config, ollama_config=None, skip_ai=False):
     SITE_NAME = "3C Srl"
     BASE_URL = "https://3csrl.com"
     TARGET_URLS = [
@@ -441,7 +438,8 @@ def run_scraper(db_conn, config, ollama_config=None):
                         distance=DISTANCE_FROM_SEREGNO, 
                         img_url=img_url,
                         regex_extractor_func=regex_extract_camper_data,
-                        ollama_config=ollama_config
+                        ollama_config=ollama_config,
+                        skip_ai=skip_ai
                     )
                     count_elaborati += 1
                     

@@ -3,9 +3,16 @@ import re
 import time
 import requests
 from bs4 import BeautifulSoup
+from datetime import datetime
 
 # Importiamo il modulo di utilità condiviso
 import scraper_utils
+
+# Il calcolatore punteggio resta esterno ma viene richiamato da qui
+try:
+    import score_calculator
+except ImportError:
+    pass # Gestito nel blocco main
 
 # ==========================================
 # 1. LOGICA REGEX SPECIFICA (Da adattare al sito)
@@ -17,8 +24,7 @@ def regex_extract_camper_data(raw_text, current_price, db_conn):
     anno_match = re.search(r'\b(199\d|20[0-2]\d)\b', testo)
     anno = int(anno_match.group(1)) if anno_match else None
     
-    km_match = re.search(r'(?:km|chilometri)[\s:]*(\d{1,3}(?:\.\d{3})+|\d{1,6})', testo) or \
-               re.search(r'(\d{1,3}(?:\.\d{3})+|\d{1,6})\s*(?:km|chilometri)', testo)
+    km_match = re.search(r'(\d{1,3}(?:\.\d{3})+|\d{1,6})\s*(?:km|chilometri)', testo)
     km = int(km_match.group(1).replace('.', '')) if km_match else None
     if km is None and ('nuovo' in testo or 'da immatricolare' in testo):
         km = 0
@@ -28,7 +34,7 @@ def regex_extract_camper_data(raw_text, current_price, db_conn):
     tipo_mansardato = bool(re.search(r'\bmansardat[oi]\b', testo))
     tipo_motorhome = bool(re.search(r'\bmotorhome\b|\bintegrale\b', testo))
     tipo_semintegrale = bool(re.search(r'\bsemi[\s-]?integral[ei]\b|\bprofilat[oi]\b', testo))
-
+    
     # Protezione per evitare false assegnazioni al semintegrale
     if tipo_furgonato:
         tipo_semintegrale = False
@@ -37,18 +43,17 @@ def regex_extract_camper_data(raw_text, current_price, db_conn):
     elif tipo_mansardato:
         tipo_semintegrale = False
         tipo_motorhome = False
-    elif tipo_semintegrale:
-        tipo_motorhome = False
     elif tipo_motorhome and not re.search(r'\bsemi[\s-]?integral[ei]\b', testo):
         tipo_semintegrale = False
-
+    elif tipo_semintegrale:
+        tipo_motorhome = False
+    
     lunghezza = None
     # Catturiamo i numeri decimali nel testo (misure come 7.4, 7.35, 2.95, ecc.)
     misure_dec = re.findall(r'(\d+[.,]\d{1,2})', testo)
     if misure_dec:
         floats = [float(m.replace(',', '.')) for m in misure_dec]
         # REGOLA: un camper non sarà mai meno lungo di 5 metri, e non sarà mai più alto/largo di 5 metri.
-        # Quindi limitiamo la ricerca ai valori decimali tra 5.0 e 12.0 (filtro matematico sicuro).
         lunghezze_valide = [v for v in floats if 5.0 <= v <= 12.0]
         if lunghezze_valide:
             lunghezza = max(lunghezze_valide)
@@ -62,14 +67,10 @@ def regex_extract_camper_data(raw_text, current_price, db_conn):
     posti_omologati = None
     posti_letto = None
     
-    match_omologati = re.search(r'(?:omologati|viaggio)[\s:]*(\d)', testo) or \
-                      re.search(r'(\d)\s*posti\s*(?:omologati|viaggio)', testo) or \
-                      re.search(r'\bposti[\s:]*(\d)', testo)
+    match_omologati = re.search(r'(?:omologati|viaggio)[\s:]*(\d)', testo) or re.search(r'(\d)\s*posti\s*(?:omologati|viaggio)', testo)
     if match_omologati: posti_omologati = int(match_omologati.group(1))
     
-    match_letto = re.search(r'(?:letto|dormire)[\s:]*(\d)', testo) or \
-                  re.search(r'(\d)\s*posti\s*letto', testo) or \
-                  re.search(r'\bletti[\s:]*(\d)', testo)
+    match_letto = re.search(r'(?:letto|dormire)[\s:]*(\d)', testo) or re.search(r'(\d)\s*posti\s*letto', testo)
     if match_letto: posti_letto = int(match_letto.group(1))
     
     if posti_omologati is None and posti_letto is None:
@@ -81,11 +82,10 @@ def regex_extract_camper_data(raw_text, current_price, db_conn):
     cv_match = re.search(r'(\d{3})\s*cv', testo)
     potenza = int(cv_match.group(1)) if cv_match else None
     
-    # Regole di estrazione Riscaldamento (Migliorato per matchare "riscaldamento truma combi a gasolio")
+    # Regole di estrazione Riscaldamento
     riscaldamento_gasolio = bool(re.search(r'webasto|eberspacher|eberspächer|riscaldatore\s*(?:[a-z0-9]+\s*){0,3}(?:a\s*)?gasolio|riscaldamento\s*(?:[a-z0-9]+\s*){0,3}(?:a\s*)?gasolio|riscaldamento\s*diesel|stufa\s*(?:a\s*)?gasolio|truma\s*(?:combi\s*)?(?:d\b|a\s*gasolio)|riscaldatore\s*supplementare', testo))
     riscaldamento_alde = bool(re.search(r'\balde\b', testo))
     
-    # Aggiunta estrazione per gli accessori mancanti dai dati tecnici
     batterie_litio = bool(re.search(r'batteri[ea]\s*(?:al\s*)?litio|\blitio\b', testo))
     predisposizione_invernale = bool(re.search(r'winter\s*pack|pack\s*winter|pacchetto\s*invernale|predisposizione\s*invernale', testo))
     doppia_batteria = bool(re.search(r'doppi[oa]\s*batteri[ea]|seconda\s*batteria|due\s*batterie|2\s*batterie', testo))
@@ -164,6 +164,7 @@ def regex_extract_camper_data(raw_text, current_price, db_conn):
         "letti_a_castello": letti_a_castello
     }
 
+
 # ==========================================
 # 2. CORE SCRAPER E COLLEGAMENTO
 # ==========================================
@@ -185,131 +186,152 @@ def clean_text_preserve_lists(text):
     text = re.sub(r'[ \t]+', ' ', text)
     return text.strip()
 
-def run_scraper(db_conn, config, ollama_config=None):
-    SITE_NAME = "CamperOnLine"
-    BASE_URL = "https://www.camperonline.it"
-    DEFAULT_DISTANCE = 150 # Valore di fallback per aggregatore nazionale
+def run_scraper(db_conn, config, ollama_config=None, skip_ai=False):
+    SITE_NAME = "Transwe"
+    BASE_URL = "https://www.transwe.it"
+    # Struttura delle categorie per veicoli nuovi e usati su Transwe
+    TARGET_URLS = [
+        f"{BASE_URL}/category/camper-motorhome-van-caravan-usati/",
+        f"{BASE_URL}/category/camper-van-motorhome-nuovi/"
+    ]
+    DISTANCE_FROM_SEREGNO = 18 # Anzano del Parco dista circa 18-20km
     
+    # Header estesi per bypassare protezioni WordPress / Cloudflare
     headers = {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8',
+        'Accept-Language': 'it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7',
+        'Upgrade-Insecure-Requests': '1',
+        'Sec-Fetch-Dest': 'document',
+        'Sec-Fetch-Mode': 'navigate',
+        'Sec-Fetch-Site': 'none',
+        'Sec-Fetch-User': '?1',
+        'Connection': 'keep-alive'
     }
     
+    session = requests.Session()
+    session.headers.update(headers)
+    
     try:
-        print(f"    [{SITE_NAME}] Scansione aggregatore in corso...")
-        
         processed_urls = set()
         count_elaborati = 0
         
-        # Iterazione sulle prime 3 pagine per estendere la ricerca
-        for page in range(1, 4):
-            if count_elaborati >= 10: 
-                break
+        for base_category_url in TARGET_URLS:
+            # Iteriamo sulle prime pagine di paginazione di WordPress
+            for page in range(1, 6): 
+                url_page = f"{base_category_url}page/{page}/" if page > 1 else base_category_url
+                print(f"    [Transwe] Scansione catalogo: {url_page}")
                 
-            TARGET_URL = f"{BASE_URL}/camper-usati?page={page}"
-            print(f"      -> Ricerca su pagina: {TARGET_URL}")
-            
-            response = requests.get(TARGET_URL, headers=headers, timeout=15)
-            response.raise_for_status()
-            soup = BeautifulSoup(response.text, 'html.parser')
-            
-            # Pattern Regex per agganciare in modo robusto gli annunci sulle singole sottocartelle
-            links_veicoli = soup.find_all('a', href=re.compile(r'/camper-usati/[^?]+|/annuncio/[^?]+|/veicolo/[^?]+'))
-            
-            for link in links_veicoli:
-                container = link.find_parent('div') 
-                while container and len(container.get_text()) < 50:
-                    container = container.find_parent('div')
-                    if not container: break
-                
-                if not container: continue
-                
-                url_parziale = link['href']
-                
-                # Esclusione link di navigazione/sistema
-                if "azione=" in url_parziale or "page=" in url_parziale or "ordinamento=" in url_parziale:
-                    continue
+                response = session.get(url_page, timeout=15)
+                # Se la pagina non esiste, significa che la paginazione è terminata
+                if response.status_code == 404:
+                    break 
                     
-                url_completo = BASE_URL + "/" + url_parziale.lstrip('/') if not url_parziale.startswith('http') else url_parziale
+                response.raise_for_status()
+                soup = BeautifulSoup(response.text, 'html.parser')
                 
-                if url_completo in processed_urls: continue
+                # Approccio universale per siti WP: estraiamo tutti i link
+                links = soup.find_all('a', href=True)
                 
-                testo_card = clean_text_preserve_lists(container.get_text(separator="\n"))
-                prezzo = extract_price(testo_card)
-                
-                if prezzo > 10000 and '€' in testo_card:
+                for link_tag in links:
+                    url_completo = link_tag['href']
+                    
+                    if not url_completo.startswith('http'):
+                        url_completo = f"{BASE_URL}{url_completo if url_completo.startswith('/') else '/' + url_completo}"
+                        
+                    if not url_completo.startswith(BASE_URL):
+                        continue
+                        
+                    # Filtriamo pesantemente i link di utilità per evitare pagine inutili
+                    percorsi_ignorati = ['/category/', '/tag/', '/page/', '/wp-content/', '/wp-json/', '/wp-admin/', 
+                                         '/noleggio', '/tariffe', '/faq', '/assistenza', '/galleria', '/blog', 
+                                         '/contatti', '/valuta', '/chi-siamo', '/privacy', '/cookie',
+                                         '/offerte', '/promozion', '/perche', '/accessori']
+                                         
+                    if any(p in url_completo.lower() for p in percorsi_ignorati):
+                        continue
+                        
+                    # Ignoriamo la homepage e ancore
+                    if url_completo in [f"{BASE_URL}/", BASE_URL] or '#' in url_completo:
+                        continue
+                        
+                    if url_completo.endswith(('.jpg', '.png', '.jpeg', '.pdf')):
+                        continue
+                        
+                    if url_completo in processed_urls:
+                        continue
+                        
                     processed_urls.add(url_completo)
-                    print(f"    [{SITE_NAME}] Analisi: {url_completo}")
                     
-                    # Logica dinamica di rilevamento distanza tramite Regex sulla provincia testuale 
-                    distanza = DEFAULT_DISTANCE
-                    if re.search(r'\b(MB|MI|CO|LC|BG|VA)\b', testo_card):
-                        distanza = 15
-                    elif re.search(r'\b(TO|NO|VC|BS|VR|VI|PD|TN|BZ|PR|PC|AL)\b', testo_card):
-                        distanza = 150
-                    elif re.search(r'\b(BO|FI|RM|NA|MO|RE|FC|GO)\b', testo_card):
-                        distanza = 300
-                    
+                    # Troviamo il container della card per eventuali dati
+                    container = link_tag.find_parent(['article', 'div', 'li'])
+                    testo_card = ""
                     img_url = None
-                    for img_tag in container.find_all('img'):
-                        src = img_tag.get('src') or img_tag.get('data-src') or img_tag.get('data-original') or img_tag.get('data-lazy-src')
-                        # Resa più permissiva l'estrazione img per un aggregatore
-                        if src and any(x in src.lower() for x in ['immagini', 'camper', 'foto', 'media', 'upload', 'pictures']):
-                            if src.startswith('http'):
-                                img_url = src
-                            else:
-                                src = src.lstrip('/') 
-                                img_url = f"{BASE_URL}/{src}"
-                            break
                     
+                    if container:
+                        testo_card = clean_text_preserve_lists(container.get_text(separator="\n"))
+                        img_tag = container.find('img')
+                        if img_tag:
+                            img_url = img_tag.get('src') or img_tag.get('data-src') or img_tag.get('data-lazy-src')
+
                     try:
                         time.sleep(1) 
-                        det_resp = requests.get(url_completo, headers=headers, timeout=10)
-                        det_resp.encoding = 'utf-8'
+                        det_resp = session.get(url_completo, timeout=10)
+                        if det_resp.status_code != 200:
+                            continue
+                            
                         det_soup = BeautifulSoup(det_resp.text, 'html.parser')
                         
+                        # Recupero immagine dai dettagli qualora non trovata nella card
                         if not img_url:
                             for img in det_soup.find_all('img'):
-                                src = img.get('src') or img.get('data-src') or img.get('data-original')
-                                if src and any(x in src.lower() for x in ['immagini', 'camper', 'foto', 'media', 'upload', 'pictures']):
-                                    if src.startswith('http'):
-                                        img_url = src
-                                    else:
-                                        src = src.lstrip('/')
-                                        img_url = f"{BASE_URL}/{src}"
+                                src = img.get('src') or img.get('data-src') or img.get('data-lazy-src')
+                                if src and 'uploads' in src.lower() and not 'logo' in src.lower():
+                                    img_url = src
                                     break
                         
-                        for hidden in det_soup(["script", "style", "nav", "footer", "header"]):
+                        # Pulizia del DOM interno per evitare testo inutile (menu che contiene "motorhome")
+                        for hidden in det_soup(["script", "style", "nav", "footer", "header", "aside"]):
                             hidden.decompose()
                             
-                        # Usiamo \n come separatore per mantenere l'elenco degli accessori leggibile
                         testo_dettaglio = clean_text_preserve_lists(det_soup.get_text(separator="\n"))
+                        testo_completo_check = testo_dettaglio.lower()
+                        
+                        # LOGICA VENDUTO CON CANCELLAZIONE
+                        if re.search(r'\bvenduto\b', testo_completo_check):
+                            print(f"      [-] Ignorato (VENDUTO): {url_completo}")
+                            cursor = db_conn.cursor()
+                            cursor.execute("SELECT 1 FROM annunci WHERE url = ?", (url_completo,))
+                            if cursor.fetchone():
+                                cursor.execute("DELETE FROM annunci WHERE url = ?", (url_completo,))
+                                cursor.execute("DELETE FROM storico_prezzi WHERE url_annuncio = ?", (url_completo,))
+                                db_conn.commit()
+                                print(f"      [!] RIMOSSO DAL DB (VENDUTO): {url_completo}")
+                            continue
+                            
+                        # FIX: Verifica robustezza per capire se è un camper VERO (evita false pagine)
+                        tech_keywords = ['chilometri', 'meccanica', 'posti omologati', 'posti letto', 'lunghezza', 'larghezza', 'potenza', 'cambio', 'immatricolazione', 'cilindrata', 'telaio']
+                        matches = sum(1 for kw in tech_keywords if kw in testo_completo_check)
+                        
+                        if matches < 2:
+                            # Se non ha almeno 2 parole chiave tecniche, non è un veicolo reale in vendita
+                            continue
+                        
+                        # Estrazione Prezzo
+                        prezzo = extract_price(testo_dettaglio)
+                        if prezzo == 0 and testo_card:
+                            prezzo = extract_price(testo_card)
+
                         testo_finale = f"{testo_card}\n\n--- DETTAGLI ---\n{testo_dettaglio}"
                         
                     except Exception as inner_e:
-                        print(f"      [!] Impossibile leggere dettaglio: {inner_e}. Fallback su dati card.")
-                        testo_finale = testo_card
-
-                    # Modifica: Pulizia del menu di navigazione per non confondere AI e Regex
-                    menu_pattern = r'Camper\s+Camper usati\s+Camper nuovi.*?Accedi\s*'
-                    testo_finale = re.sub(menu_pattern, '', testo_finale, flags=re.IGNORECASE | re.DOTALL)
-
-                    # Modifica: Troncamento del testo per ignorare offerte correlate ("Potrebbero interessarti")
-                    keyword_trunc = [
-                        "potrebbero interessarti", "potrebbe interessarti", 
-                        "veicoli simili", "annunci simili", "altri annunci", 
-                        "ricerche correlate"
-                    ]
-                    testo_finale_lower = testo_finale.lower()
-                    for kw in keyword_trunc:
-                        idx = testo_finale_lower.find(kw)
-                        if idx != -1:
-                            testo_finale = testo_finale[:idx]
-                            testo_finale_lower = testo_finale_lower[:idx]
+                        print(f"      [!] Impossibile leggere dettaglio per {url_completo}: {inner_e}")
+                        continue
 
                     if len(testo_finale) > 3000:
                         testo_finale = testo_finale[:3000]
 
-                    # Utilizziamo la funzione modulare di utils
+                    # Utilizziamo la funzione modulare passando la NOSTRA funzione RegEx
                     scraper_utils.process_listing(
                         db_conn=db_conn, 
                         config=config, 
@@ -317,20 +339,25 @@ def run_scraper(db_conn, config, ollama_config=None):
                         site_name=SITE_NAME, 
                         raw_text=testo_finale, 
                         current_price=prezzo, 
-                        distance=distanza, 
+                        distance=DISTANCE_FROM_SEREGNO, 
                         img_url=img_url,
                         regex_extractor_func=regex_extract_camper_data,
-                        ollama_config=ollama_config
+                        ollama_config=ollama_config,
+                        skip_ai=skip_ai
                     )
                     
                     count_elaborati += 1
-                    if count_elaborati >= 500:
+                    if count_elaborati >= 500: 
                         break
-
+                        
+                if count_elaborati >= 500:
+                    break
+                        
     except Exception as e:
-        print(f"    [!] Errore fatale nello scraper CamperOnLine: {e}")
+        print(f"    [!] Errore fatale nello scraper Transwe: {e}")
 
 if __name__ == "__main__":
     import sys
     sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    import scraper_utils
     import score_calculator

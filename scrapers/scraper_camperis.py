@@ -128,7 +128,7 @@ def extract_price(soup_or_text):
 def clean_text(text): 
     return re.sub(r'\n\s*\n', '\n', re.sub(r'[ \t]+', ' ', text)).strip()
 
-def run_scraper(db_conn, config, ollama_config=None):
+def run_scraper(db_conn, config, ollama_config=None, skip_ai=False):
     SITE_NAME = "Camperis"
     BASE_URL = "https://www.camperis.com"
     
@@ -273,7 +273,8 @@ def run_scraper(db_conn, config, ollama_config=None):
                             DISTANCE_FROM_SEREGNO, 
                             img_url, 
                             regex_extract_camper_data, 
-                            ollama_config
+                            ollama_config,
+                            skip_ai=skip_ai
                         )
                         count_elaborati += 1
                         

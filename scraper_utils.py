@@ -110,7 +110,7 @@ def _genera_regex_flessibile(testo):
     if not testo:
         return ""
     parti = re.findall(r'[a-zA-Z0-9]+', str(testo).lower())
-    regex_pattern = r'[\W_]*'.join(parti)
+    regex_pattern = r"[\W_]*".join(parti)
     return regex_pattern
 
 def match_marca_modello_db(testo, db_conn, fallback_marca="", fallback_modello="", fallback_allestimento=""):
@@ -172,7 +172,7 @@ def match_marca_modello_db(testo, db_conn, fallback_marca="", fallback_modello="
 # 3. LOGICA DI PROCESSO E SALVATAGGIO (SQLITE)
 # ==========================================
 
-def process_listing(db_conn, config, url, site_name, raw_text, current_price, distance, img_url, regex_extractor_func, ollama_config=None):
+def process_listing(db_conn, config, url, site_name, raw_text, current_price, distance, img_url, regex_extractor_func, ollama_config=None, skip_ai=False):
     """
     Processa un annuncio: controlla le variazioni, estrae i dati con la funzione 
     RegEx iniettata dallo scraper, consulta l'IA, calcola lo score e salva su DB.
@@ -214,8 +214,12 @@ def process_listing(db_conn, config, url, site_name, raw_text, current_price, di
         dati_estratti = regex_extractor_func(raw_text, current_price, db_conn)
         ai_used = False
         
-        print("        -> Richiesta Ollama AI in corso per Riassunto Accessori...")
-        dati_ai = extract_camper_data_ai(raw_text, ollama_config=ollama_config)
+        dati_ai = None
+        if not skip_ai:
+            print("        -> Richiesta Ollama AI in corso per Riassunto Accessori...")
+            dati_ai = extract_camper_data_ai(raw_text, ollama_config=ollama_config)
+        else:
+            print("        -> Modalità NO-AI attiva: passaggio AI saltato.")
         
         if dati_ai:
             for k, v in dati_ai.items():
@@ -236,7 +240,7 @@ def process_listing(db_conn, config, url, site_name, raw_text, current_price, di
             dati_estratti["prezzo"] = current_price 
             ai_used = True
             print("        -> AI Extraction completata con successo.")
-        else:
+        elif not skip_ai:
             print("        -> Errore o Timeout AI: Mantenuti dati di base Regex.")
             
         risultato = score_calculator.calculate_score(dati_estratti, config) 

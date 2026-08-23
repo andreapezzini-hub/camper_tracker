@@ -88,7 +88,7 @@ def export_to_json(db_conn):
         json.dump(db_json, f, indent=4, ensure_ascii=False)
     print(f"[+] Esportazione completata. {len(annunci)} annunci esportati.")
 
-def load_and_run_scrapers(db_conn, target_scraper=None):
+def load_and_run_scrapers(db_conn, target_scraper=None, skip_ai=False):
     if not os.path.exists(SCRAPERS_DIR):
         os.makedirs(SCRAPERS_DIR)
         print(f"Cartella '{SCRAPERS_DIR}' creata.")
@@ -144,7 +144,7 @@ def load_and_run_scrapers(db_conn, target_scraper=None):
             spec.loader.exec_module(modulo)
             
             if hasattr(modulo, 'run_scraper'):
-                modulo.run_scraper(db_conn, config, ollama_config=ollama_config)
+                modulo.run_scraper(db_conn, config, ollama_config=ollama_config, skip_ai=skip_ai)
             else:
                 print(f"  [!] Il file {file_path} non contiene la funzione 'run_scraper(db_conn, config)'.")
                 
@@ -161,14 +161,19 @@ if __name__ == "__main__":
             pass
     print(f"[*] Avvio CamperTracker AI Engine - {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     
-    # Prende lo scraper target da argomento riga di comando (es. python main_engine.py campernovara)
-    target_from_args = sys.argv[1] if len(sys.argv) > 1 else None
+    # Parsing argomenti riga di comando (es. python main_engine.py campernovara --no-ai)
+    args = [arg for arg in sys.argv[1:]]
+    skip_ai = "--no-ai" in args or "-no-ai" in args
+    
+    # Filtra eventuali flag per estrarre lo scraper target
+    target_args = [arg for arg in args if not arg.startswith("-")]
+    target_from_args = target_args[0] if target_args else None
     
     # Inizializza e ottiene connessione SQLite
     db_conn = get_db_connection()
     
-    # Esegue gli scraper (passando l'eventuale target)
-    load_and_run_scrapers(db_conn, target_scraper=target_from_args)
+    # Esegue gli scraper (passando l'eventuale target e la gestione AI)
+    load_and_run_scrapers(db_conn, target_scraper=target_from_args, skip_ai=skip_ai)
     
     # Salva il file JSON per la dashboard web
     export_to_json(db_conn)

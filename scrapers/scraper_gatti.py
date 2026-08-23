@@ -156,7 +156,7 @@ def clean_url(url):
     url = re.sub(r'[\.\)\s]+$', '', url.strip())
     return url
 
-def run_scraper(db_conn, config, ollama_config=None):
+def run_scraper(db_conn, config, ollama_config=None, skip_ai=False):
     SITE_NAME = "Giorgio Gatti"
     BASE_URL = "https://www.giorgiogatti.info"
     
@@ -261,7 +261,8 @@ def run_scraper(db_conn, config, ollama_config=None):
                 scraper_utils.process_listing(
                     db_conn=db_conn, config=config, url=url_completo, site_name=SITE_NAME, 
                     raw_text=testo_finale, current_price=prezzo, distance=DISTANCE_FROM_SEREGNO, 
-                    img_url=img_url, regex_extractor_func=regex_extract_camper_data, ollama_config=ollama_config
+                    img_url=img_url, regex_extractor_func=regex_extract_camper_data, ollama_config=ollama_config,
+                    skip_ai=skip_ai
                 )
                 count_elaborati += 1
             except Exception as inner_e:
