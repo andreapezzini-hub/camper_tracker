@@ -1,8 +1,10 @@
+import datetime
 import os
 import re
 import time
 import requests
 from bs4 import BeautifulSoup
+import datetime
 
 import scraper_utils
 
@@ -12,12 +14,18 @@ import scraper_utils
 def regex_extract_camper_data(raw_text, current_price, db_conn):
     testo = str(raw_text).lower()
     
+    anno_corrente = datetime.date.today().year
+
+    # Anno immatricolazione dal testo; se assente, assume l'anno corrente
     anno_match = re.search(r'\b(199\d|20[0-2]\d)\b', testo)
-    anno = int(anno_match.group(1)) if anno_match else None
-    
-    km_match = re.search(r'km\s*(\d{1,3}(?:\.\d{3})+|\d{1,6})', testo)
-    km = int(km_match.group(1).replace('.', '')) if km_match else None
-    if km is None and ('nuovo' in testo or 'da immatricolare' in testo): km = 0
+    anno = int(anno_match.group(1)) if anno_match else anno_corrente
+
+    # Chilometri
+    km_match = re.search(r'(?:km\s*percorsi|chilometraggio|km)\s*[:\s]*(\d{1,3}(?:[.\s]\d{3})+|\d{1,6})', testo)
+    km = int(re.sub(r'[.\s]', '', km_match.group(1))) if km_match else None
+
+    # Veicolo nuovo solo se km==0, anno pari o superiore a quello corrente e dicitura 'nuovo'/'da immatricolare'
+    is_nuovo = (km == 0) and (anno >= anno_corrente) and ('nuovo' in testo or 'da immatricolare' in testo)
         
     tipo_furgonato = bool(re.search(r'(?:\r?\n|\r|\s)(van|furgonat[oi]|camper puro)', testo))
     tipo_mansardato = bool(re.search(r'\bmansardat[oi]\b', testo))
@@ -49,13 +57,13 @@ def regex_extract_camper_data(raw_text, current_price, db_conn):
 
     cv_match = re.search(r'(\d{3})\s*cv', testo)
     potenza = int(cv_match.group(1)) if cv_match else None
-    
+
+    predisposizione_invernale = bool(re.search(r'winter\s*pack|pacchetto\s*invernale|serbato[ij]\s*(?:coibentat[oi]|riscaldat[oi])|doppio\s*pavimento\s*riscaldato', testo))
     riscaldamento_gasolio = bool(re.search(r'webasto|eberspacher|riscaldamento\s*(?:a\s*)?gasolio', testo))
     riscaldamento_alde = bool(re.search(r'\balde\b', testo))
     batterie_litio = bool(re.search(r'batteri[ea]\s*(?:al\s*)?litio|\blitio\b', testo))
-    predisposizione_invernale = bool(re.search(r'winter\s*pack|pacchetto\s*invernale', testo))
+    piedini_autolivellanti = bool(re.search(r'piedini\s*(?:auto)?livellanti|piedini\s*elettrici|piedini\s*idraulici', testo))
     doppia_batteria = bool(re.search(r'doppi[oa]\s*batteri[ea]|seconda\s*batteria', testo))
-    piedini_autolivellanti = bool(re.search(r'piedini\s*(?:auto)?livellanti', testo))
     letti_gemelli = bool(re.search(r'letti\s*gemelli|letto\s*gemello', testo))
     letti_a_castello = bool(re.search(r'letti\s*a\s*castello|\bcastello\b', testo))
     
@@ -74,20 +82,39 @@ def regex_extract_camper_data(raw_text, current_price, db_conn):
         marca, modello, allestimento = "Sconosciuto", modello_fallback, ""
     
     return {
-        "marca": marca, "modello": modello, "allestimento": allestimento, "prezzo": current_price,
-        "anno": anno, "chilometri": km, "nuovo": km == 0, "peso": peso,
-        "tipo_furgonato": tipo_furgonato, "tipo_mansardato": tipo_mansardato, "tipo_motorhome": tipo_motorhome,
-        "tipo_semintegrale": tipo_semintegrale, "lunghezza": lunghezza, "potenza": potenza,
-        "posti_omologati": posti_omologati, "posti_letto": posti_letto,
-        "telaio_alko": 'alko' in testo, "doppio_pavimento": 'doppio pavimento' in testo,
-        "cambio_automatico": 'automatico' in testo, "emissioni_euro6": bool(re.search(r'euro\s*6', testo)),
-        "pannelli_solari": 'pannell' in testo and 'solar' in testo, "batterie_litio": batterie_litio,
+        "marca": marca,
+        "modello": modello,
+        "allestimento": allestimento,
+        "prezzo": current_price,
+        "anno": anno,
+        "chilometri": km,
+        "nuovo": is_nuovo,
+        "peso": peso,
+        "tipo_furgonato": tipo_furgonato,
+        "tipo_mansardato": tipo_mansardato,
+        "tipo_motorhome": tipo_motorhome,
+        "tipo_semintegrale": tipo_semintegrale,
+        "lunghezza": lunghezza,
+        "potenza": potenza,
+        "posti_omologati": posti_omologati,
+        "posti_letto": posti_letto,
+        "telaio_alko": 'alko' in testo,
+        "doppio_pavimento": 'doppio pavimento' in testo,
+        "cambio_automatico": bool(re.search(r'(?<!no\s)cambio\s+automatico|trasmissione\s+automatica|\bautomatico\b', testo)) and not bool(re.search(r'cambio\s+manuale', testo)),
+        "emissioni_euro6": (bool(re.search(r'euro\s*6', testo)) and (anno is None or anno >= 2016)) or (anno is not None and anno >= 2016 and 'euro' not in testo) or is_nuovo,
+        "pannelli_solari": 'pannell' in testo and 'solar' in testo,
+        "batterie_litio": batterie_litio,
         "sospensioni_aria": 'sospensioni' in testo and 'aria' in testo,
-        "predisposizione_invernale": predisposizione_invernale, "doppia_batteria": doppia_batteria,
-        "aria_condizionata": 'clima' in testo, "riscaldamento_gasolio": riscaldamento_gasolio,
-        "riscaldatore_gasolio": riscaldamento_gasolio, "riscaldamento_alde": riscaldamento_alde,
-        "piedini_autolivellanti": piedini_autolivellanti, "letto_nautico": 'letto nautico' in testo,
-        "letti_gemelli": letti_gemelli, "letti_a_castello": letti_a_castello
+        "predisposizione_invernale": predisposizione_invernale,
+        "doppia_batteria": doppia_batteria,
+        "aria_condizionata": 'condizionatore cellula' in testo or 'clima cellula' in testo or 'aria condizionata cellula' in testo or bool(re.search(r'clima(tizzatore)?\s+(?:in\s+)?cellula', testo)),
+        "riscaldamento_gasolio": riscaldamento_gasolio,
+        "riscaldatore_gasolio": riscaldamento_gasolio,
+        "riscaldamento_alde": riscaldamento_alde,
+        "piedini_autolivellanti": piedini_autolivellanti,
+        "letto_nautico": 'letto nautico' in testo,
+        "letti_gemelli": letti_gemelli,
+        "letti_a_castello": letti_a_castello
     }
 
 # ==========================================
@@ -106,7 +133,7 @@ def run_scraper(db_conn, config, ollama_config=None, skip_ai=False):
     TARGET_URLS = [
         f"{BASE_URL}/categoria-prodotto/camper-usati/"
     ]
-    DISTANCE_FROM_SEREGNO = 250 # Zero Branco TV -> Seregno
+    DISTANCE_FROM_SEREGNO = 15
     MAX_ANNUNCI = 500
     count_elaborati = 0
     session = requests.Session()

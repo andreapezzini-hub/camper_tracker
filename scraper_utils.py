@@ -190,7 +190,7 @@ def process_listing(db_conn, config, url, site_name, raw_text, current_price, di
         
         # Aggiornamento prezzo se variato
         if current_price != ultimo_prezzo:
-            print(f"      [!] VARIAZIONE PREZZO: {ultimo_prezzo}€ -> {current_price}€")
+            print(f"      [!] VARIAZIONE PREZZO: {ultimo_prezzo}€ -> {current_price}€", flush=True)
             cursor.execute("UPDATE annunci SET prezzo_attuale = ?, data_ultimo_aggiornamento = ? WHERE url = ?", 
                            (current_price, oggi, url))
             
@@ -207,8 +207,9 @@ def process_listing(db_conn, config, url, site_name, raw_text, current_price, di
             cursor.execute("UPDATE annunci SET url_immagine = ? WHERE url = ?", (img_url, url))
             
         db_conn.commit()
+        print(f"      [=] ANNUNCIO GIÀ PRESENTE (DB aggiornato): {url}", flush=True)
     else:
-        print(f"      [*] NUOVO ANNUNCIO: {url}")
+        print(f"      [*] NUOVO ANNUNCIO: {url}", flush=True)
         
         # Richiama la funzione RegEx fornita dallo scraper specifico
         dati_estratti = regex_extractor_func(raw_text, current_price, db_conn)
@@ -216,10 +217,10 @@ def process_listing(db_conn, config, url, site_name, raw_text, current_price, di
         
         dati_ai = None
         if not skip_ai:
-            print("        -> Richiesta Ollama AI in corso per Riassunto Accessori...")
+            print("        -> Richiesta Ollama AI in corso per Riassunto Accessori...", flush=True)
             dati_ai = extract_camper_data_ai(raw_text, ollama_config=ollama_config)
         else:
-            print("        -> Modalità NO-AI attiva: passaggio AI saltato.")
+            print("        -> Modalità NO-AI attiva: passaggio AI saltato.", flush=True)
         
         if dati_ai:
             for k, v in dati_ai.items():
@@ -229,7 +230,7 @@ def process_listing(db_conn, config, url, site_name, raw_text, current_price, di
             # SECONDO PASSAGGIO REGEX: usiamo il riassunto IA per irrobustire i flag booleani
             riassunto_testo = dati_ai.get("riassunto_ia", "")
             if riassunto_testo:
-                print("        -> Esecuzione secondo passaggio Regex su riassunto IA per confermare accessori...")
+                print("        -> Esecuzione secondo passaggio Regex su riassunto IA per confermare accessori...", flush=True)
                 dati_regex_ai = regex_extractor_func(riassunto_testo, current_price, db_conn)
                 
                 # Uniamo solo i valori booleani (accessori) se sono True, non sovrascriviamo gli altri dati
@@ -239,9 +240,9 @@ def process_listing(db_conn, config, url, site_name, raw_text, current_price, di
                     
             dati_estratti["prezzo"] = current_price 
             ai_used = True
-            print("        -> AI Extraction completata con successo.")
+            print("        -> AI Extraction completata con successo.", flush=True)
         elif not skip_ai:
-            print("        -> Errore o Timeout AI: Mantenuti dati di base Regex.")
+            print("        -> Errore o Timeout AI: Mantenuti dati di base Regex.", flush=True)
             
         risultato = score_calculator.calculate_score(dati_estratti, config) 
         
@@ -276,4 +277,4 @@ def process_listing(db_conn, config, url, site_name, raw_text, current_price, di
         
         db_conn.commit()
         
-        print(f"        -> Punteggio Finale: {risultato.get('totale', 0)}/100 [{risultato.get('status', 'SCONOSCIUTO')}] (AI Usata: {ai_used})")
+        print(f"        -> Punteggio Finale: {risultato.get('totale', 0)}/100 [{risultato.get('status', 'SCONOSCIUTO')}] (AI Usata: {ai_used})", flush=True)
