@@ -20115,11 +20115,15 @@
             "modello": "",
             "allestimento": "",
             "distanza_seregno": 60,
-            "prezzo_attuale": 25500.0,
+            "prezzo_attuale": 25900.0,
             "storico_prezzi": [
                 {
                     "data": "2026-08-12",
                     "prezzo": 25500.0
+                },
+                {
+                    "data": "2026-08-30",
+                    "prezzo": 25900.0
                 }
             ],
             "dati_tecnici": {
@@ -20170,7 +20174,7 @@
             "status": "VALIDO",
             "motivo_scarto": "",
             "data_scoperta": "2026-08-12",
-            "data_ultimo_aggiornamento": "2026-08-12",
+            "data_ultimo_aggiornamento": "2026-08-30",
             "url_immagine": "https://www.euro-vacanze.it/media/k2/items/cache/9e2da3b69f12c2eed78f14bf191f9223_XL.jpg",
             "ai_usata": true,
             "testo_originale": "--- DETTAGLI ---\nKNAUS SPORT 500 QDK | Usato: Euro Vacanze\nHome\nVeicoli Usati\nKNAUS SPORT 500 QDK\n Ricerca\nMarca\n- Seleziona -\nCI\nCresci Rimorchi\nDreamer\nKnaus\nRapido\nRoller Team\nTabbert\nWeinsberg\nTipologia\n- Seleziona -\nCaravan\nFurgonato - Van\nMansardato\nMotorhome\nSemintegrale\nSemintegrale con basculante\nDimensione\n- Seleziona -\n540\n600\n650\n700\n750\nCARAVAN 390\nCARAVAN 400 \nCARAVAN 420 \nCARAVAN 450 \nCARAVAN 500\nCARAVAN 550 \nPosti letto\n- Seleziona -\n2\n3\n4\n5\n6\n7\n8\nPosti omologati\n- Seleziona -\n3\n4\n5\n6\nMarca\n- Seleziona -\nCI\nCresci Rimorchi\nDreamer\nKnaus\nRapido\nRoller Team\nTabbert\nWeinsberg\nTipologia\n- Seleziona -\nCaravan\nFurgonato - Van\nMansardato\nMotorhome\nSemintegrale\nSemintegrale con basculante\nDimensione\n- Seleziona -\n540\n600\n650\n700\n750\nCARAVAN 390\nCARAVAN 400 \nCARAVAN 420 \nCARAVAN 450 \nCARAVAN 500\nCARAVAN 550 \nPosti letto\n- Seleziona -\n2\n3\n4\n5\n6\n7\n8\nPosti omologati\n- Seleziona -\n3\n4\n5\n6\n Ricerca\n Cerca nel sito \nTipologia\n- Seleziona -\nCaravan\nFurgonato - Van\nMansardato\nMotorhome\nSemintegrale\nSemintegrale con basculante\n Cerca nel sito \nTipologia\n- Seleziona -\nCaravan\nFurgonato - Van\nMansardato\nMotorhome\nSemintegrale\nSemintegrale con basculante\n Ricerca\n Cerca nel sito \nTipologia\n- Seleziona -\nTrasporto animali\nTrasporto auto e veicoli\nTrasporto cose\nTrasporto cose con rampa\nTrasporto imbarcazioni\nTrasporto moto\n Cerca nel sito \nTipologia\n- Seleziona -\nTrasporto animali\nTrasporto auto e veicoli\nTrasporto cose\nTrasporto cose con rampa\nTrasporto imbarcazioni\nTrasporto moto\n Ricerca\n Cerca nel sito \nTipologia\n- Seleziona -\nACCESSORI PER ESTERNI CARAVAN E CAMPER\nACCESSORI PER INTERNI E CUCINA\nACCESSORI PER INVERNO\nAUDIO VIDEO - ANTENNE - TV\nCONDIZIONATORI\nENERGIA ELETTRICA ED ILLUMINAZIONE\nFORNELLI - MOBILETTI CUCINA - BOMBOLE GAS\nFRIGORIFERI\nGAS E RISCALDAMENTO\nLINEA ACQUA E TOILETTE\nPRODOTTI PULIZIA, MANUTENZIONE E CONSUMO\nRICAMBI CARAVAN E CAMPER\nRIMORCHI\nSACCHI A PELO - LENZUOLA - COPERTE\nSEDIE - BRANDINE - LETTINI\nTAVOLI\nTENDALINI - VERANDE - PORTABICI\n Cerca nel sito \nTipologia\n- Seleziona -\nACCESSORI PER ESTERNI CARAVAN E CAMPER\nACCESSORI PER INTERNI E CUCINA\nACCESSORI PER INVERNO\nAUDIO VIDEO - ANTENNE - TV\nCONDIZIONATORI\nENERGIA ELETTRICA ED ILLUMINAZIONE\nFORNELLI - MOBILETTI CUCINA - BOMBOLE GAS\nFRIGORIFERI\nGAS E RISCALDAMENTO\nLINEA ACQUA E TOILETTE\nPRODOTTI PULIZIA, MANUTENZIONE E CONSUMO\nRICAMBI CARAVAN E CAMPER\nRIMORCHI\nSACCHI A PELO - LENZUOLA - COPERTE\nSEDIE - BRANDINE - LETTINI\nTAVOLI\nTENDALINI - VERANDE - PORTABICI\n KNAUS SPORT 500 QDK\n Affidati a Euro vacanze se stai cercando \n KNAUS SPORT 500 QDK\n azienda leader da oltre 50 anni nella vendita di Caravan e Camper nuovi o usati\n Tuo da \n 25.500 €\n7,31 m\n1.400 kg\nStampa\nRichiedi Informazioni\nPubblicato in\nUsato\n Venduto da \neurovacanze\nStampa\n View the embedded image gallery online at:\nhttps://www.euro-vacanze.it/offerte-usato-camper-caravan-furgonati/item/1160-knaus-sport-500-qdk.html#sigProIdef184f7dfb\nCARATTERISTICHE \nMarca:\nKNAUS\nTipologia:\nCaravan\nAnno:\n2026\nPosti letto:\nfino"
@@ -29087,7 +29091,7 @@
             "modello": "",
             "allestimento": "",
             "distanza_seregno": 180,
-            "prezzo_attuale": 14900.0,
+            "prezzo_attuale": 22900.0,
             "storico_prezzi": [
                 {
                     "data": "2026-08-13",
@@ -29136,6 +29140,10 @@
                 {
                     "data": "2026-08-29",
                     "prezzo": 14900.0
+                },
+                {
+                    "data": "2026-08-30",
+                    "prezzo": 22900.0
                 }
             ],
             "dati_tecnici": {
@@ -29186,7 +29194,7 @@
             "status": "VALIDO",
             "motivo_scarto": "",
             "data_scoperta": "2026-08-13",
-            "data_ultimo_aggiornamento": "2026-08-29",
+            "data_ultimo_aggiornamento": "2026-08-30",
             "url_immagine": "https://www.camperusati.com/wp-content/uploads/2026/07/sterckeman-starlett-470-pe.jpg",
             "ai_usata": true,
             "testo_originale": "--- DETTAGLI ---\nSterckeman STARLETT 470 PE | Grosso Vacanze\nGrosso Vacanze\nCamper semintegrali\nCamper mansardati\nCamper furgonati\nMotorhome\nCaravan\nGrosso Vacanze\nCamper nuovi\nCamper usati\nNoleggio\nNews\nContatti\nShop online\nCarrello\nNessun prodotto nel carrello.\n Super Offerta \nSterckeman STARLETT 470 PE\nCategoria:\nCaravan\n, \nCaravan\n7.900\n€\nSterkeman Starlett 470 PE – Spazio intelligente e comfort per tutta la famiglia\nQuesta caravan ideale per chi si avvicina per la prima volta al mondo del plein air, offre una disposizione interna studiata per garantire comfort e praticità in ogni viaggio. Nella parte anteriore troviamo un letto matrimoniale con ampio vano di stivaggio sottostante, nella parte posteriore due letti a castello perfetti per i più piccoli; il gavone posteriore è accessibile anche dall’esterno tramite portello dedicato.  La dinette centrale, pratica e accogliente, si trasforma in un letto doppio, portando a 6 posti letto totali. La cucina, compatta ma funzionale, include piano a 3 fuochi, lavello e frigorifero da 90 litri. Il bagno, essenziale ma ben organizzato, offre soluzioni intelligenti che ottimizzano ogni centimetro disponibile.\nUna compagna di viaggio che rende ogni partenza semplice e ogni ricordo un passo verso la libertà.\nLavori eseguiti\nCheck Up cellula e utenze (frigo, stufa, boiler…)\nPneumatici che rispettano i parametri di usura ed età\nGaranzia valida in tutta Europa su motore, cambio, parti elettriche, cellula e utenze\nRichiedici informazioni\n Veicolo:\n Nome (richiesto)\n Cognome (richiesto)\n Indirizzo email (richiesto)\n Telefono\n Oggetto\n Messaggio\nDati del suo veicolo\n Marca\n Modello\n Tipologia\nCamper puro\nCaravan\nCarrello tenda\nMansardato\nMotorhome\nSemintegrale\n Anno immatricolazione\n Chilometraggio (km)\n Cavalli\n Meccanica\n Posti omologati\n Posti letto\n Accessori installati \nAntenna TV satellitare\nAntenna TV terrestre\nAntifurto\nAutoradio\nBombolone GPL\nCondizionatore cellula\nCondizionatore motore\nGancio traino\nGeneratore\nLuce esterna\nPannello solare\nPiedini stazionamento\nPortabici\nPortamoto\nPortapacchi\nRilevatore fughe gas\nSecondo serbatoio acque chiare\nSecondo serbatoio acque grigie\nSosp. aria\nUltrabox\nVeranda\n Eventuali altri accessori (specificare)\nAccetto la \nPrivacy Policy\nIscriviti alla nostra newsletter\nRichiedici informazioni\nPrenota una visita\nPrenota una visita\n Veicolo:\n Nome (richiesto)\n Cognome (richiesto)\n Indirizzo email (richiesto)\n Telefono (richiesto)\n Data visita\n Note e precisazioni\nAccetto la \nPrivacy Policy\nIscriviti alla nostra newsletter\nCondividi\nInformazioni aggiuntive\nAccessori\nProduttore\n Sterckeman \nModello\nSTARLETT 470 PE\nData di immatricolazione\n04/2006\nLunghezza veicolo\n634 cm\nPeso a pieno carico\n1.100 kg\nPosti letto\n6\nBoiler 10 lt\nFrigo 100 l\nLuce esterna\nStufa a gas\nVeicoli correlati\nWeinsberg Caraone 400 LKK\n14.900\n€\n4 letti\nDettagli\nCaravelair Alba 496\n22.900\n€\n6 letti\nDettagli\nCaravelair Antares 376\n17.900\n€\n4 letti\nDettagli\n × \nPer garantire una migliore esperienza sul sito u"
@@ -96315,6 +96323,201 @@
             "url_immagine": "https://thumb.camperonline.it/timthumb.php?src=https://www.camperonline.it/camper-nuovi-usati/Foto/1780656614_196549_0_20260521123155.jpg&w=300&h=180",
             "ai_usata": false,
             "testo_originale": "Usato\n Mansardato \n Elnagh - \nMARLIN 560\nTerni\n (TR)\r\n 15.600 €\n\n--- DETTAGLI ---\nCamper Usato Mansardato Elnagh Marlin 560 2000 | CamperOnLine\nCamper Mansardato Elnagh Marlin 560 usato\n15.600 €\nCamper Elnagh usati\n, \nCamper Mansardato usati\nRichiedi info e disponibilità\nCamper Mansardato Elnagh Marlin 560 usato\nCamper Mansardato Elnagh Marlin 560 usato\nCamper Mansardato Elnagh Marlin 560 usato\nCamper Mansardato Elnagh Marlin 560 usato\n1\n2\n3\n4\nRichiedi info e disponibilità\nOfferta\nUsato\nTipo\nMansardato\nMarca\nElnagh\nModello\nMarlin 560\nAnno\n2000\nKm\n72.300 Km\nMotore\nDucato 1.9 tdi 90 cv\nPotenza\nFino a 100 cv\nPosti\n6\nLetti\n4\nDimensioni\n560 cm\n15.600 €\nRichiedi info e disponibilità\n Note ed accessori\nDoppio serbatoio acqua potabile. La pompa delle acque è del 2023. \nHa un vano per 2 bombole Gas da 10 litri cadauna e 2 bombole gas. \n2 pannelli solari 2012 e 2023. \nMeccanica affidabile.\nTagliandi regolarmente effettuati e l'ultimo appena effettuato. Revisionato Settembre 2025.\nCinghia distribuzione effettuata 03 Giugno 2026.\nPneumatici seminuovi del 2017. \nTendalino manuale. Portabici 2. \nGuida e tenda (smonatabile) interna, entrambe artigianali, per dividere il camper in due zone. \nStufa Truma perfettamente funzionante.\nFrigorifero circa 60 litri più piccolo surgelatore. Boiler. Parabola. Batteria motore nuova. \nBagno con thetford con una seconda cassetta di riserva. Doccia interna con tubo lungo per poterla fare anche all'estero. \nBatteria servizi di 2 anni di vita. \nDoppio oblò nuovi (uno del 2022 ed uno 2026) di cui uno ventilato. \nOscuranti interni blu (come tutte le altre doppie tende) per tutta la cabina guida fatti artigianalmente con aggancio a bottone a pressione.\nMoquette blu artigianale per tutto il pavimento fatta in tre parti.\nIl mezzo è in ottime condizioni e perfettamente funzionante ma chiaramente ha delle piccole imperfezioni. Il prezzo è leggermente trattabile.\nAltre foto disponibili se richieste. \n Dotazione di serie\nCamper mansardato Elnagh Marlin su Fiat Ducato 1.9 tdi.\nAnno 2000. 6 posti letto.\n78.200 km.\nSempre tenuto sotto tettoia di proprietà (foto dimostrative).\nRichiedi info e disponibilità\nRichiedi un preventivo per assicurare il tuo camper:\n"
+        },
+        "https://www.campernovara.it/camper/ci-riviera-garage-4/": {
+            "sito": "Camper Novara",
+            "marca": "Sconosciuto",
+            "modello": "",
+            "allestimento": "",
+            "distanza_seregno": 70,
+            "prezzo_attuale": 36900.0,
+            "storico_prezzi": [
+                {
+                    "data": "2026-08-30",
+                    "prezzo": 36900.0
+                }
+            ],
+            "dati_tecnici": {
+                "marca": "Sconosciuto",
+                "modello": "",
+                "allestimento": "",
+                "prezzo": 36900,
+                "anno": 2007,
+                "chilometri": 118232,
+                "nuovo": false,
+                "peso": 3500,
+                "tipo_furgonato": false,
+                "tipo_mansardato": true,
+                "tipo_motorhome": false,
+                "tipo_semintegrale": false,
+                "lunghezza": 7.32,
+                "potenza": 130,
+                "posti_omologati": 5,
+                "posti_letto": 5,
+                "telaio_alko": false,
+                "doppio_pavimento": false,
+                "cambio_automatico": true,
+                "emissioni_euro6": false,
+                "pannelli_solari": false,
+                "batterie_litio": false,
+                "sospensioni_aria": false,
+                "predisposizione_invernale": false,
+                "doppia_batteria": false,
+                "aria_condizionata": true,
+                "riscaldamento_gasolio": false,
+                "riscaldatore_gasolio": false,
+                "riscaldamento_alde": false,
+                "piedini_autolivellanti": false,
+                "letto_nautico": false,
+                "letti_gemelli": false,
+                "letti_a_castello": false
+            },
+            "punteggio_totale": 37.5,
+            "dettaglio_punteggi": {
+                "telaio": 50.0,
+                "meccanica": 60.0,
+                "stato": 0.0,
+                "interni": 40.0,
+                "accessori": 10.0,
+                "prezzo": 30.0
+            },
+            "status": "VALIDO",
+            "motivo_scarto": "",
+            "data_scoperta": "2026-08-30",
+            "data_ultimo_aggiornamento": "2026-08-30",
+            "url_immagine": "https://www.campernovara.it/wp-content/uploads/2026/08/WhatsApp-Image-2026-08-29-at-14.45.10.jpeg?v=1788007981",
+            "ai_usata": false,
+            "testo_originale": "--- DETTAGLI ---\nCamper Mansardato RIVIERA GARAGE vendita usato \nCI RIVIERA GARAGE\nCamper Mansardato\nModello:\n RIVIERA GARAGE \nprezzo: \n36.900\n €\nAnno:\n 2007\nPosti Viaggio:\n 5\nPosti Letto:\n 5\nRichiedi Informazioni\nRichiedi informazioni su: RIVIERA GARAGE \n Il tuo nome (obbligatorio)\n La tua email (obbligatorio)\n Il tuo telefono(obbligatorio)\n Il tuo messaggio\nAcconsento al trattamento dei dati secondo le specifiche sotto riportate\nInformativa ex art. 13 D.lgs. 196/2003\nGentile Signore/a, desideriamo informarLa che il D.lgs. n. 196 del 30 giugno 2003 (\"Codice in materia di protezione dei dati personali\") prevede la tutela delle persone e di altri soggetti rispetto al trattamento dei dati personali. Secondo la normativa indicata, tale trattamento sarà improntato ai principi di correttezza, liceità e trasparenza e di tutela della Sua riservatezza e dei Suoi diritti. Ai sensi dell'articolo 13 del D.lgs. n.196/2003, pertanto, Le forniamo le seguenti informazioni:\n1.\n I dati da Lei forniti verranno trattati per le seguenti finalità: verifica disponibilità ed eventuale prenotazione.\n2.\n Il trattamento sarà effettuato con le seguenti modalità: manuale e/o informatizzato.\n3.\n I dati non saranno comunicati ad altri soggetti, ne saranno oggetto di diffusione.\nCI RIVIERA GARAGE\nCamper Mansardato\nModello:\n RIVIERA GARAGE \nprezzo: \n36.900\n €\nAnno:\n 2007\nPosti Viaggio:\n 5\nPosti Letto:\n 5\nCI RIVIERA GARAGE\nAnno 2007\nFiat ducato 2.3/130cv\nKm 118.232\nMarce 6\nOPTIONAL ED ACCESSORI\nRadio touchescreen\nClima cabina\nRetro camera\nVetri elettrici\nSpecchietti elettrici\nAirbag\nChiusura centralizzata\nSedili girevoli\nOscuranti e zanzariere su tutte le finestre\nFrigorifero trivalente grande automatico\nForno\nRiscaldamento truma combi\nSupport tv\nPanello solare\nBox doccia separato\nLuce esterna\nTendalino esterno\nGarage 93x125cm\nDIMENSIONI\nlunghezza 7,325 m\nLarghezza 2,310 m\nPosti viaggio 5\nPosti letto 5\nPREZZO:\nPrezzo in promo*:36’900,00 Euro\nPrezzo con permuta:38’400,00 Euro\n* PROMO CON IMPORTO FINANZIATO\nPOSSIBILITA’ DI FINANZIAMENTO IN SEDE FINO 96 MESI\nNOVITA’: si offre servizio di Decarbonizzazione motore in promo a 130€ al posto di 150 €\nSiliconatura completa\nLavaggio e Sanificazione\n12 mesi di garanzia completa estendibile fino a 36 mesi\nNOVITA’\n: si offre servizio di Decarbonizzazione motore in promo a 130€ al posto di 150 €\nPOSSIBILITA’ DI FINANZIAMENTO IN SEDE FINO A 120 RATE\nSI RICORDA ALLA GENTILE CLIENTELA CHE PER VISIONARE I MEZZI BISOGNA PERENDERE APPUNTAMENTO IN MODO DA POTER GARANTIRE LA MASSIMA DISPONIBILITÀ\nCI TROVIAMO IN VIA VALLETTA 3, SAN PIETRO MOSEZZO (NO) —USCITA AUTOSTRADA NOVARA OVEST—\nCOMPRIAMO IN TUTTI ITALIA CON PAGAMENTO IMMEDIATO GARANTITO CAMPERNOVARA SRL, OFFRIAMO VALUTAZIONE ISTANTANEA SU WHATSAPP O EMAIL.\n!!!ATTENZIONE!!!IL NOSTRO STAF PER L’ACQUISTO E LA VENDITA È COMPOSTO UNICAMENTE DA: PAOLO, MATTEO, MARCELLO E JESSICA, SE VENITE CONTATTATI DA ALTRE PERSONE SIETE PREGATI DI COMUNICARCELO SUBITO E DI NON PROCEDERE CON ALCUNA TRATTATIVA. \n* Pr"
+        },
+        "https://www.campernovara.it/camper/mobilvetta-k-yacht-mh-87/": {
+            "sito": "Camper Novara",
+            "marca": "Sconosciuto",
+            "modello": "",
+            "allestimento": "",
+            "distanza_seregno": 70,
+            "prezzo_attuale": 49000.0,
+            "storico_prezzi": [
+                {
+                    "data": "2026-08-30",
+                    "prezzo": 49000.0
+                }
+            ],
+            "dati_tecnici": {
+                "marca": "Sconosciuto",
+                "modello": "",
+                "allestimento": "",
+                "prezzo": 49000,
+                "anno": 2012,
+                "chilometri": 51961,
+                "nuovo": false,
+                "peso": 3500,
+                "tipo_furgonato": false,
+                "tipo_mansardato": false,
+                "tipo_motorhome": true,
+                "tipo_semintegrale": false,
+                "lunghezza": 6.99,
+                "potenza": 130,
+                "posti_omologati": 4,
+                "posti_letto": 4,
+                "telaio_alko": false,
+                "doppio_pavimento": false,
+                "cambio_automatico": true,
+                "emissioni_euro6": false,
+                "pannelli_solari": false,
+                "batterie_litio": false,
+                "sospensioni_aria": true,
+                "predisposizione_invernale": false,
+                "doppia_batteria": false,
+                "aria_condizionata": true,
+                "riscaldamento_gasolio": true,
+                "riscaldatore_gasolio": true,
+                "riscaldamento_alde": false,
+                "piedini_autolivellanti": false,
+                "letto_nautico": false,
+                "letti_gemelli": false,
+                "letti_a_castello": false
+            },
+            "punteggio_totale": 42.4,
+            "dettaglio_punteggi": {
+                "telaio": 50.0,
+                "meccanica": 70.0,
+                "stato": 0.0,
+                "interni": 40.0,
+                "accessori": 29.4,
+                "prezzo": 30.0
+            },
+            "status": "VALIDO",
+            "motivo_scarto": "",
+            "data_scoperta": "2026-08-30",
+            "data_ultimo_aggiornamento": "2026-08-30",
+            "url_immagine": "https://www.campernovara.it/wp-content/uploads/2026/08/WhatsApp-Image-2026-08-28-at-11.11.34-9.jpeg?v=1787908526",
+            "ai_usata": false,
+            "testo_originale": "--- DETTAGLI ---\nCamper Motorhome K.YACHT MH 87 vendita usato \nMOBILVETTA K.YACHT MH 87\nCamper Motorhome\nModello:\n K.YACHT MH 87\nprezzo: \n49.000\n €\nAnno:\n 2012\nPosti Viaggio:\n 4\nPosti Letto:\n 4\nRichiedi Informazioni\nRichiedi informazioni su: K.YACHT MH 87\n Il tuo nome (obbligatorio)\n La tua email (obbligatorio)\n Il tuo telefono(obbligatorio)\n Il tuo messaggio\nAcconsento al trattamento dei dati secondo le specifiche sotto riportate\nInformativa ex art. 13 D.lgs. 196/2003\nGentile Signore/a, desideriamo informarLa che il D.lgs. n. 196 del 30 giugno 2003 (\"Codice in materia di protezione dei dati personali\") prevede la tutela delle persone e di altri soggetti rispetto al trattamento dei dati personali. Secondo la normativa indicata, tale trattamento sarà improntato ai principi di correttezza, liceità e trasparenza e di tutela della Sua riservatezza e dei Suoi diritti. Ai sensi dell'articolo 13 del D.lgs. n.196/2003, pertanto, Le forniamo le seguenti informazioni:\n1.\n I dati da Lei forniti verranno trattati per le seguenti finalità: verifica disponibilità ed eventuale prenotazione.\n2.\n Il trattamento sarà effettuato con le seguenti modalità: manuale e/o informatizzato.\n3.\n I dati non saranno comunicati ad altri soggetti, ne saranno oggetto di diffusione.\nMOBILVETTA K.YACHT MH 87\nCamper Motorhome\nModello:\n K.YACHT MH 87\nprezzo: \n49.000\n €\nAnno:\n 2012\nPosti Viaggio:\n 4\nPosti Letto:\n 4\nK.YACHT MH 87  Camper Integrale, Americano\nMOBILVETTA K.YACHT MH 87\nAnno 2012\nFiat ducato 2.3/130cv\nKm 59.414\nMarce 6\nTagliando fatto 51.961 km\nOPTIONAL ED ACCESSORI\nRadio touchescreen\nRetro camera\nClima cabina\nVetro elettrico lato guida\nSospensioni ad aria(non in garanzia)\nChiusura centralizzata\nTraction plus\nAirbag\nSedili girevoli\nOscuranti e zanzariere su tutte le finestre\nPanello solare\nAntenna tv\nTv\nForno\nFrigorifero trivalente grande automatico\nMaxi oblò\nRiscaldamento truma combi\nRiscaldamento webasto\nTruma Boiler\nBox doccia separato\nZanzariera porta ingresso\nSafedoor\nTendalino esterno\nLuce esterna\nGarage 70x115cm\nPorta bici\nDIMENSIONI\nlunghezza 6,998 m\nLarghezza 2,350 m\nPosti viaggio 4\nPosti letto 4\nPREZZO:\nPrezzo in promo*:49’000,00 Euro\nPrezzo con permuta:50’500,00 Euro\n* PROMO CON IMPORTO FINANZIATO\nPOSSIBILITA’ DI FINANZIAMENTO IN SEDE FINO 96 MESI\nNOVITA’: si offre servizio di Decarbonizzazione motore in promo a 130€ al posto di 150 €\nSiliconatura completa\nLavaggio e Sanificazione\n12 mesi di garanzia completa estendibile fino a 36 mesi\nNOVITA’\n: si offre servizio di Decarbonizzazione motore in promo a 130€ al posto di 150 €\nPOSSIBILITA’ DI FINANZIAMENTO IN SEDE FINO A 120 RATE\nSI RICORDA ALLA GENTILE CLIENTELA CHE PER VISIONARE I MEZZI BISOGNA PERENDERE APPUNTAMENTO IN MODO DA POTER GARANTIRE LA MASSIMA DISPONIBILITÀ\nCI TROVIAMO IN VIA VALLETTA 3, SAN PIETRO MOSEZZO (NO) —USCITA AUTOSTRADA NOVARA OVEST—\nCOMPRIAMO IN TUTTI ITALIA CON PAGAMENTO IMMEDIATO GARANTITO CAMPERNOVARA SRL, OFFRIAMO VALUTAZIONE ISTANTANEA SU WHATSAPP O EMAIL.\n!!!ATTENZIONE!!!IL NOSTRO STAF"
+        },
+        "https://www.campernovara.it/camper/etrusco-5-9-df/": {
+            "sito": "Camper Novara",
+            "marca": "Sconosciuto",
+            "modello": "",
+            "allestimento": "",
+            "distanza_seregno": 70,
+            "prezzo_attuale": 61000.0,
+            "storico_prezzi": [
+                {
+                    "data": "2026-08-30",
+                    "prezzo": 61000.0
+                }
+            ],
+            "dati_tecnici": {
+                "marca": "Sconosciuto",
+                "modello": "",
+                "allestimento": "",
+                "prezzo": 61000,
+                "anno": 2024,
+                "chilometri": 31548,
+                "nuovo": false,
+                "peso": 3500,
+                "tipo_furgonato": false,
+                "tipo_mansardato": false,
+                "tipo_motorhome": false,
+                "tipo_semintegrale": true,
+                "lunghezza": 5.99,
+                "potenza": 130,
+                "posti_omologati": 4,
+                "posti_letto": 4,
+                "telaio_alko": false,
+                "doppio_pavimento": false,
+                "cambio_automatico": true,
+                "emissioni_euro6": false,
+                "pannelli_solari": false,
+                "batterie_litio": false,
+                "sospensioni_aria": false,
+                "predisposizione_invernale": false,
+                "doppia_batteria": false,
+                "aria_condizionata": true,
+                "riscaldamento_gasolio": false,
+                "riscaldatore_gasolio": false,
+                "riscaldamento_alde": false,
+                "piedini_autolivellanti": false,
+                "letto_nautico": false,
+                "letti_gemelli": false,
+                "letti_a_castello": false
+            },
+            "punteggio_totale": 27.5,
+            "dettaglio_punteggi": {
+                "telaio": 20.0,
+                "meccanica": 60.0,
+                "stato": 0.0,
+                "interni": 40.0,
+                "accessori": 10.0,
+                "prezzo": 20.0
+            },
+            "status": "VALIDO",
+            "motivo_scarto": "",
+            "data_scoperta": "2026-08-30",
+            "data_ultimo_aggiornamento": "2026-08-30",
+            "url_immagine": "https://www.campernovara.it/wp-content/uploads/2026/08/WhatsApp-Image-2026-08-29-at-10.23.52.jpeg?v=1787991983",
+            "ai_usata": false,
+            "testo_originale": "--- DETTAGLI ---\nCamper Semintegrale 5.9 DF vendita usato \nETRUSCO 5.9 DF\nCamper Semintegrale\nModello:\n 5.9 DF\nprezzo: \n61.000\n €\nAnno:\n 2024\nPosti Viaggio:\n 4\nPosti Letto:\n 4\nRichiedi Informazioni\nRichiedi informazioni su: 5.9 DF\n Il tuo nome (obbligatorio)\n La tua email (obbligatorio)\n Il tuo telefono(obbligatorio)\n Il tuo messaggio\nAcconsento al trattamento dei dati secondo le specifiche sotto riportate\nInformativa ex art. 13 D.lgs. 196/2003\nGentile Signore/a, desideriamo informarLa che il D.lgs. n. 196 del 30 giugno 2003 (\"Codice in materia di protezione dei dati personali\") prevede la tutela delle persone e di altri soggetti rispetto al trattamento dei dati personali. Secondo la normativa indicata, tale trattamento sarà improntato ai principi di correttezza, liceità e trasparenza e di tutela della Sua riservatezza e dei Suoi diritti. Ai sensi dell'articolo 13 del D.lgs. n.196/2003, pertanto, Le forniamo le seguenti informazioni:\n1.\n I dati da Lei forniti verranno trattati per le seguenti finalità: verifica disponibilità ed eventuale prenotazione.\n2.\n Il trattamento sarà effettuato con le seguenti modalità: manuale e/o informatizzato.\n3.\n I dati non saranno comunicati ad altri soggetti, ne saranno oggetto di diffusione.\nETRUSCO 5.9 DF\nCamper Semintegrale\nModello:\n 5.9 DF\nprezzo: \n61.000\n €\nAnno:\n 2024\nPosti Viaggio:\n 4\nPosti Letto:\n 4\n 5.9 DF Camper Profilato, Semi Integrale\nETRUSCO 5.9 DF\nanno 2024\nFord Trasint 2.0/130cv\ncambio Automatico\nKm 33739\n31548 km taglia eseguito\nCerchi in lega Black\nOPTIONAL ED ACCESSORI\nradio touchescreen\nRetro camera\nClima cabina\nComandi al volante\nDrive mode\nASR\nAirbag\nVetri elettrici\nSpecchietti elettrici\nChiusura centralizzata\nSedili girevoli\nOscuranti e zanzariere su tutte le finestre\nInverter(non in garanzia)\nFrigorifero trivalente\nRiscaldamento truma combi\nPanello solare\nzanzariera porta ingresso\nGradino esterno elettrico\nLuce esterna\nTendalino esterno\nGarage 70x100cm\nDIMENSIONI\nlunghezza 5,990 m\nLarghezza 2,140 m\nPosti viaggio 4\nPosti letto 4\nPREZZO:\nPrezzo in promo*:61’000,00 Euro\nPrezzo con permuta:62’500,00 Euro\n* PROMO CON IMPORTO FINANZIATO\nPOSSIBILITA’ DI FINANZIAMENTO IN SEDE FINO 96 MESI\nNOVITA’: si offre servizio di Decarbonizzazione motore in promo a 130€ al posto di 150 €\nSiliconatura completa\nLavaggio e Sanificazione\n12 mesi di garanzia completa estendibile fino a 36 mesi\nNOVITA’\n: si offre servizio di Decarbonizzazione motore in promo a 130€ al posto di 150 €\nPOSSIBILITA’ DI FINANZIAMENTO IN SEDE FINO A 120 RATE\nSI RICORDA ALLA GENTILE CLIENTELA CHE PER VISIONARE I MEZZI BISOGNA PERENDERE APPUNTAMENTO IN MODO DA POTER GARANTIRE LA MASSIMA DISPONIBILITÀ\nCI TROVIAMO IN VIA VALLETTA 3, SAN PIETRO MOSEZZO (NO) —USCITA AUTOSTRADA NOVARA OVEST—\nCOMPRIAMO IN TUTTI ITALIA CON PAGAMENTO IMMEDIATO GARANTITO CAMPERNOVARA SRL, OFFRIAMO VALUTAZIONE ISTANTANEA SU WHATSAPP O EMAIL.\n!!!ATTENZIONE!!!IL NOSTRO STAF PER L’ACQUISTO E LA VENDITA È COMPOSTO UNICAMENTE DA: PAOLO, MATTEO, MARCELLO E JESSICA, SE VENIT"
         }
     }
 }
