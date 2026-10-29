@@ -7137,7 +7137,7 @@
             "modello": "Ecovip",
             "allestimento": "1",
             "distanza_seregno": 20,
-            "prezzo_attuale": 110500.0,
+            "prezzo_attuale": 105500.0,
             "storico_prezzi": [
                 {
                     "data": "2026-08-09",
@@ -7146,6 +7146,10 @@
                 {
                     "data": "2026-08-09",
                     "prezzo": 110500.0
+                },
+                {
+                    "data": "2026-10-29",
+                    "prezzo": 105500.0
                 }
             ],
             "dati_tecnici": {
@@ -7189,7 +7193,7 @@
             "status": "SCARTATO",
             "motivo_scarto": "Prezzo (119823€) in VETO.",
             "data_scoperta": "2026-08-09",
-            "data_ultimo_aggiornamento": "2026-08-09",
+            "data_ultimo_aggiornamento": "2026-10-29",
             "url_immagine": "https://www.corbar.it/public/nuovo/646_1b.jpg",
             "ai_usata": true,
             "testo_originale": "Corbar - Vendita di camper, caravan, furgonati e veicoli ricreazionali nuovi e usati, assistenza, montaggio accessori a Milano. Laika, Burstner, Knaus, Weinsbers, Chausson, Malibu.\nContattaci:\nCondividi:\nLAIKA 1 - ECOVIP TITANIO H 2109  (Pronta Consegna - Cambio Automatico)\nMOTORIZZAZIONE:  \nFiat 2.2 jtd 140 CV Automatico\nLUNGHEZZA:  \n6,59\nACCESSORI:  \nCambio automatico, Presa gas esterna\nLISTINO:  \n119.823\nPREZZO SENZA PERMUTA:  \n110.500\nPREZZO CON PERMUTA:  \nTrattativa in sede\nRICHIEDI INFORMAZIONI"
@@ -7200,7 +7204,7 @@
             "modello": "Ecovip",
             "allestimento": "1",
             "distanza_seregno": 20,
-            "prezzo_attuale": 108000.0,
+            "prezzo_attuale": 103000.0,
             "storico_prezzi": [
                 {
                     "data": "2026-08-09",
@@ -7209,6 +7213,10 @@
                 {
                     "data": "2026-08-09",
                     "prezzo": 108000.0
+                },
+                {
+                    "data": "2026-10-29",
+                    "prezzo": 103000.0
                 }
             ],
             "dati_tecnici": {
@@ -7252,7 +7260,7 @@
             "status": "SCARTATO",
             "motivo_scarto": "Prezzo (117208€) in VETO.",
             "data_scoperta": "2026-08-09",
-            "data_ultimo_aggiornamento": "2026-08-09",
+            "data_ultimo_aggiornamento": "2026-10-29",
             "url_immagine": "https://www.corbar.it/public/nuovo/653_1b.jpg",
             "ai_usata": true,
             "testo_originale": "Corbar - Vendita di camper, caravan, furgonati e veicoli ricreazionali nuovi e usati, assistenza, montaggio accessori a Milano. Laika, Burstner, Knaus, Weinsbers, Chausson, Malibu.\nContattaci:\nCondividi:\nLAIKA 1 - ECOVIP TITANIO H 3109  (Pronta Consegna)\nMOTORIZZAZIONE:  \nFiat 2.2 jtd 140 CV\nLUNGHEZZA:  \n6,99\nACCESSORI:  \nCombi 6 diesel, predisposizione stufa diesel\nLISTINO:  \n117.208\nPREZZO SENZA PERMUTA:  \n108.000\nPREZZO CON PERMUTA:  \nTrattativa in sede\nRICHIEDI INFORMAZIONI"
@@ -7263,7 +7271,7 @@
             "modello": "Ecovip",
             "allestimento": "1",
             "distanza_seregno": 20,
-            "prezzo_attuale": 98200.0,
+            "prezzo_attuale": 93500.0,
             "storico_prezzi": [
                 {
                     "data": "2026-08-09",
@@ -7272,6 +7280,10 @@
                 {
                     "data": "2026-08-09",
                     "prezzo": 98200.0
+                },
+                {
+                    "data": "2026-10-29",
+                    "prezzo": 93500.0
                 }
             ],
             "dati_tecnici": {
@@ -7322,7 +7334,7 @@
             "status": "VALIDO",
             "motivo_scarto": "",
             "data_scoperta": "2026-08-09",
-            "data_ultimo_aggiornamento": "2026-08-09",
+            "data_ultimo_aggiornamento": "2026-10-29",
             "url_immagine": "https://www.corbar.it/public/nuovo/652_1b.jpg",
             "ai_usata": true,
             "testo_originale": "Corbar - Vendita di camper, caravan, furgonati e veicoli ricreazionali nuovi e usati, assistenza, montaggio accessori a Milano. Laika, Burstner, Knaus, Weinsbers, Chausson, Malibu.\nContattaci:\nCondividi:\nLAIKA 1 - ECOVIP TITANIO L 4009  (Pronta Consegna)\nMOTORIZZAZIONE:  \nFiat 2.2 jtd 140 cv\nACCESSORI:  \nLetto basculante elettrico, FI6 Stufa Diesel, 52X Predisposizione stufa a gasolio\nLISTINO:  \n106.271\nPREZZO SENZA PERMUTA:  \n98.200\nPREZZO CON PERMUTA:  \nTrattativa in sede\nRICHIEDI INFORMAZIONI"
@@ -7333,7 +7345,7 @@
             "modello": "",
             "allestimento": "",
             "distanza_seregno": 20,
-            "prezzo_attuale": 82800.0,
+            "prezzo_attuale": 77800.0,
             "storico_prezzi": [
                 {
                     "data": "2026-08-09",
@@ -7342,6 +7354,10 @@
                 {
                     "data": "2026-08-09",
                     "prezzo": 82800.0
+                },
+                {
+                    "data": "2026-10-29",
+                    "prezzo": 77800.0
                 }
             ],
             "dati_tecnici": {
@@ -7392,7 +7408,7 @@
             "status": "VALIDO",
             "motivo_scarto": "",
             "data_scoperta": "2026-08-09",
-            "data_ultimo_aggiornamento": "2026-08-09",
+            "data_ultimo_aggiornamento": "2026-10-29",
             "url_immagine": "https://www.corbar.it/public/nuovo/657_1b.jpg",
             "ai_usata": true,
             "testo_originale": "Corbar - Vendita di camper, caravan, furgonati e veicoli ricreazionali nuovi e usati, assistenza, montaggio accessori a Milano. Laika, Burstner, Knaus, Weinsbers, Chausson, Malibu.\nContattaci:\nCondividi:\nLAIKA 1 - KOSMO L 412 DS  (Pronta Consegna)\nMOTORIZZAZIONE:  \nFiat 2.2 jtd 140 CV\nACCESSORI:  \nPKK Pacchetto Comfort, \nC27 Letto basculante elettrico sopra il soggiorno, \n2C2 Letto posteriore elettrico regolabile in altezza, \nTT8 Tappezzeria Firenze in eco-pelle, \nC93 Oscuranti interni plissettati cabina guida, \nD42 Upgrade da riscaldamento Combi 6 a Combi Diesel, \n52X Predisposizione stufa a gasolio, \n026 Freno di stazionamento elettrico, originale Fiat. \nLISTINO:  \n89.019\nPREZZO SENZA PERMUTA:  \n82.800\nPREZZO CON PERMUTA:  \nTrattativa in sede\nRICHIEDI INFORMAZIONI"
@@ -7473,7 +7489,7 @@
             "modello": "Ecovip",
             "allestimento": "1",
             "distanza_seregno": 20,
-            "prezzo_attuale": 79700.0,
+            "prezzo_attuale": 74700.0,
             "storico_prezzi": [
                 {
                     "data": "2026-08-09",
@@ -7482,6 +7498,10 @@
                 {
                     "data": "2026-08-09",
                     "prezzo": 79700.0
+                },
+                {
+                    "data": "2026-10-29",
+                    "prezzo": 74700.0
                 }
             ],
             "dati_tecnici": {
@@ -7532,7 +7552,7 @@
             "status": "VALIDO",
             "motivo_scarto": "",
             "data_scoperta": "2026-08-09",
-            "data_ultimo_aggiornamento": "2026-08-09",
+            "data_ultimo_aggiornamento": "2026-10-29",
             "url_immagine": "https://www.corbar.it/public/nuovo/627_1b.jpg",
             "ai_usata": true,
             "testo_originale": "Corbar - Vendita di camper, caravan, furgonati e veicoli ricreazionali nuovi e usati, assistenza, montaggio accessori a Milano. Laika, Burstner, Knaus, Weinsbers, Chausson, Malibu.\nContattaci:\nCondividi:\nLAIKA ECOVIP CAMPERVAN 600  (Pronta Consegna)\nMOTORIZZAZIONE:  \nFiat 2.2 jtd 140 cv 35 q.li\nLUNGHEZZA:  \n5,99\nACCESSORI:  \n2CY Pacchetto Comfort Ecovip CamperVan, 385 Vernice \"Lanzarote Grey\" cabina, BK6 Pack paraurti anteriore verniciato, Skidplate e fari fendinebbia Originale Fiat, 2808053 Oscuranti interni plissettati in cabina per parabrezza e cristalli laterali, TPG Tetto sollevabile, nero, con letto matrimoniale e sistema di riposo comfort, LDE Trasformazione letto dinette e tavolo con prolunga ruotabile (letto singolo), X8 Mobilio legno Pero Toscano, TT8 Tappezzeria Firenze in eco-pelle, Cuscini Venezia, FI6 Upgrade da riscaldamento Combi 6 a Combi 6 Diesel, C77 Scalino elettrico ingresso cellula.\nLISTINO:  \n84.564\nPREZZO SENZA PERMUTA:  \n79.700\nPREZZO CON PERMUTA:  \nTrattativa in sede\nRICHIEDI INFORMAZIONI"
@@ -7613,7 +7633,7 @@
             "modello": "",
             "allestimento": "",
             "distanza_seregno": 20,
-            "prezzo_attuale": 91000.0,
+            "prezzo_attuale": 86000.0,
             "storico_prezzi": [
                 {
                     "data": "2026-08-09",
@@ -7622,6 +7642,10 @@
                 {
                     "data": "2026-08-09",
                     "prezzo": 91000.0
+                },
+                {
+                    "data": "2026-10-29",
+                    "prezzo": 86000.0
                 }
             ],
             "dati_tecnici": {
@@ -7672,7 +7696,7 @@
             "status": "VALIDO",
             "motivo_scarto": "",
             "data_scoperta": "2026-08-09",
-            "data_ultimo_aggiornamento": "2026-08-09",
+            "data_ultimo_aggiornamento": "2026-10-29",
             "url_immagine": "https://www.corbar.it/public/nuovo/618_1b.jpg",
             "ai_usata": true,
             "testo_originale": "Corbar - Vendita di camper, caravan, furgonati e veicoli ricreazionali nuovi e usati, assistenza, montaggio accessori a Milano. Laika, Burstner, Knaus, Weinsbers, Chausson, Malibu.\nContattaci:\nCondividi:\nLAIKA KOSMO H 1409  (Pronta Consegna)\nMOTORIZZAZIONE:  \nDUCATO 2.2 JTD 140 CV\nACCESSORI:  \nPL2 Pack One, Tappezzeria ecopelle Firenze, T19 Cuscini Firenze in ecopelle, Pack Two Kosmo (Batteria Litio 150Ah, Pannello solare 120 watt, Sistema Multimediale) senza Freno a mano elettrico..\nLISTINO:  \n98.729\nPREZZO SENZA PERMUTA:  \n91.000\nPREZZO CON PERMUTA:  \nTrattativa in sede\nRICHIEDI INFORMAZIONI"
@@ -14619,7 +14643,7 @@
             "modello": "Kyros",
             "allestimento": "2",
             "distanza_seregno": 190,
-            "prezzo_attuale": 102000.0,
+            "prezzo_attuale": 96000.0,
             "storico_prezzi": [
                 {
                     "data": "2026-08-12",
@@ -14632,6 +14656,10 @@
                 {
                     "data": "2026-10-16",
                     "prezzo": 102000.0
+                },
+                {
+                    "data": "2026-10-29",
+                    "prezzo": 96000.0
                 }
             ],
             "dati_tecnici": {
@@ -14682,7 +14710,7 @@
             "status": "VALIDO",
             "motivo_scarto": "",
             "data_scoperta": "2026-08-12",
-            "data_ultimo_aggiornamento": "2026-10-16",
+            "data_ultimo_aggiornamento": "2026-10-29",
             "url_immagine": "https://www.facebook.com/tr?id=528970624259222&ev=PageView&noscript=1",
             "ai_usata": true,
             "testo_originale": "--- DETTAGLI ---\nCarthago Chic C-Line I 5.0 QB 2020 in Vendita | Motorhome Premium Patente C \nMenu\nYour Cart\nCamper Usati\nCarthago Chic C-Line I 5.0 QB - 2020 | Patente C\nCarthago Chic C-Line I 5.0 QB - 2020 | Patente C\nPronta Consegna\nCarthago Chic C-Line I 5.0 QB - 2020 | Patente C\nProdotto in evidenza\nRichiedi info\nWhatsApp\n×\nDisponibilità:\nDisponibile\nCodice Prodotto:\n5711\nCarthago\nBasato su 0 recensioni.\n-\nScrivi una recensione\ntrattativa riservata\nRichiedi Info\nSCRIVICI SU WHATSAPP\nAggiungi alla lista dei desideri\nConfronta questo prodotto\nFinanziamento con rate da\n € \n0\nal mese\n Personalizza anticipo e durata →\n→\n ×\nPersonalizza il tuo finanziamento\nAcconto iniziale\n€ 0\nDurata totale\n10 anni\nRata mensile stimata\n € \n0\nal mese\n Parliamone insieme\n Simulazione indicativa · TAN 7,95% fisso · Importi e condizioni soggetti ad approvazione\nGuarda anche...\nCarthago Compactline I 138 DB - 2016\n0,00€\nAggiungi alla lista dei desideri\nConfronta questo prodotto\nChausson V 690 Sportline - 2024\n65.200,00€\nAggiungi alla lista dei desideri\nConfronta questo prodotto\nCi Horon 79 M - 2019\n0,00€\nAggiungi alla lista dei desideri\nConfronta questo prodotto\nCi Kyros 2 - 2023\n52.800,00€\nAggiungi alla lista dei desideri\nConfronta questo prodotto\nDescrizione\nDotazioni e Accessori\nScheda Tecnica\nIl \nCarthago Chic C-Line\n è un motorhome integrale di fascia alta che unisce la qualità costruttiva tedesca con funzionalità pensate per lunghi viaggi e soggiorni comfort. È parte della serie \nchic c-line I\n, caratterizzata da interni ergonomici, illuminazione LED sofisticata e un design elegante sia negli spazi giorno sia notte.\nDOTAZIONE OPTIONAL \nPannello solare\nTendalino \nGruppo elettrogeno Telair\nRetrocamera \nDoppio pavimento\nPneumatici nuovi \nPiedini Livellanti Tesa\nAutoradio doppio din \nClima automatico cabina\nPorta cellula con chiusura centralizzata e finestra\nPorta zanzariera\nDoccetta esterna\nTraction plus\nHill descent control\nOscuranti plissettati\nFrigorifero 150lt \nTruma a gas\nGARANZIA LEGALE DI CONFORMITA':\nInfiltrazioni: 12 Mesi\nMeccanica: 12 Mesi\nN.B. Nota bene la dotazione tecnica e gli accessori indicati nella presente scheda potrebbero non coincidere con l’effettivo equipaggiamento del veicolo, a causa della non uniformità dei dati pubblicati dai diversi portali. Ci scusiamo per l’inconveniente e vi invitiamo a verificare le caratteristiche dello specifico veicolo.\nBeltrani Camper&Caravan declina ogni responsabilità per eventuali involontarie incongruenze, che non rappresentano in alcun modo un impegno contrattuale.\nCaratteristiche\nAnno\n2020\nChilometri\n32.600 km\nMeccanica\nFiat Ducato 2.3 MTJ - 160 CV\nStato\nUsato\nTipologia\nMotorhome\nDimensioni\nLarghezza\n2.34\nLunghezza\n7.48\nPosti\nLetto Basculante\nSi\nPosti Letto\n4\nPosti Omologati\n5\nTipologia Letto Posteriore\nNautico\nTags:\nCarthago Chic C-Line I 5.0 QB\n,\nMotorhome patente C\n,\nMotorhome 7.48mt\n,\n5 posti omologati\nGuarda anche...\nStessa categoria\nStessa marca\nPronta Consegna\nCarthago Compactline I 138 DB - 2016\n Di"
@@ -15369,11 +15397,15 @@
             "modello": "Chic C-Line",
             "allestimento": "I 5.0",
             "distanza_seregno": 190,
-            "prezzo_attuale": 58000.0,
+            "prezzo_attuale": 56000.0,
             "storico_prezzi": [
                 {
                     "data": "2026-08-12",
                     "prezzo": 58000.0
+                },
+                {
+                    "data": "2026-10-29",
+                    "prezzo": 56000.0
                 }
             ],
             "dati_tecnici": {
@@ -15424,7 +15456,7 @@
             "status": "VALIDO",
             "motivo_scarto": "",
             "data_scoperta": "2026-08-12",
-            "data_ultimo_aggiornamento": "2026-08-12",
+            "data_ultimo_aggiornamento": "2026-10-29",
             "url_immagine": "https://www.facebook.com/tr?id=528970624259222&ev=PageView&noscript=1",
             "ai_usata": true,
             "testo_originale": "--- DETTAGLI ---\nRimor X-GO 67 Plus usato 2023 | Pronta consegna\nMenu\nYour Cart\nCamper Usati\nRimor X-GO 67 Plus - 2023\nRimor X-GO 67 Plus - 2023\nPronta Consegna\nRimor X-GO 67 Plus - 2023\nProdotto in evidenza\nRichiedi info\nWhatsApp\n×\nDisponibilità:\nDisponibile\nCodice Prodotto:\n6056\nRimor\nBasato su 0 recensioni.\n-\nScrivi una recensione\n58.000,00€\nRichiedi Info\nSCRIVICI SU WHATSAPP\nAggiungi alla lista dei desideri\nConfronta questo prodotto\nFinanziamento con rate da\n € \n0\nal mese\n Personalizza anticipo e durata →\n→\n ×\nPersonalizza il tuo finanziamento\nAcconto iniziale\n€ 0\nDurata totale\n10 anni\nRata mensile stimata\n € \n0\nal mese\n Parliamone insieme\n Simulazione indicativa · TAN 7,95% fisso · Importi e condizioni soggetti ad approvazione\nGuarda anche...\nCarthago Chic C-Line I 5.0 QB - 2020 | Patente C\n0,00€\nAggiungi alla lista dei desideri\nConfronta questo prodotto\nCarthago Compactline I 138 DB - 2016\n0,00€\nAggiungi alla lista dei desideri\nConfronta questo prodotto\nChausson V 690 Sportline - 2024\n65.200,00€\nAggiungi alla lista dei desideri\nConfronta questo prodotto\nCi Horon 79 M - 2019\n0,00€\nAggiungi alla lista dei desideri\nConfronta questo prodotto\nDescrizione\nDotazioni e Accessori\nScheda Tecnica\nDisponibile in \npronta consegna \nqu\nesto splendido \nRimor X-GO 67 Plus del 2023,\nsemintegrale usato garantito\n, in condizioni pari al nuovo. Compatto ma incredibilmente vivibile, con una \nlunghezza di soli 6,45 metri\n e una \nlarghezza di 2,34 metri\n, è il compagno di viaggio ideale per chi cerca agilità di manovra senza rinunciare al comfort abitativo. Il veicolo è spinto dal potente e affidabile \nmotore Ford Transit 2.0 da 170 CV\n e ha all'attivo solamente \n39.200 km\n. Perfetto per accogliere comodamente un equipaggio di quattro persone, offre \n4 posti omologati\n per il viaggio e \n4 comodi posti letto\n, tra cui un pratico \nletto basculante\n che permette di ottimizzare al massimo gli spazi della zona giorno. A fare la differenza e a completare le eccellenti dotazioni di questo mezzo troviamo il \nclimatizzatore in cellula\n, un accessorio indispensabile per garantirvi un ambiente fresco e sempre piacevole anche durante le vacanze estive più torride. \nRichiedi subito informazioni\n per non farti scappare questa occasione unica!\nDOTAZIONE OPTIONAL\nPannello solare\nCondizionatore Mc-air\nRetrocamera\nPorta bici\nLetto basculante elettrico\nTendalino\nPorta zanzariera scorrevole\nFrigorifero a colonna 150lt\nAutoradio doppio din\nCruise control\nOscuranti plissettati\nClima cabina\nStaffa supporto tv\nGARANZIA LEGALE DI CONFORMITA':\nInfiltrazioni: 12 Mesi\nMeccanica: 12 Mesi\nN.B. Nota bene la dotazione tecnica e gli accessori indicati nella presente scheda potrebbero non coincidere con l’effettivo equipaggiamento del veicolo, a causa della non uniformità dei dati pubblicati dai diversi portali. Ci scusiamo per l’inconveniente e vi invitiamo a verificare le caratteristiche dello specifico veicolo.\nBeltrani Camper&Caravan declina ogni responsabilità per eventuali involontarie incon"
@@ -16915,11 +16947,15 @@
             "modello": "ML-T",
             "allestimento": "580",
             "distanza_seregno": 190,
-            "prezzo_attuale": 58000.0,
+            "prezzo_attuale": 56000.0,
             "storico_prezzi": [
                 {
                     "data": "2026-08-12",
                     "prezzo": 58000.0
+                },
+                {
+                    "data": "2026-10-29",
+                    "prezzo": 56000.0
                 }
             ],
             "dati_tecnici": {
@@ -16970,7 +17006,7 @@
             "status": "VALIDO",
             "motivo_scarto": "",
             "data_scoperta": "2026-08-12",
-            "data_ultimo_aggiornamento": "2026-08-12",
+            "data_ultimo_aggiornamento": "2026-10-29",
             "url_immagine": "https://www.facebook.com/tr?id=528970624259222&ev=PageView&noscript=1",
             "ai_usata": true,
             "testo_originale": "--- DETTAGLI ---\nRimor X-GO 67 Plus usato 2023 | Pronta consegna\nMenu\nYour Cart\nSemintegrali Usati\nRimor X-GO 67 Plus - 2023\nRimor X-GO 67 Plus - 2023\nPronta Consegna\nRimor X-GO 67 Plus - 2023\nProdotto in evidenza\nRichiedi info\nWhatsApp\n×\nDisponibilità:\nDisponibile\nCodice Prodotto:\n6056\nRimor\nBasato su 0 recensioni.\n-\nScrivi una recensione\n58.000,00€\nRichiedi Info\nSCRIVICI SU WHATSAPP\nAggiungi alla lista dei desideri\nConfronta questo prodotto\nFinanziamento con rate da\n € \n0\nal mese\n Personalizza anticipo e durata →\n→\n ×\nPersonalizza il tuo finanziamento\nAcconto iniziale\n€ 0\nDurata totale\n10 anni\nRata mensile stimata\n € \n0\nal mese\n Parliamone insieme\n Simulazione indicativa · TAN 7,95% fisso · Importi e condizioni soggetti ad approvazione\nGuarda anche...\nHymer ML-T 580 - 2022\n88.200,00€\nAggiungi alla lista dei desideri\nConfronta questo prodotto\nDescrizione\nDotazioni e Accessori\nScheda Tecnica\nDisponibile in \npronta consegna \nqu\nesto splendido \nRimor X-GO 67 Plus del 2023,\nsemintegrale usato garantito\n, in condizioni pari al nuovo. Compatto ma incredibilmente vivibile, con una \nlunghezza di soli 6,45 metri\n e una \nlarghezza di 2,34 metri\n, è il compagno di viaggio ideale per chi cerca agilità di manovra senza rinunciare al comfort abitativo. Il veicolo è spinto dal potente e affidabile \nmotore Ford Transit 2.0 da 170 CV\n e ha all'attivo solamente \n39.200 km\n. Perfetto per accogliere comodamente un equipaggio di quattro persone, offre \n4 posti omologati\n per il viaggio e \n4 comodi posti letto\n, tra cui un pratico \nletto basculante\n che permette di ottimizzare al massimo gli spazi della zona giorno. A fare la differenza e a completare le eccellenti dotazioni di questo mezzo troviamo il \nclimatizzatore in cellula\n, un accessorio indispensabile per garantirvi un ambiente fresco e sempre piacevole anche durante le vacanze estive più torride. \nRichiedi subito informazioni\n per non farti scappare questa occasione unica!\nDOTAZIONE OPTIONAL\nPannello solare\nCondizionatore Mc-air\nRetrocamera\nPorta bici\nLetto basculante elettrico\nTendalino\nPorta zanzariera scorrevole\nFrigorifero a colonna 150lt\nAutoradio doppio din\nCruise control\nOscuranti plissettati\nClima cabina\nStaffa supporto tv\nGARANZIA LEGALE DI CONFORMITA':\nInfiltrazioni: 12 Mesi\nMeccanica: 12 Mesi\nN.B. Nota bene la dotazione tecnica e gli accessori indicati nella presente scheda potrebbero non coincidere con l’effettivo equipaggiamento del veicolo, a causa della non uniformità dei dati pubblicati dai diversi portali. Ci scusiamo per l’inconveniente e vi invitiamo a verificare le caratteristiche dello specifico veicolo.\nBeltrani Camper&Caravan declina ogni responsabilità per eventuali involontarie incongruenze, che non rappresentano in alcun modo un impegno contrattuale\nCaratteristiche\nAnno\n2023\nChilometri\n39.200 km\nMeccanica\nFord Transit 2.0- 170 CV\nStato\nUsato\nTipologia\nSemintegrale\nDimensioni\nLarghezza\n2.34\nLunghezza\n6.45\nPosti\nLetto Basculante\nSi\nPosti Letto\n4\nPosti Omologati\n4\nTags:\nRimor X-GO 67 P"
@@ -84530,7 +84566,7 @@
             "modello": "Evo",
             "allestimento": "5",
             "distanza_seregno": 15,
-            "prezzo_attuale": 37500.0,
+            "prezzo_attuale": 23900.0,
             "storico_prezzi": [
                 {
                     "data": "2026-08-24",
@@ -84663,6 +84699,10 @@
                 {
                     "data": "2026-10-28",
                     "prezzo": 37500.0
+                },
+                {
+                    "data": "2026-10-29",
+                    "prezzo": 23900.0
                 }
             ],
             "dati_tecnici": {
@@ -84712,7 +84752,7 @@
             "status": "VALIDO",
             "motivo_scarto": "",
             "data_scoperta": "2026-08-24",
-            "data_ultimo_aggiornamento": "2026-10-28",
+            "data_ultimo_aggiornamento": "2026-10-29",
             "url_immagine": "https://www.zeroa100.com/wp-content/uploads/2026/05/20260330_123520_ven.jpg",
             "ai_usata": false,
             "testo_originale": "--- DETTAGLI ---\nCamper Semintegrale Laika x715 R - Zero a 100 | Acceleratore di compravendita\nSkip to content\nLa soluzione migliore per vendere o comprare un veicolo o un'imbarcazione\nFacebook\nInstagram\nYouTube\nCamper Semintegrale Laika x715 R\n♡\nAggiungi ai preferiti\nDati veicolo\nCategoria\nSemi-integrale\nPosti letto\n4\nPosti viaggio\n4\nMeccanica\nFiat / Peugeot / Citroen\nLunghezza (m)\n7.36\nPeso (kg)\n3500\nPatente\nB\nTrazione\nAnteriore\nAnno\n2011\nEuro\nEuro 4\nChilometraggio\n49400\nCambio\nManuale\nProprietari\n2\nCategorie: \n> Camper e Caravan\n, \nTUTTI\nTag: \nCLIMATIZZATORE CABINA\n, \nFIAT\n, \nGARAGE\n, \nLAIKA\n, \nLETTO MATRIMONIALE TRASVERSALE\n Descrizione \nDescrizione\nCAMPER SEMI-INTEGRALE LAIKA X 715 R USATO – 04 POSTI LETTO 04 POSTI VIAGGIO\nSU \nFIAT DUCATO 2.3\n MJT 130 CV 95,5 KW \nEURO 4 – \nTRAZIONE ANTERIORE \n– \nCAMBIO MANUALE 6 MARCE\nIMMATRICOLAZIONE: 09 / 2011\nKM PERCORSI: 49.35\n0\nDimensioni e caratteristiche tecniche:\nLunghezza: mt 7,36\nLarghezza: mt 2,30\nAltezza: mt 2,90\nMassa complessiva: 3.500 kg\nMassa rimorchiabile: 2.000 kg\nDimensioni garage: Luce 95 x H 120 cm – Interno 62/133 x 215 x H max 122 cm – Portata 150 Kg\nDimensioni letti: Matrimoniale posteriore 130/140 x 205 cm – Matrimoniale basculante 125/135 x 190 cm\nGARANZIA LEGALE DI CONFORMITA’*\n+12 mesi di Garanzia accessoria Guasti e Infiltrazioni Conformgest (\nvedi i dettagli sul sito\n) inclusa nell’approntamento veicolo\nPOSSIBILITA’ DI FINANZIAMENTO FINO A 120 MESI\nLetto matrimoniale trasversale in coda flex space elettrico – Letto basculante anteriore elettrico – Dinette a L lato SX e divanetto lato DX con sedili cabina girevoli – Cucina a L 3 fuochi con piezo e cappa aspirante, Frigorifero trivalente alto con cella freezer separata – Toilette lato DX con finestra e oblo’ 40 x 40 – Box doccia indipendente lato SX con oblo’ 28 x 28\nCaratteristiche\n:\nFrigorifero trivalente 150 lt A\nCucina 03 fuochi con piezo\nCappa aspirante\nZanzariera porta cellula\nOscuranti plissettati cabina\nRiscaldamento Truma Combi gas 6.000 Watt\nSerbatoio acque chiare 120 lt\nSerbatoio acque grigie 110 lt\nScarico WC a cassetta lt 18\nGradino elettrico\nLetto basculante elettrico\nLetto matrimoniale trasversale elettrico\nGarage a volume variabile\nDotazioni veicolo\n:\nClimatizzatore cabina\nCruise control\nRadio doppio DIN\nVetri e specchietti elettrici\nDoppio airbag\nABS, ESP e ASR\nSedili girevoli\nRuota di scorta\nOptional inclusi\n:\nRetrocamera\nAllarme\nPannello solare\nPortabici 04 posti\nAntenna terrestre\nTendalino\nStacca-batteria di servizio\nDuoControl doppia bombola\nTenda separazione cabina / cellula\nPiedini di stazionamento manuali\nPrezzo indicato escluso di passaggio di proprietà (500 €) e approntamento alla consegna** (600 €)\nContattaci per fissare un appuntamento per visionare questo veicolo o per maggiori informazioni\n Il tuo nome (richiesto)\n La tua email (richiesto)\n Il tuo numero di telefono (richiesto)\nHai una permuta?\nSì\nNo\n Il tuo messaggio\nSono interessato a questo veicolo e vorrei essere ricontattato/a\nDichiaro di aver le"
@@ -99436,7 +99476,7 @@
             "modello": "",
             "allestimento": "",
             "distanza_seregno": 190,
-            "prezzo_attuale": 59200.0,
+            "prezzo_attuale": 57000.0,
             "storico_prezzi": [
                 {
                     "data": "2026-09-02",
@@ -99445,6 +99485,10 @@
                 {
                     "data": "2026-10-16",
                     "prezzo": 59200.0
+                },
+                {
+                    "data": "2026-10-29",
+                    "prezzo": 57000.0
                 }
             ],
             "dati_tecnici": {
@@ -99494,7 +99538,7 @@
             "status": "VALIDO",
             "motivo_scarto": "",
             "data_scoperta": "2026-09-02",
-            "data_ultimo_aggiornamento": "2026-10-16",
+            "data_ultimo_aggiornamento": "2026-10-29",
             "url_immagine": "https://www.caravanmarket.com/image/cache/catalog/CAMPER%20USATI/2027/Etrusco%20V%205.9%20DF%20-%202025%20|%20Automatico/etrusco%20v%205.9%20df%20(2)-1200x1000w.jpg",
             "ai_usata": false,
             "testo_originale": "--- DETTAGLI ---\nNew\nPronta Consegna\nEtrusco V 5.9 DF - 2025 | Automatico\nProdotto in evidenza\nRichiedi info\nWhatsApp\n×\nDisponibilità:\nDisponibile\nCodice Prodotto:\n6173\nEtrusco\nBasato su 0 recensioni.\n-\nScrivi una recensione\ntrattativa riservata\nRichiedi Info\nSCRIVICI SU WHATSAPP\nAggiungi alla lista dei desideri\nConfronta questo prodotto\nFinanziamento con rate da\n € \n0\nal mese\n Personalizza anticipo e durata →\n→\n ×\nPersonalizza il tuo finanziamento\nAcconto iniziale\n€ 0\nDurata totale\n10 anni\nRata mensile stimata\n € \n0\nal mese\n Parliamone insieme\n Simulazione indicativa · TAN 7,95% fisso · Importi e condizioni soggetti ad approvazione\nDescrizione\nDotazioni e Accessori\nScheda Tecnica\nCompatto, maneggevole e completo di tutto il comfort che cerchi in un vero camper.\nQuesto \nEtrusco V 5.9 DF del 2025\n, con soli \n12.000 km\n, è la soluzione ideale per chi desidera un camper agile e facile da guidare, senza rinunciare agli spazi e alla comodità di un vero semintegrale.\nCon i suoi \n5,99 metri di lunghezza e appena 2,15 metri di larghezza\n, è particolarmente indicato per chi cerca un veicolo compatto, semplice da gestire anche negli spostamenti quotidiani e comodo da utilizzare durante i viaggi.\nA bordo troviamo una funzionale \nzona notte posteriore con letto matrimoniale trasversale\n, mentre il \nbagno con parete girevole\n permette di sfruttare al meglio gli spazi, trasformando rapidamente l'ambiente e offrendo maggiore comodità durante l'utilizzo.\nUn semintegrale pensato per chi vuole \nviaggiare con la libertà e la maneggevolezza di un veicolo compatto, ma con tutti i comfort di un vero camper\n.\nDOTAZIONE OPTIONAL\nPannello solare\nTendalino\nRetrocamera\nCruise control\nClimatizzatore cabina\nTruma duo control\nChiusura di sicurezza Fiamma\nAutoradio doppio din\nStaffa supporto TV\nTruma combi a gas\nCambio automatico\nOscuranti plissettati\nGARANZIA LEGALE DI CONFORMITA':\nInfiltrazioni: 12 Mesi\nMeccanica: 12 Mesi\nN.B. Nota bene la dotazione tecnica e gli accessori indicati nella presente scheda potrebbero non coincidere con l’effettivo equipaggiamento del veicolo, a causa della non uniformità dei dati pubblicati dai diversi portali. Ci scusiamo per l’inconveniente e vi invitiamo a verificare le caratteristiche dello specifico veicolo.\nBeltrani Camper&Caravan declina ogni responsabilità per eventuali involontarie incongruenze, che non rappresentano in alcun modo un impegno contrattuale\nCaratteristiche\nAnno\n2025\nChilometri\n12.000 km\nMeccanica\nFord 2.0 - 170 CV - Automatico\nStato\nUsato\nTipologia\nSemintegrale\nDimensioni\nLarghezza\n2.15\nLunghezza\n5.99\nPosti\nPosti Letto\n2+1\nPosti Omologati\n4\nTipologia Letto Posteriore\nMatrimoniale trasversale\nTags:\nEtrusco V 5.9 DF 2025\n,\nSemintegrale slim usato\n,\nSemintegrale compatto"
@@ -99571,7 +99615,7 @@
             "modello": "Peak",
             "allestimento": "P10+",
             "distanza_seregno": 190,
-            "prezzo_attuale": 59800.0,
+            "prezzo_attuale": 57500.0,
             "storico_prezzi": [
                 {
                     "data": "2026-09-02",
@@ -99580,6 +99624,10 @@
                 {
                     "data": "2026-09-19",
                     "prezzo": 59800.0
+                },
+                {
+                    "data": "2026-10-29",
+                    "prezzo": 57500.0
                 }
             ],
             "dati_tecnici": {
@@ -99630,7 +99678,7 @@
             "status": "VALIDO",
             "motivo_scarto": "",
             "data_scoperta": "2026-09-02",
-            "data_ultimo_aggiornamento": "2026-09-19",
+            "data_ultimo_aggiornamento": "2026-10-29",
             "url_immagine": "https://www.caravanmarket.com/image/cache/catalog/CAMPER%20USATI/2027/Panama%20Peak%20P10+%20-%202025%20|%20Automatico/IMG_6288-1200x1000w.jpg",
             "ai_usata": true,
             "testo_originale": "--- DETTAGLI ---\nNew\nPronta Consegna\nPanama Peak P10+ - 2025 | Automatico\nProdotto in evidenza\nRichiedi info\nWhatsApp\n×\nDisponibilità:\nDisponibile\nCodice Prodotto:\n6175\nPanama Van\nBasato su 0 recensioni.\n-\nScrivi una recensione\ntrattativa riservata\nRichiedi Info\nSCRIVICI SU WHATSAPP\nAggiungi alla lista dei desideri\nConfronta questo prodotto\nFinanziamento con rate da\n € \n0\nal mese\n Personalizza anticipo e durata →\n→\n ×\nPersonalizza il tuo finanziamento\nAcconto iniziale\n€ 0\nDurata totale\n10 anni\nRata mensile stimata\n € \n0\nal mese\n Parliamone insieme\n Simulazione indicativa · TAN 7,95% fisso · Importi e condizioni soggetti ad approvazione\nDescrizione\nDotazioni e Accessori\nScheda Tecnica\nPanama Peak P10+ – Mini Van usato\nLa praticità di un'auto, la libertà di un camper.\nIl \nPanama Peak P10+\n è il mini van ideale per chi cerca un veicolo compatto, versatile e facile da utilizzare tutti i giorni, senza rinunciare alla possibilità di partire per un weekend o una vacanza in completa autonomia.\nQuesto esemplare \nusato\n è equipaggiato con un \nmotore da 136 CV e cambio automatico\n, una combinazione che rende la guida particolarmente piacevole e confortevole sia negli spostamenti quotidiani sia nei viaggi più lunghi.\nLa sua grande versatilità permette di utilizzarlo come normale veicolo durante la settimana e trasformarlo rapidamente nel compagno ideale per il tempo libero. Le dimensioni compatte lo rendono inoltre facile da guidare e da parcheggiare, anche in città e nei centri più stretti.\nTra le dotazioni troviamo il \ntendalino\n, perfetto per creare una piacevole zona d'ombra durante le soste, e il \nriscaldamento Webasto\n, ideale per utilizzare il veicolo anche nelle stagioni più fredde.\nDOTAZIONE OPTIONAL \nTendalino\nDoccetta esterna\nCambio automatico\nWebasto\nInverter\nSensori di parcheggio ant e post\nRetrocamera\nColore carrozzeria: Moondust Silver\nGARANZIA LEGALE DI CONFORMITA':\nInfiltrazioni: 12 Mesi\nMeccanica: 12 Mesi\nN.B. Nota bene la dotazione tecnica e gli accessori indicati nella presente scheda potrebbero non coincidere con l’effettivo equipaggiamento del veicolo, a causa della non uniformità dei dati pubblicati dai diversi portali. Ci scusiamo per l’inconveniente e vi invitiamo a verificare le caratteristiche dello specifico veicolo.\nBeltrani Camper&Caravan declina ogni responsabilità per eventuali involontarie incongruenze, che non rappresentano in alcun modo un impegno contrattuale\nCaratteristiche\nAnno\n2025\nChilometri\n24.000 km\nMeccanica\nFord 2.0 - 136 CV | Automatico\nStato\nUsato\nTipologia\nMini van\nDimensioni\nLarghezza\n2.03\nLunghezza\n5.05\nPosti\nPosti Letto\n4\nPosti Omologati\n5\nTipologia Letto Posteriore\nLongitudinale\nTags:\nPanama Peak P10+ usato\n,\n5 posti omologati\n,\nmini van compatto usato"
@@ -99641,7 +99689,7 @@
             "modello": "Peak",
             "allestimento": "P10+",
             "distanza_seregno": 190,
-            "prezzo_attuale": 59800.0,
+            "prezzo_attuale": 57500.0,
             "storico_prezzi": [
                 {
                     "data": "2026-09-02",
@@ -99650,6 +99698,10 @@
                 {
                     "data": "2026-09-19",
                     "prezzo": 59800.0
+                },
+                {
+                    "data": "2026-10-29",
+                    "prezzo": 57500.0
                 }
             ],
             "dati_tecnici": {
@@ -99700,7 +99752,7 @@
             "status": "VALIDO",
             "motivo_scarto": "",
             "data_scoperta": "2026-09-02",
-            "data_ultimo_aggiornamento": "2026-09-19",
+            "data_ultimo_aggiornamento": "2026-10-29",
             "url_immagine": "https://www.caravanmarket.com/image/cache/catalog/CAMPER%20USATI/2027/Panama%20Peak%20P10+%20-%202025%20|%20Automatico/IMG_6288-1200x1000w.jpg",
             "ai_usata": true,
             "testo_originale": "--- DETTAGLI ---\nNew\nPronta Consegna\nPanama Peak P10+ - 2025 | Automatico\nProdotto in evidenza\nRichiedi info\nWhatsApp\n×\nDisponibilità:\nDisponibile\nCodice Prodotto:\n6175\nPanama Van\nBasato su 0 recensioni.\n-\nScrivi una recensione\ntrattativa riservata\nRichiedi Info\nSCRIVICI SU WHATSAPP\nAggiungi alla lista dei desideri\nConfronta questo prodotto\nFinanziamento con rate da\n € \n0\nal mese\n Personalizza anticipo e durata →\n→\n ×\nPersonalizza il tuo finanziamento\nAcconto iniziale\n€ 0\nDurata totale\n10 anni\nRata mensile stimata\n € \n0\nal mese\n Parliamone insieme\n Simulazione indicativa · TAN 7,95% fisso · Importi e condizioni soggetti ad approvazione\nDescrizione\nDotazioni e Accessori\nScheda Tecnica\nPanama Peak P10+ – Mini Van usato\nLa praticità di un'auto, la libertà di un camper.\nIl \nPanama Peak P10+\n è il mini van ideale per chi cerca un veicolo compatto, versatile e facile da utilizzare tutti i giorni, senza rinunciare alla possibilità di partire per un weekend o una vacanza in completa autonomia.\nQuesto esemplare \nusato\n è equipaggiato con un \nmotore da 136 CV e cambio automatico\n, una combinazione che rende la guida particolarmente piacevole e confortevole sia negli spostamenti quotidiani sia nei viaggi più lunghi.\nLa sua grande versatilità permette di utilizzarlo come normale veicolo durante la settimana e trasformarlo rapidamente nel compagno ideale per il tempo libero. Le dimensioni compatte lo rendono inoltre facile da guidare e da parcheggiare, anche in città e nei centri più stretti.\nTra le dotazioni troviamo il \ntendalino\n, perfetto per creare una piacevole zona d'ombra durante le soste, e il \nriscaldamento Webasto\n, ideale per utilizzare il veicolo anche nelle stagioni più fredde.\nDOTAZIONE OPTIONAL \nTendalino\nDoccetta esterna\nCambio automatico\nWebasto\nInverter\nSensori di parcheggio ant e post\nRetrocamera\nColore carrozzeria: Moondust Silver\nGARANZIA LEGALE DI CONFORMITA':\nInfiltrazioni: 12 Mesi\nMeccanica: 12 Mesi\nN.B. Nota bene la dotazione tecnica e gli accessori indicati nella presente scheda potrebbero non coincidere con l’effettivo equipaggiamento del veicolo, a causa della non uniformità dei dati pubblicati dai diversi portali. Ci scusiamo per l’inconveniente e vi invitiamo a verificare le caratteristiche dello specifico veicolo.\nBeltrani Camper&Caravan declina ogni responsabilità per eventuali involontarie incongruenze, che non rappresentano in alcun modo un impegno contrattuale\nCaratteristiche\nAnno\n2025\nChilometri\n24.000 km\nMeccanica\nFord 2.0 - 136 CV | Automatico\nStato\nUsato\nTipologia\nMini van\nDimensioni\nLarghezza\n2.03\nLunghezza\n5.05\nPosti\nPosti Letto\n4\nPosti Omologati\n5\nTipologia Letto Posteriore\nLongitudinale\nTags:\nPanama Peak P10+ usato\n,\n5 posti omologati\n,\nmini van compatto usato"
@@ -99711,7 +99763,7 @@
             "modello": "",
             "allestimento": "",
             "distanza_seregno": 190,
-            "prezzo_attuale": 59200.0,
+            "prezzo_attuale": 57000.0,
             "storico_prezzi": [
                 {
                     "data": "2026-09-02",
@@ -99720,6 +99772,10 @@
                 {
                     "data": "2026-10-16",
                     "prezzo": 59200.0
+                },
+                {
+                    "data": "2026-10-29",
+                    "prezzo": 57000.0
                 }
             ],
             "dati_tecnici": {
@@ -99770,7 +99826,7 @@
             "status": "VALIDO",
             "motivo_scarto": "",
             "data_scoperta": "2026-09-02",
-            "data_ultimo_aggiornamento": "2026-10-16",
+            "data_ultimo_aggiornamento": "2026-10-29",
             "url_immagine": "https://www.caravanmarket.com/image/cache/catalog/CAMPER%20USATI/2027/Etrusco%20V%205.9%20DF%20-%202025%20|%20Automatico/etrusco%20v%205.9%20df%20(2)-1200x1000w.jpg",
             "ai_usata": true,
             "testo_originale": "--- DETTAGLI ---\nNew\nPronta Consegna\nEtrusco V 5.9 DF - 2025 | Automatico\nProdotto in evidenza\nRichiedi info\nWhatsApp\n×\nDisponibilità:\nDisponibile\nCodice Prodotto:\n6173\nEtrusco\nBasato su 0 recensioni.\n-\nScrivi una recensione\ntrattativa riservata\nRichiedi Info\nSCRIVICI SU WHATSAPP\nAggiungi alla lista dei desideri\nConfronta questo prodotto\nFinanziamento con rate da\n € \n0\nal mese\n Personalizza anticipo e durata →\n→\n ×\nPersonalizza il tuo finanziamento\nAcconto iniziale\n€ 0\nDurata totale\n10 anni\nRata mensile stimata\n € \n0\nal mese\n Parliamone insieme\n Simulazione indicativa · TAN 7,95% fisso · Importi e condizioni soggetti ad approvazione\nDescrizione\nDotazioni e Accessori\nScheda Tecnica\nCompatto, maneggevole e completo di tutto il comfort che cerchi in un vero camper.\nQuesto \nEtrusco V 5.9 DF del 2025\n, con soli \n12.000 km\n, è la soluzione ideale per chi desidera un camper agile e facile da guidare, senza rinunciare agli spazi e alla comodità di un vero semintegrale.\nCon i suoi \n5,99 metri di lunghezza e appena 2,15 metri di larghezza\n, è particolarmente indicato per chi cerca un veicolo compatto, semplice da gestire anche negli spostamenti quotidiani e comodo da utilizzare durante i viaggi.\nA bordo troviamo una funzionale \nzona notte posteriore con letto matrimoniale trasversale\n, mentre il \nbagno con parete girevole\n permette di sfruttare al meglio gli spazi, trasformando rapidamente l'ambiente e offrendo maggiore comodità durante l'utilizzo.\nUn semintegrale pensato per chi vuole \nviaggiare con la libertà e la maneggevolezza di un veicolo compatto, ma con tutti i comfort di un vero camper\n.\nDOTAZIONE OPTIONAL\nPannello solare\nTendalino\nRetrocamera\nCruise control\nClimatizzatore cabina\nTruma duo control\nChiusura di sicurezza Fiamma\nAutoradio doppio din\nStaffa supporto TV\nTruma combi a gas\nCambio automatico\nOscuranti plissettati\nGARANZIA LEGALE DI CONFORMITA':\nInfiltrazioni: 12 Mesi\nMeccanica: 12 Mesi\nN.B. Nota bene la dotazione tecnica e gli accessori indicati nella presente scheda potrebbero non coincidere con l’effettivo equipaggiamento del veicolo, a causa della non uniformità dei dati pubblicati dai diversi portali. Ci scusiamo per l’inconveniente e vi invitiamo a verificare le caratteristiche dello specifico veicolo.\nBeltrani Camper&Caravan declina ogni responsabilità per eventuali involontarie incongruenze, che non rappresentano in alcun modo un impegno contrattuale\nCaratteristiche\nAnno\n2025\nChilometri\n12.000 km\nMeccanica\nFord 2.0 - 170 CV - Automatico\nStato\nUsato\nTipologia\nSemintegrale\nDimensioni\nLarghezza\n2.15\nLunghezza\n5.99\nPosti\nPosti Letto\n2+1\nPosti Omologati\n4\nTipologia Letto Posteriore\nMatrimoniale trasversale\nTags:\nEtrusco V 5.9 DF 2025\n,\nSemintegrale slim usato\n,\nSemintegrale compatto"
@@ -111153,7 +111209,7 @@
             "modello": "Evo",
             "allestimento": "5",
             "distanza_seregno": 15,
-            "prezzo_attuale": 74900.0,
+            "prezzo_attuale": 17000.0,
             "storico_prezzi": [
                 {
                     "data": "2026-09-09",
@@ -111162,6 +111218,10 @@
                 {
                     "data": "2026-10-14",
                     "prezzo": 74900.0
+                },
+                {
+                    "data": "2026-10-29",
+                    "prezzo": 17000.0
                 }
             ],
             "dati_tecnici": {
@@ -111211,7 +111271,7 @@
             "status": "VALIDO",
             "motivo_scarto": "",
             "data_scoperta": "2026-09-09",
-            "data_ultimo_aggiornamento": "2026-10-14",
+            "data_ultimo_aggiornamento": "2026-10-29",
             "url_immagine": "https://www.zeroa100.com/wp-content/uploads/2026/09/20260907_143914._sc3.jpg",
             "ai_usata": false,
             "testo_originale": "--- DETTAGLI ---\nCamper Semintegrale C.I. Riviera 87 XT - Zero a 100 | Acceleratore di compravendita\nSkip to content\nLa soluzione migliore per vendere o comprare un veicolo o un'imbarcazione\nFacebook\nInstagram\nYouTube\nCamper Semintegrale C.I. Riviera 87 XT\n♡\nAggiungi ai preferiti\n€\n77.900,00\nDati veicolo\nCategoria\nSemi-integrale\nPosti letto\n4\nPosti viaggio\n4\nMeccanica\nFiat / Peugeot / Citroen\nLunghezza (m)\n7.45\nPatente\nB\nTrazione\nAnteriore\nAnno\n2023\nEuro\nEuro 6d-isc-fcm\nChilometraggio\n17000\nCambio\nManuale\nProprietari\nUnico proprietario\nCategorie: \n> Camper e Caravan\n, \nTUTTI\nTag: \nCARAVAN INTERNATIONAL\n, \nCLIMATIZZATORE CABINA\n, \nFIAT\n, \nGARAGE\n, \nGOLD SELECTION\n, \nLAIKA\n, \nLETTI GEMELLI\n, \nLETTO BASCULANTE\n, \nSEMINTEGRALE\n, \nUNICO PROPRIETARIO\n Descrizione \nDescrizione\n-> HAI UNA PERMUTA? Valutiamo Camper, Auto e moto!!\n-> NON HAI PERMUTA? T\ni riserviamo fino a 3.000 euro di SCONTO!!\nCAMPER SEMINTEGRALE CARAVANS INTERNATIONAL RIVIERA 87 XT – \n4 POSTI LETTO 4 VIAGGIO\nSU FIAT DUCATO X290 2.2 MJT 140 CV EURO 6D-ISC-FCM TRAZIONE ANTERIORE – \nCAMBIO MANUALE 06 MARCE\nIMMATRICOLAZIONE: 07 / 2023\nKM PERCORSI: 17.000\nUNICO PROPRIETARIO\nZERO A 100 GOLD SELECTION\nGARANZIA LEGALE DI CONFORMITÀ INCLUSA NEL PREZZO*\n12 mesi di Garanzia accessoria Guasti e Infiltrazioni Conformgest (\nvedi i dettagli sul sito\n) inclusa nell’approntamento veicolo +ALTRI 12 MESI IN OMAGGIO!!\nPOSSIBILITÀ DI FINANZIAMENTO FINO A 120 MESI\nDimensioni e caratteristiche tecniche:\nLunghezza: mt 7,45\nLarghezza: mt 2,35\nAltezza: mt 3,05\nMassa complessiva: 3.500 kg\nMassa rimorchiabile: 2.000 kg\nLetti gemelli posteriori – Dinette face to face con sedili cabina girevoli – Letto basculante anteriore elettrico – Cucina 3 fuochi con piezo – Frigorifero trivalente alto con cella freezer separata – Toilette con lavabo e finestra lato SX e doccia indipendente lato DX – Letti con doghe – Ampio garage\nCaratteristiche\n:\nDoppio pavimento passante\nPareti e tetto in vetroresina anti-grandine\nOblò panoramico Open Sky\nFrigorifero trivalente 150 lt A\nCucina 03 fuochi con piezo\nZanzariera porta cellula\nOscuranti plissettati cabina\nRiscaldamento Truma Combi gas 6000 Watt con i-net\nSerbatoio acque chiare 110 lt\nSerbatoio acque grigie 100 lt\nScarico wc a cassetta lt 18\nIlluminazione interna ed esterna a led\nGradino elettrico\nSupporto TV\nDotazioni veicolo\n:\nClimatizzatore cabina\nChiusura centralizzata porta cellula\nCruise Control\nVetri e specchietti elettrici\nDoppio airbag\nAbs e Esp\nSedili girevoli\nFendinebbia\nTraction + Descent holder\nCerchi in lega da 16” + Michelin CrossClimate Camping\nKit gonfiaggio\nOptional inclusi\n:\nRetrocamera\nRadio doppio DIN\nCondizionatore cellula Dometic\nRiscaldatore supplementare Webasto\nInverter onda pura 2.000 Watt\nAntenna satellitare automatica Mecatronic + 2 SMART TV con CAM\nAllarme\nPannello solare\nTendalino mt 4,50\nStacca-batteria di servizio\nPorta bici esterno con 04 canaline e-bike\nContattaci per fissare un appuntamento per visionare questo veicolo o per maggiori informazioni\n "
@@ -111222,11 +111282,15 @@
             "modello": "Evo",
             "allestimento": "5",
             "distanza_seregno": 15,
-            "prezzo_attuale": 62900.0,
+            "prezzo_attuale": 37500.0,
             "storico_prezzi": [
                 {
                     "data": "2026-09-09",
                     "prezzo": 62900.0
+                },
+                {
+                    "data": "2026-10-29",
+                    "prezzo": 37500.0
                 }
             ],
             "dati_tecnici": {
@@ -111276,7 +111340,7 @@
             "status": "VALIDO",
             "motivo_scarto": "",
             "data_scoperta": "2026-09-09",
-            "data_ultimo_aggiornamento": "2026-09-09",
+            "data_ultimo_aggiornamento": "2026-10-29",
             "url_immagine": "https://www.zeroa100.com/wp-content/uploads/2025/02/20250422_170618_sc3.jpg",
             "ai_usata": false,
             "testo_originale": "--- DETTAGLI ---\nCamper motorhome Knaus Van I 600 MG - Zero a 100 | Acceleratore di compravendita\nSkip to content\nLa soluzione migliore per vendere o comprare un veicolo o un'imbarcazione\nFacebook\nInstagram\nYouTube\nCamper motorhome Knaus Van I 600 MG\n♡\nAggiungi ai preferiti\n€\n62.900,00\nDati veicolo\nCategoria\nMotorhome\nPosti letto\n4\nPosti viaggio\n4\nMeccanica\nFiat / Peugeot / Citroen\nLunghezza (m)\n6.75\nPeso (kg)\n3500\nPatente\nB\nTrazione\nAnteriore\nAnno\n2017\nEuro\nEuro 6b\nChilometraggio\n37500\nCambio\nManuale\nProprietari\n2\nCategorie: \n> Camper e Caravan\n, \nTUTTI\nTag: \nCLIMATIZZATORE CABINA\n, \nFIAT\n, \nGARAGE\n, \nGOLD SELECTION\n, \nLETTO BASCULANTE\n, \nLETTO MATRIMONIALE TRASVERSALE\n, \nMOTORHOME\n, \nUNICO PROPRIETARIO\n Descrizione \nDescrizione\n-> HAI UNA PERMUTA? Valutiamo Camper, Auto e moto!!\n-> NON HAI PERMUTA? T\ni riserviamo fino a 3.000 euro di SCONTO!!\nCAMPER MOTORHOME USATO KNAUS VAN I 600 MG 04 POSTI LETTO 04 POSTI VIAGGIO\nSU FIAT DUCATO 2.3 MJT 130 CV 96 KW EURO 6B – \nTRAZIONE ANTERIORE – CAMBIO MANUALE 6 MARCE\nIMMATRICOLAZIONE: 09 / 2017\nKM PERCORSI: 37.500\nGARANZIA LEGALE DI CONFORMITA’*\n+12 mesi di Garanzia accessoria Guasti e Infiltrazioni Conformgest (\nvedi i dettagli sul sito\n) inclusa nell’approntamento veicolo\nPOSSIBILITA’ DI FINANZIAMENTO FINO A 120 MESI\nDimensioni e caratteristiche tecniche:\nLunghezza: mt 6,755\nLarghezza: mt 2,20\nAltezza: mt 2,80\nMassa complessiva: 3.500 kg\nMassa rimorchiabile: 2.000 kg\nLetto matrimoniale trasversale in coda – Letto basculante anteriore matrimoniale – Dinette a L con sedili cabina girevoli – Cucina lineare 3 fuochi con Frigorifero trivalente alto con cella freezer separata – Bagno duplex con parete girevole per separazione doccia – Letti con doghe – Garage\nCaratteristiche:\nRiscaldamento Alde\nOblò panoramico 700 X 500\nFrigorifero trivalente lt 140 A\nCucina 03 fuochi\nZanzariera porta cellula\nOscuranti plissettati cabina\nSerbatoio acque chiare 105 lt – grigie 95 lt\nScarico wc a cassetta\nService box\nIlluminazione interna ed esterna a LED\nGradino elettrico\nDotazioni veicolo:\nClimatizzatore cabina\nSedile guida e passeggero ventilati\nCruise Control\nLuci DRL\nRadio doppio DIN\nVetri e specchietti elettrici\nDoppio airbag\nABS – ESP – ASR\nSedili girevoli\nLuci DRL\nFendinebbia\nCerchi in lega da 16”\nPneumatici Michelin CrossClimate Camping\nRuota di scorta\nOptional inclusi:\nPortamoto Goldschmitt\nTendalino elettrico Fiamma\nSospensioni ad aria con Compressore\nRetrocamera\nPannello solare\nStacca-batteria di servizio\nSensore Gas\nDuo Control\nInverter\nOblò con ventola Turbo-Vent\nContattaci per fissare un appuntamento per visionare questo veicolo o per maggiori informazioni\n Il tuo nome (richiesto)\n La tua email (richiesto)\n Il tuo numero di telefono (richiesto)\nHai una permuta?\nSì\nNo\n Il tuo messaggio\nSono interessato a questo veicolo e vorrei essere ricontattato/a\nDichiaro di aver letto l'informativa ed autorizzo il trattamento dei miei dati personali secondo il regolamento UE 2016/79 (GDPR). \nLeggi l'informartiva privacy\n*La gara"
@@ -127513,7 +127577,7 @@
             "modello": "Peak",
             "allestimento": "P10+",
             "distanza_seregno": 190,
-            "prezzo_attuale": 62800.0,
+            "prezzo_attuale": 59900.0,
             "storico_prezzi": [
                 {
                     "data": "2026-09-25",
@@ -127522,6 +127586,10 @@
                 {
                     "data": "2026-10-16",
                     "prezzo": 62800.0
+                },
+                {
+                    "data": "2026-10-29",
+                    "prezzo": 59900.0
                 }
             ],
             "dati_tecnici": {
@@ -127572,7 +127640,7 @@
             "status": "VALIDO",
             "motivo_scarto": "",
             "data_scoperta": "2026-09-25",
-            "data_ultimo_aggiornamento": "2026-10-16",
+            "data_ultimo_aggiornamento": "2026-10-29",
             "url_immagine": "https://www.caravanmarket.com/image/cache/placeholder-1200x1000w.png",
             "ai_usata": true,
             "testo_originale": "--- DETTAGLI ---\nPronta Consegna\nPanama Peak P10+ - 2025 | 170 CV Automatico\nProdotto in evidenza\nRichiedi info\nWhatsApp\n×\nDisponibilità:\nDisponibile\nCodice Prodotto:\n6177\nPanama Van\nBasato su 0 recensioni.\n-\nScrivi una recensione\ntrattativa riservata\nRichiedi Info\nSCRIVICI SU WHATSAPP\nAggiungi alla lista dei desideri\nConfronta questo prodotto\nFinanziamento con rate da\n € \n0\nal mese\n Personalizza anticipo e durata →\n→\n ×\nPersonalizza il tuo finanziamento\nAcconto iniziale\n€ 0\nDurata totale\n10 anni\nRata mensile stimata\n € \n0\nal mese\n Parliamone insieme\n Simulazione indicativa · TAN 7,95% fisso · Importi e condizioni soggetti ad approvazione\nDescrizione\nDotazioni e Accessori\nScheda Tecnica\nPanama Peak P10+ anno 2025, \n un minivan usato ma come nuovo\ncompatto e versatile pensato per chi cerca libertà di viaggio, praticità e massima sicurezza anche sui percorsi più impegnativi. \nLa versione \nPanama P10+ 2025\n rappresenta una soluzione ideale per chi desidera un minivan moderno, utilizzabile tutto l'anno e capace di affrontare con maggiore tranquillità anche strade con condizioni di aderenza difficili.\nMotorizzazione 2.0 - 170 CV e tanti altri optional. \nConsulta la scheda tecnica completa per scoprire \ndimensioni, motorizzazione, dotazioni di serie, optional e caratteristiche del Panama P10+ 2025\n.\nContattaci per ricevere maggiori informazioni, richiedere un \npreventivo personalizzato\n oppure prenotare un appuntamento per vedere il veicolo presso il nostro showroom.\nDOTAZIONE OPTIONAL\nCambio automatico\nSensori parcheggio ant e post\nRetrocamera\nGancio traino\nPack living (Webasto - Wc portatile - Inverter)\nCerchi in lega\nVeranda\nGARANZIA LEGALE DI CONFORMITA':\nInfiltrazioni: 12 Mesi\nMeccanica: 12 Mesi\nN.B. Nota bene la dotazione tecnica e gli accessori indicati nella presente scheda potrebbero non coincidere con l’effettivo equipaggiamento del veicolo, a causa della non uniformità dei dati pubblicati dai diversi portali. Ci scusiamo per l’inconveniente e vi invitiamo a verificare le caratteristiche dello specifico veicolo.\nBeltrani Camper&Caravan declina ogni responsabilità per eventuali involontarie incongruenze, che non rappresentano in alcun modo un impegno contrattuale\nCaratteristiche\nAnno\n2025\nChilometri\n15.000 km\nMeccanica\nFord 2.0 - 170 CV Automatico\nStato\nUsato\nTipologia\nMini van\nDimensioni\nLarghezza\n2.03\nLunghezza\n5.05\nPosti\nPosti Letto\n4\nPosti Omologati\n5\nTipologia Letto Posteriore\nLongitudinale\nTags:\nPanama P10+ 2025\n,\n170 CV\n,\nCambio automatico\n,\nMini van usato"
@@ -127846,7 +127914,7 @@
             "modello": "Peak",
             "allestimento": "P10+",
             "distanza_seregno": 190,
-            "prezzo_attuale": 62800.0,
+            "prezzo_attuale": 59900.0,
             "storico_prezzi": [
                 {
                     "data": "2026-09-25",
@@ -127855,6 +127923,10 @@
                 {
                     "data": "2026-10-16",
                     "prezzo": 62800.0
+                },
+                {
+                    "data": "2026-10-29",
+                    "prezzo": 59900.0
                 }
             ],
             "dati_tecnici": {
@@ -127905,7 +127977,7 @@
             "status": "VALIDO",
             "motivo_scarto": "",
             "data_scoperta": "2026-09-25",
-            "data_ultimo_aggiornamento": "2026-10-16",
+            "data_ultimo_aggiornamento": "2026-10-29",
             "url_immagine": "https://www.caravanmarket.com/image/cache/placeholder-1200x1000w.png",
             "ai_usata": true,
             "testo_originale": "--- DETTAGLI ---\nPronta Consegna\nPanama Peak P10+ - 2025 | 170 CV Automatico\nProdotto in evidenza\nRichiedi info\nWhatsApp\n×\nDisponibilità:\nDisponibile\nCodice Prodotto:\n6177\nPanama Van\nBasato su 0 recensioni.\n-\nScrivi una recensione\ntrattativa riservata\nRichiedi Info\nSCRIVICI SU WHATSAPP\nAggiungi alla lista dei desideri\nConfronta questo prodotto\nFinanziamento con rate da\n € \n0\nal mese\n Personalizza anticipo e durata →\n→\n ×\nPersonalizza il tuo finanziamento\nAcconto iniziale\n€ 0\nDurata totale\n10 anni\nRata mensile stimata\n € \n0\nal mese\n Parliamone insieme\n Simulazione indicativa · TAN 7,95% fisso · Importi e condizioni soggetti ad approvazione\nDescrizione\nDotazioni e Accessori\nScheda Tecnica\nPanama Peak P10+ anno 2025, \n un minivan usato ma come nuovo\ncompatto e versatile pensato per chi cerca libertà di viaggio, praticità e massima sicurezza anche sui percorsi più impegnativi. \nLa versione \nPanama P10+ 2025\n rappresenta una soluzione ideale per chi desidera un minivan moderno, utilizzabile tutto l'anno e capace di affrontare con maggiore tranquillità anche strade con condizioni di aderenza difficili.\nMotorizzazione 2.0 - 170 CV e tanti altri optional. \nConsulta la scheda tecnica completa per scoprire \ndimensioni, motorizzazione, dotazioni di serie, optional e caratteristiche del Panama P10+ 2025\n.\nContattaci per ricevere maggiori informazioni, richiedere un \npreventivo personalizzato\n oppure prenotare un appuntamento per vedere il veicolo presso il nostro showroom.\nDOTAZIONE OPTIONAL\nCambio automatico\nSensori parcheggio ant e post\nRetrocamera\nGancio traino\nPack living (Webasto - Wc portatile - Inverter)\nCerchi in lega\nVeranda\nGARANZIA LEGALE DI CONFORMITA':\nInfiltrazioni: 12 Mesi\nMeccanica: 12 Mesi\nN.B. Nota bene la dotazione tecnica e gli accessori indicati nella presente scheda potrebbero non coincidere con l’effettivo equipaggiamento del veicolo, a causa della non uniformità dei dati pubblicati dai diversi portali. Ci scusiamo per l’inconveniente e vi invitiamo a verificare le caratteristiche dello specifico veicolo.\nBeltrani Camper&Caravan declina ogni responsabilità per eventuali involontarie incongruenze, che non rappresentano in alcun modo un impegno contrattuale\nCaratteristiche\nAnno\n2025\nChilometri\n15.000 km\nMeccanica\nFord 2.0 - 170 CV Automatico\nStato\nUsato\nTipologia\nMini van\nDimensioni\nLarghezza\n2.03\nLunghezza\n5.05\nPosti\nPosti Letto\n4\nPosti Omologati\n5\nTipologia Letto Posteriore\nLongitudinale\nTags:\nPanama P10+ 2025\n,\n170 CV\n,\nCambio automatico\n,\nMini van usato"
@@ -134975,7 +135047,7 @@
             "modello": "",
             "allestimento": "",
             "distanza_seregno": 190,
-            "prezzo_attuale": 61500.0,
+            "prezzo_attuale": 59500.0,
             "storico_prezzi": [
                 {
                     "data": "2026-10-01",
@@ -134984,6 +135056,10 @@
                 {
                     "data": "2026-10-17",
                     "prezzo": 61500.0
+                },
+                {
+                    "data": "2026-10-29",
+                    "prezzo": 59500.0
                 }
             ],
             "dati_tecnici": {
@@ -135034,7 +135110,7 @@
             "status": "VALIDO",
             "motivo_scarto": "",
             "data_scoperta": "2026-10-01",
-            "data_ultimo_aggiornamento": "2026-10-17",
+            "data_ultimo_aggiornamento": "2026-10-29",
             "url_immagine": "https://www.caravanmarket.com/image/cache/catalog/VAN%20USATI/2027/Knaus%20Boxstar%20600%20MQ%20-%202023/knaus-boxstar-600-mq-1-1200x1000w.jpg",
             "ai_usata": true,
             "testo_originale": "--- DETTAGLI ---\nNew\nPronta Consegna\nKnaus Boxstar 600 MQ - 2023\nProdotto in evidenza\nRichiedi info\nWhatsApp\n×\nDisponibilità:\nDisponibile\nCodice Prodotto:\n6199\nKnaus\nBasato su 0 recensioni.\n-\nScrivi una recensione\ntrattativa riservata\nRichiedi Info\nSCRIVICI SU WHATSAPP\nAggiungi alla lista dei desideri\nConfronta questo prodotto\nFinanziamento con rate da\n € \n0\nal mese\n Personalizza anticipo e durata →\n→\n ×\nPersonalizza il tuo finanziamento\nAcconto iniziale\n€ 0\nDurata totale\n10 anni\nRata mensile stimata\n € \n0\nal mese\n Parliamone insieme\n Simulazione indicativa · TAN 7,95% fisso · Importi e condizioni soggetti ad approvazione\nDescrizione\nDotazioni e Accessori\nScheda Tecnica\nKnaus Boxstar 600 MQ – 2023\nCerchi un van compatto da guidare come un furgone ma con lo spazio per tutta la famiglia? Il Knaus Boxstar 600 MQ del 2023 è un usato recente con soli 35.000 km, pronto per le prossime vacanze.\n4 posti letto grazie al tetto a soffietto\nIl tetto a soffietto ospita un secondo letto matrimoniale e porta i posti letto a quattro, mantenendo l'altezza del mezzo contenuta. Da chiuso entra in parcheggi, centri storici e strade dove un camper tradizionale non passa. Da aperto dà più aria e luce all'interno.\nLetto matrimoniale trasversale in coda\nNella zona posteriore c'è un comodo letto matrimoniale trasversale, sempre pronto, senza montare e smontare nulla ogni sera. Lascia libero lo spazio giorno e sotto offre un ampio vano di carico per bagagli, bici o attrezzatura outdoor.\nDOTAZIONE OPTIONAL\nTetto a soffietto\nOblò nel tetto a soffietto\nAutoradio doppio din\nClimatizzatore cabina\nCruise control\nOscuranti plissettati\nTruma a gas\nRiscaldamento Eberspacher\nTendalino\nDoppia batteria dei servizi\nRetrocamera\nLuce esterna XL\nPannello solare\nGARANZIA LEGALE DI CONFORMITA':\nInfiltrazioni: 12 Mesi\nMeccanica: 12 Mesi\nN.B. Nota bene la dotazione tecnica e gli accessori indicati nella presente scheda potrebbero non coincidere con l’effettivo equipaggiamento del veicolo, a causa della non uniformità dei dati pubblicati dai diversi portali. Ci scusiamo per l’inconveniente e vi invitiamo a verificare le caratteristiche dello specifico veicolo.\nBeltrani Camper&Caravan declina ogni responsabilità per eventuali involontarie incongruenze, che non rappresentano in alcun modo un impegno contrattuale\nCaratteristiche\nAnno\n2023\nChilometri\n35.000 €\nMeccanica\nFiat Ducato 2.3 - 140 CV\nStato\nUsato\nTipologia\nVan\nDimensioni\nLarghezza\n2.05\nLunghezza\n5.99\nPosti\nPosti Letto\n4\nPosti Omologati\n4\nTipologia Letto Posteriore\nMatrimoniale trasversale\nTags:\nKnaus Boxstar 600 MQ 2023\n,\n4 posti letto\n,\nvan 5.99 mt usato"
@@ -135111,7 +135187,7 @@
             "modello": "",
             "allestimento": "",
             "distanza_seregno": 190,
-            "prezzo_attuale": 61500.0,
+            "prezzo_attuale": 59500.0,
             "storico_prezzi": [
                 {
                     "data": "2026-10-01",
@@ -135120,6 +135196,10 @@
                 {
                     "data": "2026-10-16",
                     "prezzo": 61500.0
+                },
+                {
+                    "data": "2026-10-29",
+                    "prezzo": 59500.0
                 }
             ],
             "dati_tecnici": {
@@ -135170,7 +135250,7 @@
             "status": "VALIDO",
             "motivo_scarto": "",
             "data_scoperta": "2026-10-01",
-            "data_ultimo_aggiornamento": "2026-10-16",
+            "data_ultimo_aggiornamento": "2026-10-29",
             "url_immagine": "https://www.caravanmarket.com/image/cache/catalog/VAN%20USATI/2027/Knaus%20Boxstar%20600%20MQ%20-%202023/knaus-boxstar-600-mq-1-1200x1000w.jpg",
             "ai_usata": true,
             "testo_originale": "--- DETTAGLI ---\nNew\nPronta Consegna\nKnaus Boxstar 600 MQ - 2023\nProdotto in evidenza\nRichiedi info\nWhatsApp\n×\nDisponibilità:\nDisponibile\nCodice Prodotto:\n6199\nKnaus\nBasato su 0 recensioni.\n-\nScrivi una recensione\ntrattativa riservata\nRichiedi Info\nSCRIVICI SU WHATSAPP\nAggiungi alla lista dei desideri\nConfronta questo prodotto\nFinanziamento con rate da\n € \n0\nal mese\n Personalizza anticipo e durata →\n→\n ×\nPersonalizza il tuo finanziamento\nAcconto iniziale\n€ 0\nDurata totale\n10 anni\nRata mensile stimata\n € \n0\nal mese\n Parliamone insieme\n Simulazione indicativa · TAN 7,95% fisso · Importi e condizioni soggetti ad approvazione\nDescrizione\nDotazioni e Accessori\nScheda Tecnica\nKnaus Boxstar 600 MQ – 2023\nCerchi un van compatto da guidare come un furgone ma con lo spazio per tutta la famiglia? Il Knaus Boxstar 600 MQ del 2023 è un usato recente con soli 35.000 km, pronto per le prossime vacanze.\n4 posti letto grazie al tetto a soffietto\nIl tetto a soffietto ospita un secondo letto matrimoniale e porta i posti letto a quattro, mantenendo l'altezza del mezzo contenuta. Da chiuso entra in parcheggi, centri storici e strade dove un camper tradizionale non passa. Da aperto dà più aria e luce all'interno.\nLetto matrimoniale trasversale in coda\nNella zona posteriore c'è un comodo letto matrimoniale trasversale, sempre pronto, senza montare e smontare nulla ogni sera. Lascia libero lo spazio giorno e sotto offre un ampio vano di carico per bagagli, bici o attrezzatura outdoor.\nDOTAZIONE OPTIONAL\nTetto a soffietto\nOblò nel tetto a soffietto\nAutoradio doppio din\nClimatizzatore cabina\nCruise control\nOscuranti plissettati\nTruma a gas\nRiscaldamento Eberspacher\nTendalino\nDoppia batteria dei servizi\nRetrocamera\nLuce esterna XL\nPannello solare\nGARANZIA LEGALE DI CONFORMITA':\nInfiltrazioni: 12 Mesi\nMeccanica: 12 Mesi\nN.B. Nota bene la dotazione tecnica e gli accessori indicati nella presente scheda potrebbero non coincidere con l’effettivo equipaggiamento del veicolo, a causa della non uniformità dei dati pubblicati dai diversi portali. Ci scusiamo per l’inconveniente e vi invitiamo a verificare le caratteristiche dello specifico veicolo.\nBeltrani Camper&Caravan declina ogni responsabilità per eventuali involontarie incongruenze, che non rappresentano in alcun modo un impegno contrattuale\nCaratteristiche\nAnno\n2023\nChilometri\n35.000 €\nMeccanica\nFiat Ducato 2.3 - 140 CV\nStato\nUsato\nTipologia\nVan\nDimensioni\nLarghezza\n2.05\nLunghezza\n5.99\nPosti\nPosti Letto\n4\nPosti Omologati\n4\nTipologia Letto Posteriore\nMatrimoniale trasversale\nTags:\nKnaus Boxstar 600 MQ 2023\n,\n4 posti letto\n,\nvan 5.99 mt usato"
@@ -137357,7 +137437,7 @@
             "modello": "",
             "allestimento": "",
             "distanza_seregno": 190,
-            "prezzo_attuale": 64000.0,
+            "prezzo_attuale": 61000.0,
             "storico_prezzi": [
                 {
                     "data": "2026-10-02",
@@ -137366,6 +137446,10 @@
                 {
                     "data": "2026-10-15",
                     "prezzo": 64000.0
+                },
+                {
+                    "data": "2026-10-29",
+                    "prezzo": 61000.0
                 }
             ],
             "dati_tecnici": {
@@ -137416,7 +137500,7 @@
             "status": "VALIDO",
             "motivo_scarto": "",
             "data_scoperta": "2026-10-02",
-            "data_ultimo_aggiornamento": "2026-10-15",
+            "data_ultimo_aggiornamento": "2026-10-29",
             "url_immagine": "https://www.caravanmarket.com/image/cache/placeholder-1200x1000w.png",
             "ai_usata": true,
             "testo_originale": "--- DETTAGLI ---\nNew\nPronta Consegna\nAutostar Performance P600 - 2024\nProdotto in evidenza\nRichiedi info\nWhatsApp\n×\nDisponibilità:\nDisponibile\nCodice Prodotto:\n6201\nAutoStar\nBasato su 0 recensioni.\n-\nScrivi una recensione\ntrattativa riservata\nRichiedi Info\nSCRIVICI SU WHATSAPP\nAggiungi alla lista dei desideri\nConfronta questo prodotto\nFinanziamento con rate da\n € \n0\nal mese\n Personalizza anticipo e durata →\n→\n ×\nPersonalizza il tuo finanziamento\nAcconto iniziale\n€ 0\nDurata totale\n10 anni\nRata mensile stimata\n € \n0\nal mese\n Parliamone insieme\n Simulazione indicativa · TAN 7,95% fisso · Importi e condizioni soggetti ad approvazione\nDescrizione\nDotazioni e Accessori\nScheda Tecnica\nAutostar Performance P600 usato – 2024 – 8.500 km\nCerchi un \ncamper semintegrale usato\n recente, compatto e pronto a partire? L'\nAutostar Performance P600\n del 2024 ha percorso solo \n8.500 km\n: è un mezzo praticamente nuovo.\nUn semintegrale compatto, facile da guidare\nIl P600 è lungo \n6,13 metri\n e largo 2,16 m, tra i semintegrali più compatti in commercio. È costruito su meccanica \nFiat Ducato\n: si guida con la stessa facilità di un furgone, si parcheggia senza problemi ed entra nella maggior parte delle aree sosta e dei campeggi. È ideale anche per chi compra il primo camper.\n4 posti letto e 4 posti omologati\nPur con dimensioni contenute, l'Autostar P600 ha \n4 posti letto\n e \n4 posti omologati in viaggio\n. È perfetto per coppie che vogliono spazio extra o per famiglie con due bambini.\nBagno posteriore spazioso\nIl punto forte del P600 è il \ngrande bagno in coda\n, con armadio ampio e tanti vani di stivaggio. È raro trovarlo su un camper di questa lunghezza. Completano gli interni una \ncucina attrezzata\n e una \ndinette\n accogliente per i pasti e le serate in viaggio.\nDOTAZIONE OPTIONAL\nPannello solare\nGancio traino\nRetrocamera \nTendalino\nFrigorifero 150lt a colonna\nSkyroof\nAutoradio doppio din \nClimatizzatore cabina\nCruise control\nVolante multifunzione\nTraction Plus\nHill descent control\nStaffa supporto TV\nGARANZIA LEGALE DI CONFORMITA':\nInfiltrazioni: 12 Mesi\nMeccanica: 12 Mesi\nN.B. Nota bene la dotazione tecnica e gli accessori indicati nella presente scheda potrebbero non coincidere con l’effettivo equipaggiamento del veicolo, a causa della non uniformità dei dati pubblicati dai diversi portali. Ci scusiamo per l’inconveniente e vi invitiamo a verificare le caratteristiche dello specifico veicolo.\nBeltrani Camper&Caravan declina ogni responsabilità per eventuali involontarie incongruenze, che non rappresentano in alcun modo un impegno contrattuale\nCaratteristiche\nAnno\n2024\nChilometri\n8.500 km\nMeccanica\nFiat Ducato 2.2 MTJ - 140 CV\nStato\nUsato\nTipologia\nSemintegrale\nDimensioni\nLarghezza\n2.16\nLunghezza\n6.13\nPosti\nLetto Basculante\nSi - Matrimoniale\nPosti Letto\n4\nPosti Omologati\n4\nTags:\nAutostar Performance P600\n,\nSemintegrale compatto\n,\nCamper semintegrale usato"
@@ -137559,7 +137643,7 @@
             "modello": "",
             "allestimento": "",
             "distanza_seregno": 190,
-            "prezzo_attuale": 64000.0,
+            "prezzo_attuale": 61000.0,
             "storico_prezzi": [
                 {
                     "data": "2026-10-02",
@@ -137568,6 +137652,10 @@
                 {
                     "data": "2026-10-15",
                     "prezzo": 64000.0
+                },
+                {
+                    "data": "2026-10-29",
+                    "prezzo": 61000.0
                 }
             ],
             "dati_tecnici": {
@@ -137618,7 +137706,7 @@
             "status": "VALIDO",
             "motivo_scarto": "",
             "data_scoperta": "2026-10-02",
-            "data_ultimo_aggiornamento": "2026-10-15",
+            "data_ultimo_aggiornamento": "2026-10-29",
             "url_immagine": "https://www.caravanmarket.com/image/cache/placeholder-1200x1000w.png",
             "ai_usata": true,
             "testo_originale": "--- DETTAGLI ---\nNew\nPronta Consegna\nAutostar Performance P600 - 2024\nProdotto in evidenza\nRichiedi info\nWhatsApp\n×\nDisponibilità:\nDisponibile\nCodice Prodotto:\n6201\nAutoStar\nBasato su 0 recensioni.\n-\nScrivi una recensione\ntrattativa riservata\nRichiedi Info\nSCRIVICI SU WHATSAPP\nAggiungi alla lista dei desideri\nConfronta questo prodotto\nFinanziamento con rate da\n € \n0\nal mese\n Personalizza anticipo e durata →\n→\n ×\nPersonalizza il tuo finanziamento\nAcconto iniziale\n€ 0\nDurata totale\n10 anni\nRata mensile stimata\n € \n0\nal mese\n Parliamone insieme\n Simulazione indicativa · TAN 7,95% fisso · Importi e condizioni soggetti ad approvazione\nDescrizione\nDotazioni e Accessori\nScheda Tecnica\nAutostar Performance P600 usato – 2024 – 8.500 km\nCerchi un \ncamper semintegrale usato\n recente, compatto e pronto a partire? L'\nAutostar Performance P600\n del 2024 ha percorso solo \n8.500 km\n: è un mezzo praticamente nuovo.\nUn semintegrale compatto, facile da guidare\nIl P600 è lungo \n6,13 metri\n e largo 2,16 m, tra i semintegrali più compatti in commercio. È costruito su meccanica \nFiat Ducato\n: si guida con la stessa facilità di un furgone, si parcheggia senza problemi ed entra nella maggior parte delle aree sosta e dei campeggi. È ideale anche per chi compra il primo camper.\n4 posti letto e 4 posti omologati\nPur con dimensioni contenute, l'Autostar P600 ha \n4 posti letto\n e \n4 posti omologati in viaggio\n. È perfetto per coppie che vogliono spazio extra o per famiglie con due bambini.\nBagno posteriore spazioso\nIl punto forte del P600 è il \ngrande bagno in coda\n, con armadio ampio e tanti vani di stivaggio. È raro trovarlo su un camper di questa lunghezza. Completano gli interni una \ncucina attrezzata\n e una \ndinette\n accogliente per i pasti e le serate in viaggio.\nDOTAZIONE OPTIONAL\nPannello solare\nGancio traino\nRetrocamera \nTendalino\nFrigorifero 150lt a colonna\nSkyroof\nAutoradio doppio din \nClimatizzatore cabina\nCruise control\nVolante multifunzione\nTraction Plus\nHill descent control\nStaffa supporto TV\nGARANZIA LEGALE DI CONFORMITA':\nInfiltrazioni: 12 Mesi\nMeccanica: 12 Mesi\nN.B. Nota bene la dotazione tecnica e gli accessori indicati nella presente scheda potrebbero non coincidere con l’effettivo equipaggiamento del veicolo, a causa della non uniformità dei dati pubblicati dai diversi portali. Ci scusiamo per l’inconveniente e vi invitiamo a verificare le caratteristiche dello specifico veicolo.\nBeltrani Camper&Caravan declina ogni responsabilità per eventuali involontarie incongruenze, che non rappresentano in alcun modo un impegno contrattuale\nCaratteristiche\nAnno\n2024\nChilometri\n8.500 km\nMeccanica\nFiat Ducato 2.2 MTJ - 140 CV\nStato\nUsato\nTipologia\nSemintegrale\nDimensioni\nLarghezza\n2.16\nLunghezza\n6.13\nPosti\nLetto Basculante\nSi - Matrimoniale\nPosti Letto\n4\nPosti Omologati\n4\nTags:\nAutostar Performance P600\n,\nSemintegrale compatto\n,\nCamper semintegrale usato"
@@ -141934,7 +142022,7 @@
             "modello": "",
             "allestimento": "",
             "distanza_seregno": 190,
-            "prezzo_attuale": 59500.0,
+            "prezzo_attuale": 57500.0,
             "storico_prezzi": [
                 {
                     "data": "2026-10-04",
@@ -141943,6 +142031,10 @@
                 {
                     "data": "2026-10-09",
                     "prezzo": 59500.0
+                },
+                {
+                    "data": "2026-10-29",
+                    "prezzo": 57500.0
                 }
             ],
             "dati_tecnici": {
@@ -141993,7 +142085,7 @@
             "status": "VALIDO",
             "motivo_scarto": "",
             "data_scoperta": "2026-10-04",
-            "data_ultimo_aggiornamento": "2026-10-09",
+            "data_ultimo_aggiornamento": "2026-10-29",
             "url_immagine": "https://www.caravanmarket.com/image/cache/placeholder-1200x1000w.png",
             "ai_usata": true,
             "testo_originale": "--- DETTAGLI ---\nNew\nPronta Consegna\nKnaus Tourer Van Vansation 500 MQ - 2025\nProdotto in evidenza\nRichiedi info\nWhatsApp\n×\nDisponibilità:\nDisponibile\nCodice Prodotto:\n6203\nKnaus\nBasato su 0 recensioni.\n-\nScrivi una recensione\ntrattativa riservata\nRichiedi Info\nSCRIVICI SU WHATSAPP\nAggiungi alla lista dei desideri\nConfronta questo prodotto\nFinanziamento con rate da\n € \n0\nal mese\n Personalizza anticipo e durata →\n→\n ×\nPersonalizza il tuo finanziamento\nAcconto iniziale\n€ 0\nDurata totale\n10 anni\nRata mensile stimata\n € \n0\nal mese\n Parliamone insieme\n Simulazione indicativa · TAN 7,95% fisso · Importi e condizioni soggetti ad approvazione\nDescrizione\nDotazioni e Accessori\nScheda Tecnica\nKnaus Tourer Van 500 MQ Vansation usato – 2025 – 44.000 km\nSe cerchi un camper compatto, moderno e piacevole da guidare, il Knaus Tourer Van 500 MQ Vansation del 2025 è la scelta giusta. Ha percorso \n44.000 km\n ed è disponibile subito da Beltrani Camper & Caravan. Unisce la meccanica Volkswagen da 150 CV con \ncambio automatico\n al comfort di un vero camper, il tutto in appena \n5,89 metri.\nAl volante sembra di guidare un auto. È agile in città, sicuro sulle strade di montagna e facile da parcheggiare anche nelle aree sosta più piccole. Il cambio automatico rende ogni viaggio rilassante, sia nel traffico sia sui percorsi più impegnativi.\nSalendo a bordo ci si accorge di quanto spazio Knaus sia riuscita a ricavare. In coda c'è un comodo letto matrimoniale trasversale e sopra la cabina un letto basculante matrimoniale dando la possibilità di dormire comodamente anche in 4 persone. \nDOTAZIONE OPTIONAL \nTendalino\nCambio automatico\nCerchi in lega\nRetrocamera\nAutoradio doppio din con navigatore\nPorta zanzariera scorrevole\nCruise control\nClimatizzatore cabina\nTruma a Diesel\nGARANZIA LEGALE DI CONFORMITA':\nInfiltrazioni: 12 Mesi\nMeccanica: 12 Mesi\nN.B. Nota bene la dotazione tecnica e gli accessori indicati nella presente scheda potrebbero non coincidere con l’effettivo equipaggiamento del veicolo, a causa della non uniformità dei dati pubblicati dai diversi portali. Ci scusiamo per l’inconveniente e vi invitiamo a verificare le caratteristiche dello specifico veicolo.\nBeltrani Camper&Caravan declina ogni responsabilità per eventuali involontarie incongruenze, che non rappresentano in alcun modo un impegno contrattuale\nCaratteristiche\nAnno\n2025\nChilometri\n44.000 km\nMeccanica\nVolkswagen T6.1 - 150 CV / Cambio Automatico\nStato\nUsato\nTipologia\nSemintegrale\nDimensioni\nLarghezza\n2.16\nLunghezza\n5.89\nPosti\nLetto Basculante\nSi \nPosti Letto\n4\nPosti Omologati\n4\nTipologia Letto Posteriore\nMatrimoniale trasversale\nTags:\nKnaus Tourer Van 500 MQ Vansation 2025\n,\nSemintegrale compatto\n,\n4 posti letto"
@@ -142004,7 +142096,7 @@
             "modello": "",
             "allestimento": "",
             "distanza_seregno": 190,
-            "prezzo_attuale": 59500.0,
+            "prezzo_attuale": 57500.0,
             "storico_prezzi": [
                 {
                     "data": "2026-10-04",
@@ -142013,6 +142105,10 @@
                 {
                     "data": "2026-10-09",
                     "prezzo": 59500.0
+                },
+                {
+                    "data": "2026-10-29",
+                    "prezzo": 57500.0
                 }
             ],
             "dati_tecnici": {
@@ -142063,7 +142159,7 @@
             "status": "VALIDO",
             "motivo_scarto": "",
             "data_scoperta": "2026-10-04",
-            "data_ultimo_aggiornamento": "2026-10-09",
+            "data_ultimo_aggiornamento": "2026-10-29",
             "url_immagine": "https://www.caravanmarket.com/image/cache/placeholder-1200x1000w.png",
             "ai_usata": true,
             "testo_originale": "--- DETTAGLI ---\nNew\nPronta Consegna\nKnaus Tourer Van Vansation 500 MQ - 2025\nProdotto in evidenza\nRichiedi info\nWhatsApp\n×\nDisponibilità:\nDisponibile\nCodice Prodotto:\n6203\nKnaus\nBasato su 0 recensioni.\n-\nScrivi una recensione\ntrattativa riservata\nRichiedi Info\nSCRIVICI SU WHATSAPP\nAggiungi alla lista dei desideri\nConfronta questo prodotto\nFinanziamento con rate da\n € \n0\nal mese\n Personalizza anticipo e durata →\n→\n ×\nPersonalizza il tuo finanziamento\nAcconto iniziale\n€ 0\nDurata totale\n10 anni\nRata mensile stimata\n € \n0\nal mese\n Parliamone insieme\n Simulazione indicativa · TAN 7,95% fisso · Importi e condizioni soggetti ad approvazione\nDescrizione\nDotazioni e Accessori\nScheda Tecnica\nKnaus Tourer Van 500 MQ Vansation usato – 2025 – 44.000 km\nSe cerchi un camper compatto, moderno e piacevole da guidare, il Knaus Tourer Van 500 MQ Vansation del 2025 è la scelta giusta. Ha percorso \n44.000 km\n ed è disponibile subito da Beltrani Camper & Caravan. Unisce la meccanica Volkswagen da 150 CV con \ncambio automatico\n al comfort di un vero camper, il tutto in appena \n5,89 metri.\nAl volante sembra di guidare un auto. È agile in città, sicuro sulle strade di montagna e facile da parcheggiare anche nelle aree sosta più piccole. Il cambio automatico rende ogni viaggio rilassante, sia nel traffico sia sui percorsi più impegnativi.\nSalendo a bordo ci si accorge di quanto spazio Knaus sia riuscita a ricavare. In coda c'è un comodo letto matrimoniale trasversale e sopra la cabina un letto basculante matrimoniale dando la possibilità di dormire comodamente anche in 4 persone. \nDOTAZIONE OPTIONAL \nTendalino\nCambio automatico\nCerchi in lega\nRetrocamera\nAutoradio doppio din con navigatore\nPorta zanzariera scorrevole\nCruise control\nClimatizzatore cabina\nTruma a Diesel\nGARANZIA LEGALE DI CONFORMITA':\nInfiltrazioni: 12 Mesi\nMeccanica: 12 Mesi\nN.B. Nota bene la dotazione tecnica e gli accessori indicati nella presente scheda potrebbero non coincidere con l’effettivo equipaggiamento del veicolo, a causa della non uniformità dei dati pubblicati dai diversi portali. Ci scusiamo per l’inconveniente e vi invitiamo a verificare le caratteristiche dello specifico veicolo.\nBeltrani Camper&Caravan declina ogni responsabilità per eventuali involontarie incongruenze, che non rappresentano in alcun modo un impegno contrattuale\nCaratteristiche\nAnno\n2025\nChilometri\n44.000 km\nMeccanica\nVolkswagen T6.1 - 150 CV / Cambio Automatico\nStato\nUsato\nTipologia\nSemintegrale\nDimensioni\nLarghezza\n2.16\nLunghezza\n5.89\nPosti\nLetto Basculante\nSi \nPosti Letto\n4\nPosti Omologati\n4\nTipologia Letto Posteriore\nMatrimoniale trasversale\nTags:\nKnaus Tourer Van 500 MQ Vansation 2025\n,\nSemintegrale compatto\n,\n4 posti letto"
@@ -148255,11 +148351,15 @@
             "modello": "L!ve Wave",
             "allestimento": "650 MG",
             "distanza_seregno": 190,
-            "prezzo_attuale": 61500.0,
+            "prezzo_attuale": 58500.0,
             "storico_prezzi": [
                 {
                     "data": "2026-10-09",
                     "prezzo": 61500.0
+                },
+                {
+                    "data": "2026-10-29",
+                    "prezzo": 58500.0
                 }
             ],
             "dati_tecnici": {
@@ -148310,7 +148410,7 @@
             "status": "VALIDO",
             "motivo_scarto": "",
             "data_scoperta": "2026-10-09",
-            "data_ultimo_aggiornamento": "2026-10-09",
+            "data_ultimo_aggiornamento": "2026-10-29",
             "url_immagine": "https://www.caravanmarket.com/image/cache/catalog/CAMPER%20USATI/2027/Knaus%20Live%20Wave%20650%20Meg%20-%202020/knaus-live-wave-650-meg-1-1200x1000w.jpg",
             "ai_usata": true,
             "testo_originale": "--- DETTAGLI ---\nPronta Consegna\nKnaus Live Wave 650 Mg - 2020\nProdotto in evidenza\nRichiedi info\nWhatsApp\n×\nDisponibilità:\nDisponibile\nCodice Prodotto:\n6209\nKnaus\nBasato su 0 recensioni.\n-\nScrivi una recensione\n61.500,00€\nRichiedi Info\nSCRIVICI SU WHATSAPP\nAggiungi alla lista dei desideri\nConfronta questo prodotto\nFinanziamento con rate da\n € \n0\nal mese\n Personalizza anticipo e durata →\n→\n ×\nPersonalizza il tuo finanziamento\nAcconto iniziale\n€ 0\nDurata totale\n10 anni\nRata mensile stimata\n € \n0\nal mese\n Parliamone insieme\n Simulazione indicativa · TAN 7,95% fisso · Importi e condizioni soggetti ad approvazione\nDescrizione\nDotazioni e Accessori\nScheda Tecnica\nKnaus Live Wave 650 MG usato – 2020\nSe cerchi un camper semintegrale usato spazioso, ben organizzato e firmato da uno dei marchi più apprezzati in Europa, il Knaus L!VE WAVE 650 MG del 2020 merita la tua attenzione. Knaus lo presenta come un camper che unisce la guida agile di un semintegrale al comfort per la notte di un mansardato.\nNella parte posteriore c'è un comodo letto matrimoniale trasversale, sempre pronto per la notte senza dover montare nulla. Sopra la dinette c'è il letto basculante, che scende quando serve e porta i posti letto a quattro senza togliere spazio alla zona giorno. Il mezzo è omologato anche per 4 persone in viaggio: è perfetto per le coppie che vogliono spazio extra o per le famiglie con due figli.\nSotto il letto posteriore si trova un garage accessibile dall'esterno, dove bici, sedie da campeggio, attrezzatura sportiva e bagagli trovano posto senza ingombrare l'interno, si sta comodi in piedi in tutto il camper. La cucina con fornello a tre fuochi e la dinette accogliente rendono piacevole anche la vita a bordo nei giorni di pioggia. Completa la pianta il bagno con doccia.\nDOTAZIONE OPTIONAL\nRiscaldamento supplementare a gasolio \nTruma a gas\nPannello solare\nChiusura di sicurezza Fiamma\nRetrocamera\nTendalino\nPorta zanzariera scorrevole\nAutoradio doppio din \nClimatizzatore cabina\nOscuranti plissettati\nCruise control\nFrigorifero 150lt\nRaffrescatore Viesa\nLetto basculante\nGARANZIA LEGALE DI CONFORMITA':\nInfiltrazioni: 12 Mesi\nMeccanica: 12 Mesi\nN.B. Nota bene la dotazione tecnica e gli accessori indicati nella presente scheda potrebbero non coincidere con l’effettivo equipaggiamento del veicolo, a causa della non uniformità dei dati pubblicati dai diversi portali. Ci scusiamo per l’inconveniente e vi invitiamo a verificare le caratteristiche dello specifico veicolo.\nBeltrani Camper&Caravan declina ogni responsabilità per eventuali involontarie incongruenze, che non rappresentano in alcun modo un impegno contrattuale\nCaratteristiche\nAnno\n2020\nChilometri\n42.000 km\nMeccanica\nFiat Ducato 2.3 MTJ - 140 CV\nStato\nUsato\nTipologia\nSemintegrale\nDimensioni\nLarghezza\n2.32\nLunghezza\n6.97\nPosti\nLetto Basculante\nSi\nPosti Letto\n4\nPosti Omologati\n4\nTipologia Letto Posteriore\nMatrimoniale trasversale\nTags:\nKnaus Live Wave 650 Mg 2020\n,\nCamper semintegrale usato\n,\nLetto matrimoniale trasversale"
@@ -148321,11 +148421,15 @@
             "modello": "L!ve Wave",
             "allestimento": "650 MG",
             "distanza_seregno": 190,
-            "prezzo_attuale": 61500.0,
+            "prezzo_attuale": 58500.0,
             "storico_prezzi": [
                 {
                     "data": "2026-10-09",
                     "prezzo": 61500.0
+                },
+                {
+                    "data": "2026-10-29",
+                    "prezzo": 58500.0
                 }
             ],
             "dati_tecnici": {
@@ -148376,7 +148480,7 @@
             "status": "VALIDO",
             "motivo_scarto": "",
             "data_scoperta": "2026-10-09",
-            "data_ultimo_aggiornamento": "2026-10-09",
+            "data_ultimo_aggiornamento": "2026-10-29",
             "url_immagine": "https://www.caravanmarket.com/image/cache/catalog/CAMPER%20USATI/2027/Knaus%20Live%20Wave%20650%20Meg%20-%202020/knaus-live-wave-650-meg-1-1200x1000w.jpg",
             "ai_usata": true,
             "testo_originale": "--- DETTAGLI ---\nPronta Consegna\nKnaus Live Wave 650 Mg - 2020\nProdotto in evidenza\nRichiedi info\nWhatsApp\n×\nDisponibilità:\nDisponibile\nCodice Prodotto:\n6209\nKnaus\nBasato su 0 recensioni.\n-\nScrivi una recensione\n61.500,00€\nRichiedi Info\nSCRIVICI SU WHATSAPP\nAggiungi alla lista dei desideri\nConfronta questo prodotto\nFinanziamento con rate da\n € \n0\nal mese\n Personalizza anticipo e durata →\n→\n ×\nPersonalizza il tuo finanziamento\nAcconto iniziale\n€ 0\nDurata totale\n10 anni\nRata mensile stimata\n € \n0\nal mese\n Parliamone insieme\n Simulazione indicativa · TAN 7,95% fisso · Importi e condizioni soggetti ad approvazione\nDescrizione\nDotazioni e Accessori\nScheda Tecnica\nKnaus Live Wave 650 MG usato – 2020\nSe cerchi un camper semintegrale usato spazioso, ben organizzato e firmato da uno dei marchi più apprezzati in Europa, il Knaus L!VE WAVE 650 MG del 2020 merita la tua attenzione. Knaus lo presenta come un camper che unisce la guida agile di un semintegrale al comfort per la notte di un mansardato.\nNella parte posteriore c'è un comodo letto matrimoniale trasversale, sempre pronto per la notte senza dover montare nulla. Sopra la dinette c'è il letto basculante, che scende quando serve e porta i posti letto a quattro senza togliere spazio alla zona giorno. Il mezzo è omologato anche per 4 persone in viaggio: è perfetto per le coppie che vogliono spazio extra o per le famiglie con due figli.\nSotto il letto posteriore si trova un garage accessibile dall'esterno, dove bici, sedie da campeggio, attrezzatura sportiva e bagagli trovano posto senza ingombrare l'interno, si sta comodi in piedi in tutto il camper. La cucina con fornello a tre fuochi e la dinette accogliente rendono piacevole anche la vita a bordo nei giorni di pioggia. Completa la pianta il bagno con doccia.\nDOTAZIONE OPTIONAL\nRiscaldamento supplementare a gasolio \nTruma a gas\nPannello solare\nChiusura di sicurezza Fiamma\nRetrocamera\nTendalino\nPorta zanzariera scorrevole\nAutoradio doppio din \nClimatizzatore cabina\nOscuranti plissettati\nCruise control\nFrigorifero 150lt\nRaffrescatore Viesa\nLetto basculante\nGARANZIA LEGALE DI CONFORMITA':\nInfiltrazioni: 12 Mesi\nMeccanica: 12 Mesi\nN.B. Nota bene la dotazione tecnica e gli accessori indicati nella presente scheda potrebbero non coincidere con l’effettivo equipaggiamento del veicolo, a causa della non uniformità dei dati pubblicati dai diversi portali. Ci scusiamo per l’inconveniente e vi invitiamo a verificare le caratteristiche dello specifico veicolo.\nBeltrani Camper&Caravan declina ogni responsabilità per eventuali involontarie incongruenze, che non rappresentano in alcun modo un impegno contrattuale\nCaratteristiche\nAnno\n2020\nChilometri\n42.000 km\nMeccanica\nFiat Ducato 2.3 MTJ - 140 CV\nStato\nUsato\nTipologia\nSemintegrale\nDimensioni\nLarghezza\n2.32\nLunghezza\n6.97\nPosti\nLetto Basculante\nSi\nPosti Letto\n4\nPosti Omologati\n4\nTipologia Letto Posteriore\nMatrimoniale trasversale\nTags:\nKnaus Live Wave 650 Mg 2020\n,\nCamper semintegrale usato\n,\nLetto matrimoniale trasversale"
@@ -151740,11 +151844,15 @@
             "modello": "",
             "allestimento": "",
             "distanza_seregno": 190,
-            "prezzo_attuale": null,
+            "prezzo_attuale": 62500.0,
             "storico_prezzi": [
                 {
                     "data": "2026-10-13",
                     "prezzo": null
+                },
+                {
+                    "data": "2026-10-29",
+                    "prezzo": 62500.0
                 }
             ],
             "dati_tecnici": {
@@ -151794,7 +151902,7 @@
             "status": "VALIDO",
             "motivo_scarto": "",
             "data_scoperta": "2026-10-13",
-            "data_ultimo_aggiornamento": "2026-10-13",
+            "data_ultimo_aggiornamento": "2026-10-29",
             "url_immagine": "https://www.caravanmarket.com/image/cache/catalog/CAMPER%20USATI/2027/Mclouis%20Mc4%20379%20-%202024/mclouis-mc4-379-2-1200x1000w.jpg",
             "ai_usata": false,
             "testo_originale": "--- DETTAGLI ---\nNew\nPronta Consegna\nMclouis Mc4 379 - 2024\nProdotto in evidenza\nRichiedi info\nWhatsApp\n×\nDisponibilità:\nDisponibile\nCodice Prodotto:\n6222\nMcLouis\nBasato su 0 recensioni.\n-\nScrivi una recensione\ntrattativa riservata\nRichiedi Info\nSCRIVICI SU WHATSAPP\nAggiungi alla lista dei desideri\nConfronta questo prodotto\nFinanziamento con rate da\n € \n0\nal mese\n Personalizza anticipo e durata →\n→\n ×\nPersonalizza il tuo finanziamento\nAcconto iniziale\n€ 0\nDurata totale\n10 anni\nRata mensile stimata\n € \n0\nal mese\n Parliamone insieme\n Simulazione indicativa · TAN 7,95% fisso · Importi e condizioni soggetti ad approvazione\nDescrizione\nDotazioni e Accessori\nScheda Tecnica\nMcLouis Mc4 379 usato – 2024 \nIl \nMcLouis Mc4 379\n è un semintegrale di \n7,45 metri\n della serie 300. Ha un anno di vita ed è un’occasione per avere un camper recente, spazioso e versatile a un prezzo da usato.\nIn coda c’è il\n letto centrale a isola\n, accessibile dai due lati, con regolazione elettrica dell’altezza. Lo abbassi per salire più comodo, o lo alzi per avere ancora più spazio nel garage XXL sottostante, che porta fino a 300 kg ed ha luce e presa 220 V. Una porta divisoria separa la zona notte dal soggiorno. Sopra la dinette scende il letto basculante elettrico, e in tutto si dorme fino in 5. La cucina ha un frigorifero da 145 litri e il riscaldamento Truma Combi 4 tiene caldo il camper nelle stagioni fredde.\nDOTAZIONE OPTIONAL\nTruma a gas\nPannello solare\nRetrocamera\nTendalino\nLetto posteriore sali/scendi\nPorta cellula con finestra e chiusura centralizzata\nPorta zanzariera scorrevole\nSkyroof\nAutoradio doppio din\nCruise control\nClimatizzatore cabina\nInverter \nFrigorifero 150lt\nLetto basculante elettrico\nPiedini di stazionamento - Tesa\nOscuranti plissettati\nN.B. Nota bene la dotazione tecnica e gli accessori indicati nella presente scheda potrebbero non coincidere con l’effettivo equipaggiamento del veicolo, a causa della non uniformità dei dati pubblicati dai diversi portali. Ci scusiamo per l’inconveniente e vi invitiamo a verificare le caratteristiche dello specifico veicolo.\nBeltrani Camper&Caravan declina ogni responsabilità per eventuali involontarie incongruenze, che non rappresentano in alcun modo un impegno contrattuale\nCaratteristiche\nAnno\n2024\nChilometri\n20.000 km\nMeccanica\nFord 2.0 - 165 CV\nStato\nUsato\nTipologia\nSemintegrale\nDimensioni\nLarghezza\n7.45\nLunghezza\n2.35\nPosti\nLetto Basculante\nSi\nPosti Letto\n4+1\nPosti Omologati\n5\nTipologia Letto Posteriore\nNautico\nTags:\nMclouis Mc4 379 2024\n,\nSemintegrale letto nautico\n,\nSemintegrale usato"
@@ -151805,11 +151913,15 @@
             "modello": "",
             "allestimento": "",
             "distanza_seregno": 190,
-            "prezzo_attuale": null,
+            "prezzo_attuale": 62500.0,
             "storico_prezzi": [
                 {
                     "data": "2026-10-13",
                     "prezzo": null
+                },
+                {
+                    "data": "2026-10-29",
+                    "prezzo": 62500.0
                 }
             ],
             "dati_tecnici": {
@@ -151860,7 +151972,7 @@
             "status": "VALIDO",
             "motivo_scarto": "",
             "data_scoperta": "2026-10-13",
-            "data_ultimo_aggiornamento": "2026-10-13",
+            "data_ultimo_aggiornamento": "2026-10-29",
             "url_immagine": "https://www.caravanmarket.com/image/cache/catalog/CAMPER%20USATI/2027/Mclouis%20Mc4%20379%20-%202024/mclouis-mc4-379-2-1200x1000w.jpg",
             "ai_usata": true,
             "testo_originale": "--- DETTAGLI ---\nNew\nPronta Consegna\nMclouis Mc4 379 - 2024\nProdotto in evidenza\nRichiedi info\nWhatsApp\n×\nDisponibilità:\nDisponibile\nCodice Prodotto:\n6222\nMcLouis\nBasato su 0 recensioni.\n-\nScrivi una recensione\ntrattativa riservata\nRichiedi Info\nSCRIVICI SU WHATSAPP\nAggiungi alla lista dei desideri\nConfronta questo prodotto\nFinanziamento con rate da\n € \n0\nal mese\n Personalizza anticipo e durata →\n→\n ×\nPersonalizza il tuo finanziamento\nAcconto iniziale\n€ 0\nDurata totale\n10 anni\nRata mensile stimata\n € \n0\nal mese\n Parliamone insieme\n Simulazione indicativa · TAN 7,95% fisso · Importi e condizioni soggetti ad approvazione\nDescrizione\nDotazioni e Accessori\nScheda Tecnica\nMcLouis Mc4 379 usato – 2024 \nIl \nMcLouis Mc4 379\n è un semintegrale di \n7,45 metri\n della serie 300. Ha un anno di vita ed è un’occasione per avere un camper recente, spazioso e versatile a un prezzo da usato.\nIn coda c’è il\n letto centrale a isola\n, accessibile dai due lati, con regolazione elettrica dell’altezza. Lo abbassi per salire più comodo, o lo alzi per avere ancora più spazio nel garage XXL sottostante, che porta fino a 300 kg ed ha luce e presa 220 V. Una porta divisoria separa la zona notte dal soggiorno. Sopra la dinette scende il letto basculante elettrico, e in tutto si dorme fino in 5. La cucina ha un frigorifero da 145 litri e il riscaldamento Truma Combi 4 tiene caldo il camper nelle stagioni fredde.\nDOTAZIONE OPTIONAL\nTruma a gas\nPannello solare\nRetrocamera\nTendalino\nLetto posteriore sali/scendi\nPorta cellula con finestra e chiusura centralizzata\nPorta zanzariera scorrevole\nSkyroof\nAutoradio doppio din\nCruise control\nClimatizzatore cabina\nInverter \nFrigorifero 150lt\nLetto basculante elettrico\nPiedini di stazionamento - Tesa\nOscuranti plissettati\nN.B. Nota bene la dotazione tecnica e gli accessori indicati nella presente scheda potrebbero non coincidere con l’effettivo equipaggiamento del veicolo, a causa della non uniformità dei dati pubblicati dai diversi portali. Ci scusiamo per l’inconveniente e vi invitiamo a verificare le caratteristiche dello specifico veicolo.\nBeltrani Camper&Caravan declina ogni responsabilità per eventuali involontarie incongruenze, che non rappresentano in alcun modo un impegno contrattuale\nCaratteristiche\nAnno\n2024\nChilometri\n20.000 km\nMeccanica\nFord 2.0 - 165 CV\nStato\nUsato\nTipologia\nSemintegrale\nDimensioni\nLarghezza\n7.45\nLunghezza\n2.35\nPosti\nLetto Basculante\nSi\nPosti Letto\n4+1\nPosti Omologati\n5\nTipologia Letto Posteriore\nNautico\nTags:\nMclouis Mc4 379 2024\n,\nSemintegrale letto nautico\n,\nSemintegrale usato"
@@ -164379,11 +164491,15 @@
             "modello": "Tramp",
             "allestimento": "S",
             "distanza_seregno": 200,
-            "prezzo_attuale": 64900.0,
+            "prezzo_attuale": 59900.0,
             "storico_prezzi": [
                 {
                     "data": "2026-10-23",
                     "prezzo": 64900.0
+                },
+                {
+                    "data": "2026-10-29",
+                    "prezzo": 59900.0
                 }
             ],
             "dati_tecnici": {
@@ -164434,7 +164550,7 @@
             "status": "VALIDO",
             "motivo_scarto": "",
             "data_scoperta": "2026-10-23",
-            "data_ultimo_aggiornamento": "2026-10-23",
+            "data_ultimo_aggiornamento": "2026-10-29",
             "url_immagine": "https://www.camperis.com/media/cws/2026/09/02/17883618296350.jpeg",
             "ai_usata": true,
             "testo_originale": "Condizione: Usato\n--- DETTAGLI ---\nHYMER TRAMP T598: scheda tecnica e video recensione\nCOD\n: V0001021\nHYMER TRAMP T598\nDisponibile nella sede di:\n SASSARI \no in uno dei nostri Camperis Point.\nPrezzo\n:\n64.900 \n€\nRichiedi Informazioni\nPuoi avere questo camper con un..\nAnticipo di:\n+ rate da:\nLeggi i dettagli\nGalleria Immagini\nScrivici su WhatsApp\nPrenota\nAcquista\nHai delle domande?\n {{form-singolo-camper}}\r\nDotazioni\nVeranda\nPannello Fotovoltaico\nAntifurto\nTV Anteriore\nAntenna Terrestre\nRetrocamera\nAutoradio 2 Din\nSede\nDisponibile presso\nSassari - Camperis Point\nS.S, 131, Ottava n°180 – 07100 Sassari (SS)\nGuarda la mappa\n · \nLa nostra sede\n059 71 07 558\nClicca qui\nInformazioni tecniche\nMarca\nhymer\nLinea\ntramp gl\nModello\n598\nProvenienza\nUsato\nData immatricolazione\n07/2019\nChilometri\n45000\nColore cabina\ngrigio argento\nColore cellula\nbianco\nTipologia\nSemintegrale\nPeso\n3500 kg\nLunghezza\n6,99 m\nLarghezza\n2,35 m\nAltezza\n2,87 m\nMeccanica\nfiat ducato\nTrasmissione\nmanuale\nCavalli\n150\nTrazione\nmanuale\nClasse emissione\n6\nCilindrata\n2287 cc\nNumero rapporti\n6\nNumero ruote asse 2\n2 RUOTE SINGOLE\nNr. copie chiavi\n-\nPosti omologati\n4\nPosti letto\n5\nLetto anteriore\nbasculante manuale\nLetto centrale\nconvertibile 1 posto letto\nLetto posteriore\nmatrimoniale trasversale\nDisposizione soggiorno\navanzata\nDisposizione cucina\nlato conducente\nForma cucina\na l\nDisposizione bagno\ndiviso su entrambi i lati\nTavolo\nancorato alla parete e una gamba\nTipo doccia\nbox doccia e vasca diviso dal bagno\nStivaggio\ngavone sotto il letto\nCondividi con un amico\nFacebook\nWhatsapp\nTelegram\nTwitter"
@@ -164642,11 +164758,15 @@
             "modello": "E-Van",
             "allestimento": "2",
             "distanza_seregno": 200,
-            "prezzo_attuale": 59500.0,
+            "prezzo_attuale": 54500.0,
             "storico_prezzi": [
                 {
                     "data": "2026-10-23",
                     "prezzo": 59500.0
+                },
+                {
+                    "data": "2026-10-29",
+                    "prezzo": 54500.0
                 }
             ],
             "dati_tecnici": {
@@ -164697,7 +164817,7 @@
             "status": "VALIDO",
             "motivo_scarto": "",
             "data_scoperta": "2026-10-23",
-            "data_ultimo_aggiornamento": "2026-10-23",
+            "data_ultimo_aggiornamento": "2026-10-29",
             "url_immagine": "https://www.camperis.com/media/cws/2026/03/10/17731602306510.jpeg",
             "ai_usata": true,
             "testo_originale": "Condizione: Usato\n--- DETTAGLI ---\nELNAGH E-VAN 4 PREMIUM - VERSIONE CAMPERIS: scheda tecnica e video recensione\nCOD\n: 00149085\nELNAGH E-VAN 4 PREMIUM - VERSIONE CAMPERIS\nDisponibile nella sede di:\n SASSARI \no in uno dei nostri Camperis Point.\nPrezzo\n:\n59.500 \n€\nRichiedi Informazioni\nPuoi avere questo camper con un..\nAnticipo di:\n+ rate da:\nLeggi i dettagli\nGalleria Immagini\nScrivici su WhatsApp\nPrenota\nAcquista\nHai delle domande?\n {{form-singolo-camper}}\r\nDotazioni\nVeranda\nPannello Fotovoltaico\nRetrocamera\nAutoradio 2 Din\nAccessori inclusi\noscuranti plisettati\ninverter 1500w\nSede\nDisponibile presso\nSassari - Camperis Point\nS.S, 131, Ottava n°180 – 07100 Sassari (SS)\nGuarda la mappa\n · \nLa nostra sede\n059 71 07 558\nClicca qui\nInformazioni tecniche\nMarca\nelnagh\nLinea\ne-van\nModello\n4\nProvenienza\nUsato\nData immatricolazione\n03/2023\nChilometri\n45000\nColore cabina\n-\nColore cellula\n-\nTipologia\nFurgonato\nPeso\n3500 kg\nLunghezza\n5,99 m\nLarghezza\n2,05 m\nAltezza\n2,6 m\nMeccanica\nfiat ducato\nTrasmissione\nmanuale\nCavalli\n140\nTrazione\nmanuale\nClasse emissione\n6\nCilindrata\n2184 cc\nNumero rapporti\n6\nNumero ruote asse 2\n2 RUOTE SINGOLE\nNr. copie chiavi\n-\nPosti omologati\n4\nPosti letto\n3\nLetto anteriore\ntetto a soffietto\nLetto centrale\nconvertibile 1 posto letto\nLetto posteriore\nmatrimoniale trasversale\nDisposizione soggiorno\navanzata\nDisposizione cucina\nlato porta\nForma cucina\nin linea\nDisposizione bagno\nvario\nTavolo\nancorato alla parete e una gamba\nTipo doccia\ndivisa con ant rigide in condivisione con bagno\nStivaggio\ngavone sotto il letto\nCondividi con un amico\nFacebook\nWhatsapp\nTelegram\nTwitter"
@@ -173162,11 +173282,15 @@
             "modello": "",
             "allestimento": "",
             "distanza_seregno": 190,
-            "prezzo_attuale": null,
+            "prezzo_attuale": 33900.0,
             "storico_prezzi": [
                 {
                     "data": "2026-10-26",
                     "prezzo": null
+                },
+                {
+                    "data": "2026-10-29",
+                    "prezzo": 33900.0
                 }
             ],
             "dati_tecnici": {
@@ -173210,7 +173334,7 @@
             "status": "SCARTATO",
             "motivo_scarto": "VETO Condizione: posti_omologati_min_4",
             "data_scoperta": "2026-10-26",
-            "data_ultimo_aggiornamento": "2026-10-26",
+            "data_ultimo_aggiornamento": "2026-10-29",
             "url_immagine": "https://www.caravanmarket.com/image/cache/catalog/Mini%20van%20usati/2027/Mercedes%20Vito/vito-mercedes-2-1200x1000w.jpg",
             "ai_usata": true,
             "testo_originale": "--- DETTAGLI ---\nMercedes Benz - Vito\nProdotto in evidenza\nRichiedi info\nWhatsApp\n×\nDisponibilità:\nDisponibile\nCodice Prodotto:\n6252\nMercedes\nBasato su 0 recensioni.\n-\nScrivi una recensione\ntrattativa riservata\nRichiedi Info\nSCRIVICI SU WHATSAPP\nAggiungi alla lista dei desideri\nConfronta questo prodotto\nFinanziamento con rate da\n € \n0\nal mese\n Personalizza anticipo e durata →\n→\n ×\nPersonalizza il tuo finanziamento\nAcconto iniziale\n€ 0\nDurata totale\n10 anni\nRata mensile stimata\n € \n0\nal mese\n Parliamone insieme\n Simulazione indicativa · TAN 7,95% fisso · Importi e condizioni soggetti ad approvazione\nDescrizione\nDotazioni e Accessori\nScheda Tecnica\nMini van Mercedes-Benz Vito camperizzato\nMercedes-Benz Vito trasformato in van camper, ideale per viaggi e weekend fuori porta grazie alla sua praticità, affidabilità e meccanica Mercedes.\nIl veicolo offre \n4 posti letto\n ed è dotato di \nWC portatile\n, cucina completa con \nfornello e lavello\n, oltre a un’accurata \ncoibentazione interna\n che garantisce maggiore comfort anche nelle stagioni più fredde.\nNumerosi \nvani di stivaggio\n permettono di organizzare al meglio bagagli, attrezzatura e accessori da viaggio. Una soluzione compatta ma funzionale, perfetta per chi cerca la libertà del camper senza rinunciare alla maneggevolezza di un van.\nDOTAZIONE OPTIONAL \nGancio di traino\nSensori di parcheggio Ant e Post\nTetto a soffietto\nFrigorifero portatile\nAutoradio doppio din \nCruise control\nClimatizzatore cabina\nFreno di stazionamento elettrico\nGARANZIA LEGALE DI CONFORMITA':\nInfiltrazioni: 12 Mesi\nMeccanica: 12 Mesi\nN.B. Nota bene la dotazione tecnica e gli accessori indicati nella presente scheda potrebbero non coincidere con l’effettivo equipaggiamento del veicolo, a causa della non uniformità dei dati pubblicati dai diversi portali. Ci scusiamo per l’inconveniente e vi invitiamo a verificare le caratteristiche dello specifico veicolo.\nBeltrani Camper&Caravan declina ogni responsabilità per eventuali involontarie incongruenze, che non rappresentano in alcun modo un impegno contrattuale\nCaratteristiche\nAnno\n2022\nChilometri\n27.000 km\nMeccanica\nMercedes Benz 2.0 - 163 CV\r\nStato\nUsato\nTipologia\nMini Van\nDimensioni\nLarghezza\n1.92\nLunghezza\n5.14\nPosti\nPosti Letto\n2+2\nPosti Omologati\n3\nTipologia Letto Posteriore\nMatrimoniale longitudinale"
@@ -173280,11 +173404,15 @@
             "modello": "",
             "allestimento": "",
             "distanza_seregno": 190,
-            "prezzo_attuale": null,
+            "prezzo_attuale": 33900.0,
             "storico_prezzi": [
                 {
                     "data": "2026-10-26",
                     "prezzo": null
+                },
+                {
+                    "data": "2026-10-29",
+                    "prezzo": 33900.0
                 }
             ],
             "dati_tecnici": {
@@ -173328,7 +173456,7 @@
             "status": "SCARTATO",
             "motivo_scarto": "VETO Condizione: posti_omologati_min_4",
             "data_scoperta": "2026-10-26",
-            "data_ultimo_aggiornamento": "2026-10-26",
+            "data_ultimo_aggiornamento": "2026-10-29",
             "url_immagine": "https://www.caravanmarket.com/image/cache/catalog/Mini%20van%20usati/2027/Mercedes%20Vito/vito-mercedes-2-1200x1000w.jpg",
             "ai_usata": true,
             "testo_originale": "--- DETTAGLI ---\nMercedes Benz - Vito\nProdotto in evidenza\nRichiedi info\nWhatsApp\n×\nDisponibilità:\nDisponibile\nCodice Prodotto:\n6252\nMercedes\nBasato su 0 recensioni.\n-\nScrivi una recensione\ntrattativa riservata\nRichiedi Info\nSCRIVICI SU WHATSAPP\nAggiungi alla lista dei desideri\nConfronta questo prodotto\nFinanziamento con rate da\n € \n0\nal mese\n Personalizza anticipo e durata →\n→\n ×\nPersonalizza il tuo finanziamento\nAcconto iniziale\n€ 0\nDurata totale\n10 anni\nRata mensile stimata\n € \n0\nal mese\n Parliamone insieme\n Simulazione indicativa · TAN 7,95% fisso · Importi e condizioni soggetti ad approvazione\nDescrizione\nDotazioni e Accessori\nScheda Tecnica\nMini van Mercedes-Benz Vito camperizzato\nMercedes-Benz Vito trasformato in van camper, ideale per viaggi e weekend fuori porta grazie alla sua praticità, affidabilità e meccanica Mercedes.\nIl veicolo offre \n4 posti letto\n ed è dotato di \nWC portatile\n, cucina completa con \nfornello e lavello\n, oltre a un’accurata \ncoibentazione interna\n che garantisce maggiore comfort anche nelle stagioni più fredde.\nNumerosi \nvani di stivaggio\n permettono di organizzare al meglio bagagli, attrezzatura e accessori da viaggio. Una soluzione compatta ma funzionale, perfetta per chi cerca la libertà del camper senza rinunciare alla maneggevolezza di un van.\nDOTAZIONE OPTIONAL \nGancio di traino\nSensori di parcheggio Ant e Post\nTetto a soffietto\nFrigorifero portatile\nAutoradio doppio din \nCruise control\nClimatizzatore cabina\nFreno di stazionamento elettrico\nGARANZIA LEGALE DI CONFORMITA':\nInfiltrazioni: 12 Mesi\nMeccanica: 12 Mesi\nN.B. Nota bene la dotazione tecnica e gli accessori indicati nella presente scheda potrebbero non coincidere con l’effettivo equipaggiamento del veicolo, a causa della non uniformità dei dati pubblicati dai diversi portali. Ci scusiamo per l’inconveniente e vi invitiamo a verificare le caratteristiche dello specifico veicolo.\nBeltrani Camper&Caravan declina ogni responsabilità per eventuali involontarie incongruenze, che non rappresentano in alcun modo un impegno contrattuale\nCaratteristiche\nAnno\n2022\nChilometri\n27.000 km\nMeccanica\nMercedes Benz 2.0 - 163 CV\r\nStato\nUsato\nTipologia\nMini Van\nDimensioni\nLarghezza\n1.92\nLunghezza\n5.14\nPosti\nPosti Letto\n2+2\nPosti Omologati\n3\nTipologia Letto Posteriore\nMatrimoniale longitudinale"
@@ -174182,11 +174310,15 @@
             "modello": "Livingstone",
             "allestimento": "5",
             "distanza_seregno": 170,
-            "prezzo_attuale": 55000.0,
+            "prezzo_attuale": 61550.0,
             "storico_prezzi": [
                 {
                     "data": "2026-10-28",
                     "prezzo": 55000.0
+                },
+                {
+                    "data": "2026-10-29",
+                    "prezzo": 61550.0
                 }
             ],
             "dati_tecnici": {
@@ -174236,7 +174368,7 @@
             "status": "VALIDO",
             "motivo_scarto": "",
             "data_scoperta": "2026-10-28",
-            "data_ultimo_aggiornamento": "2026-10-28",
+            "data_ultimo_aggiornamento": "2026-10-29",
             "url_immagine": "https://3csrl.com/wp-content/uploads/2026/10/f02eb4ceeca4d607fdadef1f25db397f49438639-1.jpg",
             "ai_usata": false,
             "testo_originale": "--- DETTAGLI ---\nROLLER TEAM Livingstone 5 GO : Prezzo, caratteristiche tecniche e promozioni\nVai al contenuto principale\nVai al piè di pagina\nSi apre in una nuova scheda\nROLLER TEAM Livingstone 5 GO\nPrezzo di listino da scontare 55000 € più eventuali optionals.\nOppure tuo a 476.00€ al mese con valore futuro garantito.*\nVisionabile presso la sede di \nReggio Emilia\nRichiedi informazioni\n4\n4\nCaratteristiche del camper nuovo\nROLLER TEAM Livingstone 5 GO\nLunghezza\n599cm\nLarghezza\n205cm\nAltezza\n265cm\nPosti\n4\nLetti\n4\nCambio\nManuale\nMeccanica\nCitroen Jumper\nCilindrata\n2184\nKg\nPeso P.C.\n3500Kg\nCavalli\n139\nOptionals di serie:\nComandi al volante\nRadio Multimediale\nWC Thetford\nPannello solare\nRetrocamera\nGradino elettrico\nCerchi in Lega da 16\"\nCruise Control\nTendalino\nOscuranti Plissettati\nZanzariere ed Oscuranti\nClimatizzatore Motore\nLuce esterna\nFendinebbia\nDoppio airbag\nFreno di stazionamento elettrico\nDotazioni e servizi a pagamento\nEcco un elenco delle dotazioni e servizi a pagamento del nuovo \nROLLER TEAM Livingstone 5 GO\n:\n0.00 €\n Trasporto immatricolazione e messa su strada\n0.00 €\n Pack Prestige Pannello solare 200W Veranda esterna\nFAI LA TUA SCELTA\nSei libero di acquistare \nROLLER TEAM Livingstone 5 GO\n con la modalità classica oppure con valore futuro garantito.\nVALORE FUTURO GARANTITO 3C\n476.00€\n/mese*\nLa libertà ha finalmente una formula.\nCon Valore Futuro Garantito 3C guidi un camper nuovo senza bloccare il tuo capitale, un acconto di 11000  € e tutto incluso con zero pensieri.\nViaggi oggi, scegli domani: dopo 3, 4 o 5 anni puoi cambiarlo, restituirlo o tenerlo.\nLa soluzione più flessibile d’Europa, pensata per privati, aziende e professionisti con partita IVA.\nVantaggi:\nSconto fino a 10.000€\nTagliandi scocca inclusi\nAssicurazione furto, incendio, atti vandalici ed eventi atmosferici, inclusa nella rata. (Esclusa RCA)\n2000€ di accessori a tua scelta\nPuoi restituirlo, tenerlo o cambiarlo dopo 3,4 o 5 anni.\nRichiedi Informazioni\nACQUISTO TRADIZIONALE\nTuo a 55000 €\nPuoi acquistare il tuo camper in modo tradizionale investendo la tua liquidità. Pagando a parte le manutenzioni, assicurazioni e senza un valore garantito futuro. Questo è l'ultimo ROLLER TEAM Livingstone 5 GO in pronta consegna.\nOttima valutazione del tuo usato o sconto senza permuta.\nPossibilità di finanziamento parziale con vantaggi dedicati.\nNessun tagliando scocca incluso.\nNo assicurazione furto, incendio e atti vandalici.\nNessun valore garantito futuro.\nRichiedi Informazioni"
@@ -174831,11 +174963,15 @@
             "modello": "",
             "allestimento": "",
             "distanza_seregno": 60,
-            "prezzo_attuale": 0.0,
+            "prezzo_attuale": 49900.0,
             "storico_prezzi": [
                 {
                     "data": "2026-10-28",
                     "prezzo": 0.0
+                },
+                {
+                    "data": "2026-10-29",
+                    "prezzo": 49900.0
                 }
             ],
             "dati_tecnici": {
@@ -174885,7 +175021,7 @@
             "status": "VALIDO",
             "motivo_scarto": "",
             "data_scoperta": "2026-10-28",
-            "data_ultimo_aggiornamento": "2026-10-28",
+            "data_ultimo_aggiornamento": "2026-10-29",
             "url_immagine": "https://www.caravanschiavolin.it/images/veicoli/thumb/veic-1429-01-ci-magis-85-xt.jpg?ver=685047",
             "ai_usata": false,
             "testo_originale": "Posti om.\n5\nPosti letto\n5\nLunghezza\n6990 mm\nAnno\n2018\nSemintegrale\nCI MAGIS 85 XT\nStato:usato\nMotore: FIAT DUCATO 2.3 MJT 130CV\nVedi dettagli\n\n--- DETTAGLI ---\nCaravan Schiavolin - CI MAGIS 85 XT\nHome\nUsato\nSemintegrale\nCI MAGIS 85 XT\nDescrizione\nCI MAGIS 85 XT\n‹\n›\n×\nCondividi:\n Scheda tecnica e accessori\r\n Stampa Scheda\r\nTipologia\nSemintegrale \nCondizione\nUsato \nClasse emissioni\nEuro 6 \r\nImmatricolazione\n10/2018 \nScadenza revisione\n03/2027 \nKm percorsi\n38769 \nMeccanica\nFIAT DUCATO 2.3 MJT 130CV \nTrainabile\n 2000 Kg  \nTrazione\nanteriore \nRiscaldamento\nTRUMA COMBI A GAS + WEBASTO A GASOLIO \nFrigorifero\nTRIVALENTE \nCarrozzeria\nVETRORESINA \nPosti omologati\n5 \nPosti letto\n5 \nPosti tavolo\n5 \nLunghezza\n 6990 mm \r\nLarghezza\n 2350 mm \r\nAltezza\nPeso Compl.\n 3500 Kg \r\nAccessori\nN.B. Il veicolo è attualmente in fase di preparazione. L'elenco degli accessori è provvisorio e potrebbe subire variazioni a seguito delle verifiche tecniche effettuate dalla nostra officina.\nGARANZIA 24 MESI convenzionale Meccanica e Cellula by Conformgest\nVeranda, Climatizzatore in cabina guida, Pannello solare, Webasto a gasolio aggiuntivo da 4kw con controllo digitale programmabile, Chiusure di sicurezza SafeDoor, Inverter 1500W con comando remoto, Portabici da 3 canaline, Retrocamera con monitor a specchio, Staffa tv zona giorno, Staffa tv zona notte, Oscuranti plissettati, Cruise control, Luce esterna, Zanzariera a rullo su porta cellula, Oblò Skyview sopra cabina guida + VARIE\nCAMPER SEMINTEGRALE ENTRO 7 MT, CON LETTI GEMELLI IN CODA SOPRA GRANDE GARAGE, LETTO BASCULANTE MATRIMONIALE SOPRA DINETTE E BEN 5 POSTI OMOLOGATI.\nN.B. Il veicolo è attualmente in fase di preparazione. L'elenco degli accessori è provvisorio e potrebbe subire variazioni a seguito delle verifiche tecniche effettuate dalla nostra officina.\nGARANZIA 24 MESI convenzionale Meccanica e Cellula by Conformgest\nVeranda, Climatizzatore in cabina guida, Pannello solare, Webasto a gasolio aggiuntivo da 4kw con controllo digitale programmabile, Chiusure di sicurezza SafeDoor, Inverter 1500W con comando remoto, Portabici da 3 canaline, Retrocamera con monitor a specchio, Staffa tv zona giorno, Staffa tv zona notte, Oscuranti plissettati, Cruise control, Luce esterna, Zanzariera a rullo su porta cellula, Oblò Skyview sopra cabina guida + VARIE\nCondividi:\nSei interessato a questo veicolo?\n Richiedici informazioni\nNome *\nTelefono\nE-Mail *\nMessaggio\n Accetto e acconsento l'\nInformativa sulla Privacy\n *\n Acconsento al trattamento dei dati personali per finalità di marketing\n[Ricarica immagine]\nRichiedi informazioni\n"
@@ -175281,6 +175417,859 @@
             "url_immagine": "https://www.caravanmarket.com/image/cache/catalog/Mini%20van%20usati/2027/Panama%20Peak%20P10+%20-%202025%20ex%20coppola/panama-p10-usato-2025-(1)-1200x1000w.jpg",
             "ai_usata": false,
             "testo_originale": "--- DETTAGLI ---\nNew\nPronta Consegna\nPanama Peak P10+ - 2025\nProdotto in evidenza\nRichiedi info\nWhatsApp\n×\nDisponibilità:\nDisponibile\nCodice Prodotto:\n6263\nSKU:\n GZ302VV\nPanama Van\nBasato su 0 recensioni.\n-\nScrivi una recensione\ntrattativa riservata\nRichiedi Info\nSCRIVICI SU WHATSAPP\nAggiungi alla lista dei desideri\nConfronta questo prodotto\nFinanziamento con rate da\n € \n0\nal mese\n Personalizza anticipo e durata →\n→\n ×\nPersonalizza il tuo finanziamento\nAcconto iniziale\n€ 0\nDurata totale\n10 anni\nRata mensile stimata\n € \n0\nal mese\n Parliamone insieme\n Simulazione indicativa · TAN 7,95% fisso · Importi e condizioni soggetti ad approvazione\nDescrizione\nDotazioni e Accessori\nScheda Tecnica\nPanama Peak P10+ 2025 – Mini Van usato con tetto pop-up e soli 9.000 km\nIl \nPanama Peak P10+\n è un \nmini van compatto\n costruito su \nFord Tourneo Custom\n, pensato per chi cerca un veicolo da usare tutti i giorni e da trasformare in un piccolo camper per il weekend o le vacanze. Con \n5,04 m di lunghezza\n, 2,15 m di larghezza e \n2,10 m di altezza\n si guida con la stessa naturalezza di un'auto e si muove senza difficoltà in città e nei parcheggi. Questo esemplare del \n2025\n ha percorso appena \n9.000 km\n, monta il motore \n2.0 da 136 CV con cambio manuale\n ed è omologato per \n5 posti\n.\nNella zona giorno i \nsedili anteriori girevoli e riscaldati\n si rivolgono verso il divanetto posteriore e il tavolo centrale, creando un vero salotto per pranzare, lavorare o rilassarsi a fine giornata. Lungo la fiancata trova posto il \nmobile cucina con lavello\n, affiancato dal \nfrigorifero da 42 litri\n; i serbatoi da \n50 litri di acque chiare\n e 42 litri di acque grigie garantiscono autonomia nelle soste.\nLa zona notte offre \n4 posti letto\n su due livelli: il \nletto nel tetto pop-up da 198 x 116 cm\n, sempre pronto all'apertura del tetto, e il \nletto in dinette da 189 x 114 cm\n ricavato dal divanetto posteriore. L'\nisolamento del pop-up\n aiuta a mantenere una temperatura più confortevole anche nelle notti fresche.\nIl \nPack Living\n aggiunge il \nriscaldamento Webasto da 2000 W\n con multicontrollo, l'\ninverter da 12 V a 230 V (600 W)\n e il WC portatile, per viaggiare in autonomia anche fuori stagione. Alla guida si apprezzano il \nclimatizzatore automatico\n, la radio SYNC con \ntouch screen da 13\"\n compatibile con \nAndroid Auto e Apple CarPlay\n, la telecamera posteriore con sensori di parcheggio anteriori e posteriori, il cruise control e gli assistenti alla guida come il mantenimento della corsia e l'assistenza pre-collisione. Completano l'allestimento i cerchi in lega da 17\" e la vernice \nGrey Magnetic\n.\nPACCHETTI OPTIONAL\nPACK LIVING\nWC portatile\nRiscaldamento Webasto (2000 W) con multicontrollo\nInverter da 12 V a 230 V (600 W)\nDOTAZIONE OPTIONAL\nIsolamento pop-up\nVernice Grey Magnetic\nMeccanica Ford 2.0 - 136 CV, cambio manuale (di serie)\nTendalino\nPannello solare\nEQUIPAGGIAMENTO DI SERIE\nChiusura centralizzata\nSeconda chiave con telecomando\nVetri posteriori oscurati\nAndroid Auto e Apple CarPlay\nVolante in pelle con comandi radio\nClimatizzatore automatico\nSedili anteriori riscaldati e girevoli\nLuci diurne a LED\nCerchi in lega da 17\"\nParabrezza anteriore e posteriore riscaldato\nTelecamera posteriore\nSensore pressione pneumatici e kit riparazione\nCruise control e limitatore di velocità\nSensore di parcheggio anteriore e posteriore\nRiconoscimento dei segnali di velocità\nAssistenza pre-collisione\nAvviso direzione non corretta\nAssistenza al mantenimento della corsia\nSpecchietti retrovisori elettrici, riscaldati e ripiegabili elettricamente\nRadio SYNC con schermo touch screen da 13\", 5 altoparlanti\nN.B. Nota bene la dotazione tecnica e gli accessori indicati nella presente scheda potrebbero non coincidere con l’effettivo equipaggiamento del veicolo, a causa della non uniformità dei dati pubblicati dai diversi portali. Ci scusiamo per l’inconveniente e vi invitiamo a verificare le caratteristiche dello specifico veicolo.\nBeltrani Camper&Caravan declina ogni responsabilità per eventuali involontarie incongruenze, che non rappresentano in alcun modo un impegno contrattuale\nCaratteristiche\nAnno\n2025\nChilometri\n9.000 km\nMeccanica\nFord 2.0 - 136 CV | Manuale\nStato\nUsato\nTipologia\nMini van\nDimensioni\nAltezza\n2.10\nLarghezza\n2.15\nLunghezza\n5.04\nPosti\nPosti Letto\n4\nPosti Omologati\n5\nTipologia Letto Posteriore\nLongitudinale\nTags:\nPanama Peak P10+ usato\n,\nmini van usato\n,\nFord Tourneo Custom\n,\ntetto pop-up\n,\n5 posti omologati\n,\nGrey Magnetic"
+        },
+        "https://www.camperonline.it/camper-usati/mansardato-elnagh-mansardato-elnagh-baron-22_201561": {
+            "sito": "CamperOnLine",
+            "marca": "Elnagh",
+            "modello": "Baron",
+            "allestimento": "22",
+            "distanza_seregno": 150,
+            "prezzo_attuale": 67000.0,
+            "storico_prezzi": [
+                {
+                    "data": "2026-10-29",
+                    "prezzo": 67000.0
+                }
+            ],
+            "dati_tecnici": {
+                "marca": "Elnagh",
+                "modello": "Baron",
+                "allestimento": "22",
+                "prezzo": 67000,
+                "anno": null,
+                "chilometri": 99,
+                "nuovo": false,
+                "peso": 3500,
+                "tipo_furgonato": false,
+                "tipo_mansardato": true,
+                "tipo_motorhome": false,
+                "tipo_semintegrale": false,
+                "lunghezza": 6.99,
+                "potenza": 140,
+                "posti_omologati": 7,
+                "posti_letto": 7,
+                "telaio_alko": false,
+                "doppio_pavimento": false,
+                "cambio_automatico": false,
+                "emissioni_euro6": false,
+                "pannelli_solari": false,
+                "batterie_litio": false,
+                "sospensioni_aria": false,
+                "predisposizione_invernale": false,
+                "doppia_batteria": false,
+                "aria_condizionata": false,
+                "riscaldamento_gasolio": false,
+                "riscaldatore_gasolio": false,
+                "riscaldamento_alde": false,
+                "piedini_autolivellanti": false,
+                "letto_nautico": false,
+                "letti_gemelli": false,
+                "letti_a_castello": false
+            },
+            "punteggio_totale": 34.0,
+            "dettaglio_punteggi": {
+                "telaio": 50.0,
+                "meccanica": 55.0,
+                "stato": 0.0,
+                "interni": 40.0,
+                "accessori": 0.0,
+                "prezzo": 20.0
+            },
+            "status": "VALIDO",
+            "motivo_scarto": "",
+            "data_scoperta": "2026-10-29",
+            "data_ultimo_aggiornamento": "2026-10-29",
+            "url_immagine": "https://www.camperonline.it/logo/camperonline-b.png",
+            "ai_usata": false,
+            "testo_originale": "Mansardato Elnagh Mansardato Elnagh Baron 22 \n€ 67.000\n\n--- DETTAGLI ---\nCamper Usato Mansardato Elnagh Mansardato Elnagh Baron 22 Ippocamper Vazia | CamperOnLine\nCamper Mansardato Elnagh Mansardato Elnagh Baron 22 usato\n67.000 €\nCamper Elnagh usati\n, \nCamper Mansardato usati\nRichiedi info e disponibilità\nCamper Mansardato Elnagh Mansardato Elnagh Baron 22 usato\nCamper Mansardato Elnagh Mansardato Elnagh Baron 22 usato\nCamper Mansardato Elnagh Mansardato Elnagh Baron 22 usato\nCamper Mansardato Elnagh Mansardato Elnagh Baron 22 usato\nCamper Mansardato Elnagh Mansardato Elnagh Baron 22 usato\nCamper Mansardato Elnagh Mansardato Elnagh Baron 22 usato\nCamper Mansardato Elnagh Mansardato Elnagh Baron 22 usato\nCamper Mansardato Elnagh Mansardato Elnagh Baron 22 usato\nCamper Mansardato Elnagh Mansardato Elnagh Baron 22 usato\nCamper Mansardato Elnagh Mansardato Elnagh Baron 22 usato\nCamper Mansardato Elnagh Mansardato Elnagh Baron 22 usato\nCamper Mansardato Elnagh Mansardato Elnagh Baron 22 usato\nCamper Mansardato Elnagh Mansardato Elnagh Baron 22 usato\nCamper Mansardato Elnagh Mansardato Elnagh Baron 22 usato\nCamper Mansardato Elnagh Mansardato Elnagh Baron 22 usato\nCamper Mansardato Elnagh Mansardato Elnagh Baron 22 usato\n1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12\n13\n14\n15\n16\nRichiedi info e disponibilità\nOfferta\nUsato\nTipo\nMansardato\nMarca\nElnagh\nModello\nMansardato Elnagh Baron 22 \nMotore\n2.2\nPotenza\nDa 121 a 140 cv\nPosti\n7\nLetti\n7\nDimensioni\n cm\n67.000 €\nRichiedi info e disponibilità\n Dotazione di serie\nMansardato Elnagh Baron 22 \nOmologazione: 7\nPosti letto: 7 \nMotore: Fiat Ducato 2.2 140CV \nLunghezza: 6,99 \nKm.16515\nDotazione: fari fendinebbia, traction, cerchi in lega 16, griglie skid plate fari neri, comandi al volante\nPrezzo: € 67.000,00\nRichiedi info e disponibilità\nRichiedi un preventivo per assicurare il tuo camper:\n"
+        },
+        "https://www.camperonline.it/camper-usati/van-furgonato-challenger-challenger-van-114-start-edition_201556": {
+            "sito": "CamperOnLine",
+            "marca": "Sconosciuto",
+            "modello": "",
+            "allestimento": "",
+            "distanza_seregno": 150,
+            "prezzo_attuale": 52000.0,
+            "storico_prezzi": [
+                {
+                    "data": "2026-10-29",
+                    "prezzo": 52000.0
+                }
+            ],
+            "dati_tecnici": {
+                "marca": "Sconosciuto",
+                "modello": "",
+                "allestimento": "",
+                "prezzo": 52000,
+                "anno": 2024,
+                "chilometri": 10332,
+                "nuovo": false,
+                "peso": 3500,
+                "tipo_furgonato": true,
+                "tipo_mansardato": false,
+                "tipo_motorhome": false,
+                "tipo_semintegrale": false,
+                "lunghezza": 10.33,
+                "potenza": 140,
+                "posti_omologati": 4,
+                "posti_letto": 4,
+                "telaio_alko": false,
+                "doppio_pavimento": false,
+                "cambio_automatico": false,
+                "emissioni_euro6": false,
+                "pannelli_solari": false,
+                "batterie_litio": false,
+                "sospensioni_aria": false,
+                "predisposizione_invernale": false,
+                "doppia_batteria": false,
+                "aria_condizionata": false,
+                "riscaldamento_gasolio": false,
+                "riscaldatore_gasolio": false,
+                "riscaldamento_alde": false,
+                "piedini_autolivellanti": false,
+                "letto_nautico": false,
+                "letti_gemelli": false,
+                "letti_a_castello": false,
+                "riassunto_ia": "Accessori presenti sul veicolo:\n- Condizionatore\n- Tendalino\n- Block shaft\n- Autoradio DAB/Bluetooth con schermo tattile e comandi al volant\n- Camera di retromarcia"
+            },
+            "punteggio_totale": 25.5,
+            "dettaglio_punteggi": {
+                "telaio": 20.0,
+                "meccanica": 55.0,
+                "stato": 0.0,
+                "interni": 40.0,
+                "accessori": 0.0,
+                "prezzo": 25.0
+            },
+            "status": "VALIDO",
+            "motivo_scarto": "",
+            "data_scoperta": "2026-10-29",
+            "data_ultimo_aggiornamento": "2026-10-29",
+            "url_immagine": "https://thumb.camperonline.it/timthumb.php?src=https://www.camperonline.it/camper-nuovi-usati/Foto/1793284018_201556_0_whatsapp-image-20260528-a.jpg&w=400&h=260",
+            "ai_usata": true,
+            "testo_originale": "Van, Furgonato Challenger Challenger Van 114 Start Edition \n€ 52.000\n 12\n Anno\n2024\n Posti/Letti\n4 / - \n Km\n10.332 Km\n Regione\nLazio\n Vazia (RI) - \n29/10/2026\n Scheda\n\n--- DETTAGLI ---\nCamper Usato Van, furgonato Challenger Challenger Van 114 Start Edition 2024 Ippocamper Vazia | CamperOnLine\nCamper Van, furgonato Challenger Challenger Van 114 Start Edition usato\n52.000 €\nCamper Challenger usati\n, \nCamper Van, furgonato usati\nRichiedi info e disponibilità\nCamper Van, furgonato Challenger Challenger Van 114 Start Edition usato\nCamper Van, furgonato Challenger Challenger Van 114 Start Edition usato\nCamper Van, furgonato Challenger Challenger Van 114 Start Edition usato\nCamper Van, furgonato Challenger Challenger Van 114 Start Edition usato\nCamper Van, furgonato Challenger Challenger Van 114 Start Edition usato\nCamper Van, furgonato Challenger Challenger Van 114 Start Edition usato\nCamper Van, furgonato Challenger Challenger Van 114 Start Edition usato\nCamper Van, furgonato Challenger Challenger Van 114 Start Edition usato\nCamper Van, furgonato Challenger Challenger Van 114 Start Edition usato\nCamper Van, furgonato Challenger Challenger Van 114 Start Edition usato\nCamper Van, furgonato Challenger Challenger Van 114 Start Edition usato\nCamper Van, furgonato Challenger Challenger Van 114 Start Edition usato\n1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12\nRichiedi info e disponibilità\nOfferta\nUsato\nTipo\nVan, furgonato\nMarca\nChallenger\nModello\nChallenger Van 114 Start Edition \nAnno\n2024\nKm\n10.332 Km\nMotore\n2.2\nPotenza\nDa 121 a 140 cv\nPosti\n4\nDimensioni\n cm\n52.000 €\nRichiedi info e disponibilità\n Dotazione di serie\nChallenger Van 114 Start Edition \nAnno:2024 \nMotore: Fiat Ducato 2.2 140CV \nLunghezza: 5,99 \nKM:10332\nOmologazione: 4\nPack Connect: autoradio, DAB/Bluetooth con schermo tattile e comandi al volant, camera di retromarcia \nAccessori:condizionatore, tendalino, block shaft \nPrezzo: €52.000,00 \nRichiedi info e disponibilità\nRichiedi un preventivo per assicurare il tuo camper:\n"
+        },
+        "https://www.camperonline.it/camper-usati/mansardato-challenger-mansardato-challenger-c397ga-start-edition_201555": {
+            "sito": "CamperOnLine",
+            "marca": "Sconosciuto",
+            "modello": "",
+            "allestimento": "",
+            "distanza_seregno": 150,
+            "prezzo_attuale": 57000.0,
+            "storico_prezzi": [
+                {
+                    "data": "2026-10-29",
+                    "prezzo": 57000.0
+                }
+            ],
+            "dati_tecnici": {
+                "marca": "Sconosciuto",
+                "modello": "",
+                "allestimento": "",
+                "prezzo": 57000,
+                "anno": 2023,
+                "chilometri": 100751,
+                "nuovo": false,
+                "peso": 3500,
+                "tipo_furgonato": false,
+                "tipo_mansardato": true,
+                "tipo_motorhome": false,
+                "tipo_semintegrale": false,
+                "lunghezza": 7.45,
+                "potenza": 140,
+                "posti_omologati": null,
+                "posti_letto": 5,
+                "telaio_alko": false,
+                "doppio_pavimento": false,
+                "cambio_automatico": false,
+                "emissioni_euro6": false,
+                "pannelli_solari": false,
+                "batterie_litio": false,
+                "sospensioni_aria": false,
+                "predisposizione_invernale": false,
+                "doppia_batteria": false,
+                "aria_condizionata": false,
+                "riscaldamento_gasolio": false,
+                "riscaldatore_gasolio": false,
+                "riscaldamento_alde": false,
+                "piedini_autolivellanti": false,
+                "letto_nautico": false,
+                "letti_gemelli": false,
+                "letti_a_castello": false,
+                "riassunto_ia": "Accessori presenti sul veicolo:\n- Autoradio\n- Schermo tattile\n- Comandi al volante\n- Retrocamera\n- Cerchi in lega 16''"
+            },
+            "punteggio_totale": 28.5,
+            "dettaglio_punteggi": {
+                "telaio": 50.0,
+                "meccanica": 55.0,
+                "stato": 0.0,
+                "interni": 0.0,
+                "accessori": 0.0,
+                "prezzo": 25.0
+            },
+            "status": "VALIDO",
+            "motivo_scarto": "",
+            "data_scoperta": "2026-10-29",
+            "data_ultimo_aggiornamento": "2026-10-29",
+            "url_immagine": "https://thumb.camperonline.it/timthumb.php?src=https://www.camperonline.it/camper-nuovi-usati/Foto/1793283626_201555_0_whatsapp-image-20251031-a.jpg&w=400&h=260",
+            "ai_usata": true,
+            "testo_originale": "Mansardato Challenger Mansardato Challenger C397ga Start Edition\n€ 57.000\n 18\n Anno\n2023\n Posti/Letti\n - / - \n Km\n - Km\n Regione\nLazio\n Vazia (RI) - \n29/10/2026\n Scheda\n\n--- DETTAGLI ---\nCamper Usato Mansardato Challenger Mansardato Challenger C397GA START EDITION 2023 Ippocamper Vazia | CamperOnLine\nCamper Mansardato Challenger Mansardato Challenger C397GA START EDITION usato\n57.000 €\nCamper Challenger usati\n, \nCamper Mansardato usati\nRichiedi info e disponibilità\nCamper Mansardato Challenger Mansardato Challenger C397GA START EDITION usato\nCamper Mansardato Challenger Mansardato Challenger C397GA START EDITION usato\nCamper Mansardato Challenger Mansardato Challenger C397GA START EDITION usato\nCamper Mansardato Challenger Mansardato Challenger C397GA START EDITION usato\nCamper Mansardato Challenger Mansardato Challenger C397GA START EDITION usato\nCamper Mansardato Challenger Mansardato Challenger C397GA START EDITION usato\nCamper Mansardato Challenger Mansardato Challenger C397GA START EDITION usato\nCamper Mansardato Challenger Mansardato Challenger C397GA START EDITION usato\nCamper Mansardato Challenger Mansardato Challenger C397GA START EDITION usato\nCamper Mansardato Challenger Mansardato Challenger C397GA START EDITION usato\nCamper Mansardato Challenger Mansardato Challenger C397GA START EDITION usato\nCamper Mansardato Challenger Mansardato Challenger C397GA START EDITION usato\nCamper Mansardato Challenger Mansardato Challenger C397GA START EDITION usato\nCamper Mansardato Challenger Mansardato Challenger C397GA START EDITION usato\nCamper Mansardato Challenger Mansardato Challenger C397GA START EDITION usato\nCamper Mansardato Challenger Mansardato Challenger C397GA START EDITION usato\nCamper Mansardato Challenger Mansardato Challenger C397GA START EDITION usato\nCamper Mansardato Challenger Mansardato Challenger C397GA START EDITION usato\n1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12\n13\n14\n15\n16\n17\n18\nRichiedi info e disponibilità\nOfferta\nUsato\nTipo\nMansardato\nMarca\nChallenger\nModello\nMansardato Challenger C397GA START EDITION \nAnno\n2023\nMotore\n2.2\nPotenza\nDa 121 a 140 cv\nDimensioni\n cm\n57.000 €\nRichiedi info e disponibilità\n Dotazione di serie\nMansardato Challenger C397GA START EDITION \nDotazione: cerchi in lega 16’’, autoradio, schermo tattile, comandi al volante, retrocamera, \nLunghezza:7,45\nANNO: 2023\nOmologazione: 5\nKm: 100751\nPosti letto 5 \nMotore: Fiat Ducato 2.2 140CV \nPrezzo chiavi in mano € 57.000,00 \nRichiedi info e disponibilità\nRichiedi un preventivo per assicurare il tuo camper:\n"
+        },
+        "https://www.camperonline.it/camper-usati/mansardato-rimor-mansardato-rimor-katamarano-8_201554": {
+            "sito": "CamperOnLine",
+            "marca": "Rimor",
+            "modello": "Katamarano",
+            "allestimento": "9",
+            "distanza_seregno": 150,
+            "prezzo_attuale": 26800.0,
+            "storico_prezzi": [
+                {
+                    "data": "2026-10-29",
+                    "prezzo": 26800.0
+                }
+            ],
+            "dati_tecnici": {
+                "marca": "Rimor",
+                "modello": "Katamarano",
+                "allestimento": "9",
+                "prezzo": 26800,
+                "anno": 2008,
+                "chilometri": 32746,
+                "nuovo": false,
+                "peso": 3500,
+                "tipo_furgonato": false,
+                "tipo_mansardato": true,
+                "tipo_motorhome": false,
+                "tipo_semintegrale": false,
+                "lunghezza": 6.64,
+                "potenza": 140,
+                "posti_omologati": null,
+                "posti_letto": null,
+                "telaio_alko": false,
+                "doppio_pavimento": false,
+                "cambio_automatico": false,
+                "emissioni_euro6": false,
+                "pannelli_solari": false,
+                "batterie_litio": false,
+                "sospensioni_aria": false,
+                "predisposizione_invernale": false,
+                "doppia_batteria": false,
+                "aria_condizionata": false,
+                "riscaldamento_gasolio": false,
+                "riscaldatore_gasolio": false,
+                "riscaldamento_alde": false,
+                "piedini_autolivellanti": false,
+                "letto_nautico": false,
+                "letti_gemelli": false,
+                "letti_a_castello": false,
+                "riassunto_ia": "Accessori presenti sul veicolo:\n- Tendalino\n- Retrocamera\n- Inverter\n- TV\n- Cappa aspirante\n- Antenna TV\n- Doppio serbatoio"
+            },
+            "punteggio_totale": 29.0,
+            "dettaglio_punteggi": {
+                "telaio": 50.0,
+                "meccanica": 55.0,
+                "stato": 0.0,
+                "interni": 0.0,
+                "accessori": 0.0,
+                "prezzo": 30.0
+            },
+            "status": "VALIDO",
+            "motivo_scarto": "",
+            "data_scoperta": "2026-10-29",
+            "data_ultimo_aggiornamento": "2026-10-29",
+            "url_immagine": "https://www.camperonline.it/logo/camperonline-b.png",
+            "ai_usata": true,
+            "testo_originale": "Mansardato Rimor Mansardato Rimor Katamarano 8\n€ 26.800\n\n--- DETTAGLI ---\nCamper Usato Mansardato Rimor Mansardato Rimor Katamarano 8 2008 Ippocamper Vazia | CamperOnLine\nCamper Mansardato Rimor Mansardato Rimor Katamarano 8 usato\n26.800 €\nCamper Rimor usati\n, \nCamper Mansardato usati\nRichiedi info e disponibilità\nCamper Mansardato Rimor Mansardato Rimor Katamarano 8 usato\nCamper Mansardato Rimor Mansardato Rimor Katamarano 8 usato\nCamper Mansardato Rimor Mansardato Rimor Katamarano 8 usato\nCamper Mansardato Rimor Mansardato Rimor Katamarano 8 usato\nCamper Mansardato Rimor Mansardato Rimor Katamarano 8 usato\nCamper Mansardato Rimor Mansardato Rimor Katamarano 8 usato\nCamper Mansardato Rimor Mansardato Rimor Katamarano 8 usato\nCamper Mansardato Rimor Mansardato Rimor Katamarano 8 usato\nCamper Mansardato Rimor Mansardato Rimor Katamarano 8 usato\nCamper Mansardato Rimor Mansardato Rimor Katamarano 8 usato\nCamper Mansardato Rimor Mansardato Rimor Katamarano 8 usato\nCamper Mansardato Rimor Mansardato Rimor Katamarano 8 usato\nCamper Mansardato Rimor Mansardato Rimor Katamarano 8 usato\nCamper Mansardato Rimor Mansardato Rimor Katamarano 8 usato\nCamper Mansardato Rimor Mansardato Rimor Katamarano 8 usato\nCamper Mansardato Rimor Mansardato Rimor Katamarano 8 usato\nCamper Mansardato Rimor Mansardato Rimor Katamarano 8 usato\n1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12\n13\n14\n15\n16\n17\nRichiedi info e disponibilità\nOfferta\nUsato\nTipo\nMansardato\nMarca\nRimor\nModello\nMansardato Rimor Katamarano 8\nAnno\n2008\nKm\n32.746 Km\nMotore\n2.2\nPotenza\nDa 121 a 140 cv\nDimensioni\n cm\n26.800 €\nRichiedi info e disponibilità\n Dotazione di serie\nMansardato Rimor Katamarano 8\nDotazione: tendalino, retrocamera, inverter, tv, cappa aspirante, antenna tv, doppio serbatoio \nAnno: 2008\nOmologazione: 5\nLunghezza: 6,64 \nKm: 32746\nMotore: Ford Transit 2.2 130CV \nPrezzo chiavi in mano € 26.800,00 \nRichiedi info e disponibilità\nRichiedi un preventivo per assicurare il tuo camper:\n"
+        },
+        "https://www.camperonline.it/camper-usati/semintegrale-mclouis-tendy-plus_201553": {
+            "sito": "CamperOnLine",
+            "marca": "Sconosciuto",
+            "modello": "",
+            "allestimento": "",
+            "distanza_seregno": 300,
+            "prezzo_attuale": 32000.0,
+            "storico_prezzi": [
+                {
+                    "data": "2026-10-29",
+                    "prezzo": 32000.0
+                }
+            ],
+            "dati_tecnici": {
+                "marca": "Sconosciuto",
+                "modello": "",
+                "allestimento": "",
+                "prezzo": 32000,
+                "anno": 2006,
+                "chilometri": 54000,
+                "nuovo": true,
+                "peso": 3500,
+                "tipo_furgonato": false,
+                "tipo_mansardato": false,
+                "tipo_motorhome": false,
+                "tipo_semintegrale": false,
+                "lunghezza": null,
+                "potenza": null,
+                "posti_omologati": null,
+                "posti_letto": 4,
+                "telaio_alko": false,
+                "doppio_pavimento": false,
+                "cambio_automatico": false,
+                "emissioni_euro6": false,
+                "pannelli_solari": true,
+                "batterie_litio": false,
+                "sospensioni_aria": false,
+                "predisposizione_invernale": false,
+                "doppia_batteria": false,
+                "aria_condizionata": true,
+                "riscaldamento_gasolio": false,
+                "riscaldatore_gasolio": false,
+                "riscaldamento_alde": false,
+                "piedini_autolivellanti": false,
+                "letto_nautico": false,
+                "letti_gemelli": false,
+                "letti_a_castello": false,
+                "riassunto_ia": "Accessori presenti sul veicolo:\n- vetri cabina elettrici\n- autoradio\n- sedili girevoli\n- clima in cabina\n- Tendalino\n- Pannello solare\n- inverter da 1000 Watt\n- Piccolo inverter di scorta\n- forno più scaldavivande\n- Televisore\n- truma a gas\n- materasso nuovo memory\n- gavone grande\n- Sistemazione notturna garage coperto\n- Chiusura centralizzata\n- Antifurto perimetrale\n- Sensori di parcheggio posteriori"
+            },
+            "punteggio_totale": 26.8,
+            "dettaglio_punteggi": {
+                "telaio": 0.0,
+                "meccanica": 50.0,
+                "stato": 100.0,
+                "interni": 0.0,
+                "accessori": 25.0,
+                "prezzo": 30.0
+            },
+            "status": "VALIDO",
+            "motivo_scarto": "",
+            "data_scoperta": "2026-10-29",
+            "data_ultimo_aggiornamento": "2026-10-29",
+            "url_immagine": "https://thumb.camperonline.it/timthumb.php?src=https://www.camperonline.it/camper-nuovi-usati/Foto/1793281651_201553_0_img0038.jpg&w=400&h=260",
+            "ai_usata": true,
+            "testo_originale": "Semintegrale Mclouis Tendy Plus\n€ 32.000\n 4\n Anno\n2006\n Posti/Letti\n - / - \n Km\n54.000 Km\n Regione\nEmilia Romagna\n Vignola (MO) - \n29/10/2026\n Scheda\n\n--- DETTAGLI ---\nCamper Usato Semintegrale McLouis Tendy Plus 2006 | CamperOnLine\nCamper Semintegrale McLouis Tendy Plus usato\n32.000 €\nCamper McLouis usati\n, \nCamper Semintegrale usati\nRichiedi info e disponibilità\nCamper Semintegrale McLouis Tendy Plus usato\nCamper Semintegrale McLouis Tendy Plus usato\nCamper Semintegrale McLouis Tendy Plus usato\nCamper Semintegrale McLouis Tendy Plus usato\n1\n2\n3\n4\nRichiedi info e disponibilità\nOfferta\nUsato\nTipo\nSemintegrale\nMarca\nMcLouis\nModello\nTendy Plus\nAnno\n2006\nKm\n54.000 Km\nMotore\nDucato 2.8 Multijet (Euro 1)\nDimensioni\n6690 x 2320 cm\nAllestimento\nGarage\nDoccia separata\n32.000 €\nRichiedi info e disponibilità\n Note ed accessori\nvetri cabina elettrici\nautoradio \nsedili girevoli \nclima in cabina\nTagliando a 53000 km\nTendalino \nPannello solare \ninverter da 1000 Watt \nPiccolo inverter di scorta \nDoccia separata \nforno più scaldavivande \nTelevisore\n4 posti letto\ntruma a gas\nmaterasso nuovo memory \ngavone grande \nSistemazione notturna garage coperto\nChiusura centralizzata \nAntifurto perimetrale\nSensori di parcheggio posteriori \nVendo 32000 € trattabili\n4000€ per sistemazione paraurti, cambio gomme e sistemazione tendalino\n28000€ così com’è\n Dotazione di serie\nMcLouis Tendy Plus\nSu Fiat Ducato 2.8 Multijet \nanno 2006 \nKm 54.000 \nRichiedi info e disponibilità\nRichiedi un preventivo per assicurare il tuo camper:\n"
+        },
+        "https://www.camperonline.it/camper-usati/caravan-adria-altea-552-pk_201552": {
+            "sito": "CamperOnLine",
+            "marca": "Sconosciuto",
+            "modello": "",
+            "allestimento": "",
+            "distanza_seregno": 150,
+            "prezzo_attuale": 28500.0,
+            "storico_prezzi": [
+                {
+                    "data": "2026-10-29",
+                    "prezzo": 28500.0
+                }
+            ],
+            "dati_tecnici": {
+                "marca": "Sconosciuto",
+                "modello": "",
+                "allestimento": "",
+                "prezzo": 28500,
+                "anno": 2026,
+                "chilometri": 7,
+                "nuovo": false,
+                "peso": 1190.0,
+                "tipo_furgonato": false,
+                "tipo_mansardato": false,
+                "tipo_motorhome": false,
+                "tipo_semintegrale": false,
+                "lunghezza": 7.6,
+                "potenza": null,
+                "posti_omologati": 7,
+                "posti_letto": 7,
+                "telaio_alko": true,
+                "doppio_pavimento": false,
+                "cambio_automatico": false,
+                "emissioni_euro6": false,
+                "pannelli_solari": false,
+                "batterie_litio": false,
+                "sospensioni_aria": false,
+                "predisposizione_invernale": false,
+                "doppia_batteria": false,
+                "aria_condizionata": true,
+                "riscaldamento_gasolio": false,
+                "riscaldatore_gasolio": false,
+                "riscaldamento_alde": false,
+                "piedini_autolivellanti": false,
+                "letto_nautico": false,
+                "letti_gemelli": false,
+                "letti_a_castello": true
+            },
+            "punteggio_totale": 30.2,
+            "dettaglio_punteggi": {
+                "telaio": 30.0,
+                "meccanica": 50.0,
+                "stato": 0.0,
+                "interni": 45.0,
+                "accessori": 10.0,
+                "prezzo": 30.0
+            },
+            "status": "VALIDO",
+            "motivo_scarto": "",
+            "data_scoperta": "2026-10-29",
+            "data_ultimo_aggiornamento": "2026-10-29",
+            "url_immagine": "https://thumb.camperonline.it/timthumb.php?src=https://www.camperonline.it/camper-nuovi-usati/Foto/1793275491_201552_0_photo-1.jpg&w=400&h=260",
+            "ai_usata": false,
+            "testo_originale": "Caravan Adria Altea 552 Pk\n€ 28.500\n 25\n Anno\n2026\n Posti/Letti\n7 / 7\n Km\n - Km\n Regione\nPiemonte\n Novi Ligure (AL) - \n29/10/2026\n Scheda\n\n--- DETTAGLI ---\nUsato Caravan Adria Altea 552 PK 2026 Evo Camper Novi Ligure | CamperOnLine\nCaravan Adria Altea 552 PK usata\n28.500 €\nCaravan Adria usate\n, \nCaravan usate\nRichiedi info e disponibilità\nCaravan Adria Altea 552 PK usata\nCaravan Adria Altea 552 PK usata\nCaravan Adria Altea 552 PK usata\nCaravan Adria Altea 552 PK usata\nCaravan Adria Altea 552 PK usata\nCaravan Adria Altea 552 PK usata\nCaravan Adria Altea 552 PK usata\nCaravan Adria Altea 552 PK usata\nCaravan Adria Altea 552 PK usata\nCaravan Adria Altea 552 PK usata\nCaravan Adria Altea 552 PK usata\nCaravan Adria Altea 552 PK usata\nCaravan Adria Altea 552 PK usata\nCaravan Adria Altea 552 PK usata\nCaravan Adria Altea 552 PK usata\nCaravan Adria Altea 552 PK usata\nCaravan Adria Altea 552 PK usata\nCaravan Adria Altea 552 PK usata\nCaravan Adria Altea 552 PK usata\nCaravan Adria Altea 552 PK usata\nCaravan Adria Altea 552 PK usata\nCaravan Adria Altea 552 PK usata\nCaravan Adria Altea 552 PK usata\nCaravan Adria Altea 552 PK usata\nCaravan Adria Altea 552 PK usata\n1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12\n13\n14\n15\n16\n17\n18\n19\n20\n21\n22\n23\n24\n25\nRichiedi info e disponibilità\nOfferta\nUsato\nTipo\nCaravan\nMarca\nAdria\nModello\nAltea 552 PK\nAnno\n2026\nMotore\ncaravan\nPosti\n7\nLetti\n7\nDimensioni\n760 x 229 cm\n28.500 €\nRichiedi info e disponibilità\n Dotazione di serie\nBellissima caravan ADRIA Altea 552 PK edizione speciale 60° anniversario , immatricolata 06/2026, colore grigio metallizato. Cucina in linea a tre fuochi, con frigorifero e cella freezer separata da 140 l., forno, stufa a gas Truma e boliler, bagno con doccia separata. Sette posti letto, due matrimoniali e tre letti a castello, con moover, batteria, aria condizionata e veranda a tetto. Bellissima caravan ADRIA Altea 552 PK edizione speciale 60° anniversario , immatricolata 06/2026, colore grigio metallizato. Cucina in linea a tre fuochi, con frigorifero e cella freezer separata da 140 l., forno, stufa a gas Truma e boliler, bagno con doccia separata. Sette posti letto, due matrimoniali e tre letti a castello, con moover, batteria, aria condizionata e veranda a tetto. Stabilizzatore AKS al timone e telaio Alko, peso a vuoto 1190 kg peso complessivo 1350 kg. Veicolo pari al nuovo.\nDimensioni: Lunghezza 6.24 m con timone 7.60 m - larghezza 2.296 m - altezza 2.58 m -\nPrezzo del veicolo 28.500 €\nVeicolo pari al nuovo.\nPrezzo del veicolo 28.500 €\nRichiedi info e disponibilità\nRichiedi un preventivo per assicurare il tuo camper:\n"
+        },
+        "https://www.corbar.it/veicoli_occasione_scheda.asp?id=787": {
+            "sito": "Corbar",
+            "marca": "Sconosciuto",
+            "modello": "",
+            "allestimento": "",
+            "distanza_seregno": 20,
+            "prezzo_attuale": 64900.0,
+            "storico_prezzi": [
+                {
+                    "data": "2026-10-29",
+                    "prezzo": 64900.0
+                }
+            ],
+            "dati_tecnici": {
+                "marca": "Sconosciuto",
+                "modello": "",
+                "allestimento": "",
+                "prezzo": 64900,
+                "anno": 2016,
+                "chilometri": 96500,
+                "nuovo": false,
+                "peso": 3500,
+                "tipo_furgonato": false,
+                "tipo_mansardato": false,
+                "tipo_motorhome": false,
+                "tipo_semintegrale": false,
+                "lunghezza": 7.49,
+                "potenza": 150,
+                "posti_omologati": 4,
+                "posti_letto": null,
+                "telaio_alko": true,
+                "doppio_pavimento": false,
+                "cambio_automatico": false,
+                "emissioni_euro6": false,
+                "pannelli_solari": true,
+                "batterie_litio": false,
+                "sospensioni_aria": true,
+                "predisposizione_invernale": false,
+                "doppia_batteria": false,
+                "aria_condizionata": false,
+                "riscaldamento_gasolio": false,
+                "riscaldatore_gasolio": false,
+                "riscaldamento_alde": false,
+                "piedini_autolivellanti": false,
+                "letto_nautico": false,
+                "letti_gemelli": false,
+                "letti_a_castello": false,
+                "riassunto_ia": "Accessori presenti sul veicolo:\n- LETTO BASCULANTE\n- CONDIZIONATORE VIESA\n- ANTIFURTO\n- SMART TV\n- TENDALINO\n- SOSPENSIONI AD ARIA ALKO\n- ANTENNA SATELLITARE MECATRONIC\n- NAVIGATORE\n- PANNELLO SOLARE\n- TELECAMERA DOPPIA LENTE"
+            },
+            "punteggio_totale": 37.0,
+            "dettaglio_punteggi": {
+                "telaio": 45.0,
+                "meccanica": 55.0,
+                "stato": 0.0,
+                "interni": 40.0,
+                "accessori": 30.0,
+                "prezzo": 20.0
+            },
+            "status": "VALIDO",
+            "motivo_scarto": "",
+            "data_scoperta": "2026-10-29",
+            "data_ultimo_aggiornamento": "2026-10-29",
+            "url_immagine": "https://www.corbar.it/public/usato/787_1b.jpg",
+            "ai_usata": true,
+            "testo_originale": "Contattaci:\nCondividi:\n- LAIKA KREOS 4009  ()\nMOTORIZZAZIONE:  \nDucato 2.3 jtd 150 CV\nANNO:  \n2016\nCHILOMETRI:  \n96.500\nPOSTI OMOLOGATI:  \n4\nLUNGHEZZA:  \n7,49\nACCESSORI:  \nLETTO BASCULANTE, \nCONDIZIONATORE VIESA, \nANTIFURTO, \nSMART TV, \nTENDALINO, \nSOSPENSIONI AD ARIA ALKO, \nANTENNA SATELLITARE MECATRONIC, \nNAVIGATORE, \nPANNELLO SOLARE, \nTELECAMERA DOPPIA LENTE\nPREZZO:  \n64.900\nRICHIEDI INFORMAZIONI"
+        },
+        "https://www.corbar.it/veicoli_nuovi_scheda.asp?id=677": {
+            "sito": "Corbar",
+            "marca": "Laika",
+            "modello": "Ecovip",
+            "allestimento": "1",
+            "distanza_seregno": 20,
+            "prezzo_attuale": 88400.0,
+            "storico_prezzi": [
+                {
+                    "data": "2026-10-29",
+                    "prezzo": 88400.0
+                }
+            ],
+            "dati_tecnici": {
+                "marca": "Laika",
+                "modello": "Ecovip",
+                "allestimento": "1",
+                "prezzo": 88400,
+                "anno": 2009,
+                "chilometri": null,
+                "nuovo": false,
+                "peso": 3500,
+                "tipo_furgonato": false,
+                "tipo_mansardato": false,
+                "tipo_motorhome": false,
+                "tipo_semintegrale": false,
+                "lunghezza": 6.59,
+                "potenza": 160,
+                "posti_omologati": null,
+                "posti_letto": null,
+                "telaio_alko": false,
+                "doppio_pavimento": false,
+                "cambio_automatico": false,
+                "emissioni_euro6": false,
+                "pannelli_solari": false,
+                "batterie_litio": false,
+                "sospensioni_aria": false,
+                "predisposizione_invernale": false,
+                "doppia_batteria": false,
+                "aria_condizionata": false,
+                "riscaldamento_gasolio": true,
+                "riscaldatore_gasolio": true,
+                "riscaldamento_alde": false,
+                "piedini_autolivellanti": false,
+                "letto_nautico": false,
+                "letti_gemelli": false,
+                "letti_a_castello": false,
+                "riassunto_ia": "Accessori presenti sul veicolo:\n- F04 Letto basculante elettrico sopra il soggiorno\n- FI6 Stufa Diesel\n- 52X Predisposizione stufa a gasolio"
+            },
+            "punteggio_totale": 25.0,
+            "dettaglio_punteggi": {
+                "telaio": 35.0,
+                "meccanica": 65.0,
+                "stato": 0.0,
+                "interni": 0.0,
+                "accessori": 0.0,
+                "prezzo": 15.0
+            },
+            "status": "VALIDO",
+            "motivo_scarto": "",
+            "data_scoperta": "2026-10-29",
+            "data_ultimo_aggiornamento": "2026-10-29",
+            "url_immagine": "https://www.corbar.it/public/nuovo/677_1b.jpg",
+            "ai_usata": true,
+            "testo_originale": "Contattaci:\nCondividi:\nLAIKA ECOVIP TITANIO L 2009  (Pronta consegna)\nMOTORIZZAZIONE:  \nFiat 2.2 jtd 160 CV\nLUNGHEZZA:  \n6,59\nACCESSORI:  \n160 cv, \nF04 Letto basculante elettrico sopra il soggiorno, \nFI6 Stufa Diesel, \n52X Predisposizione stufa a gasolio\nLISTINO:  \n95.623\nPREZZO SENZA PERMUTA:  \n88.400\nPREZZO CON PERMUTA:  \nTrattativa in sede\nRICHIEDI INFORMAZIONI"
+        },
+        "https://www.giorgiogatti.info/listings/elnagh-magnum-530/": {
+            "sito": "Giorgio Gatti",
+            "marca": "Elnagh",
+            "modello": "Magnum",
+            "allestimento": "530",
+            "distanza_seregno": 130,
+            "prezzo_attuale": 90185.0,
+            "storico_prezzi": [
+                {
+                    "data": "2026-10-29",
+                    "prezzo": 90185.0
+                }
+            ],
+            "dati_tecnici": {
+                "marca": "Elnagh",
+                "modello": "Magnum",
+                "allestimento": "530",
+                "prezzo": 90185,
+                "anno": null,
+                "chilometri": 0,
+                "nuovo": true,
+                "peso": 3500,
+                "tipo_furgonato": false,
+                "tipo_mansardato": false,
+                "tipo_motorhome": true,
+                "tipo_semintegrale": false,
+                "lunghezza": 9.0,
+                "potenza": 160,
+                "posti_omologati": 5,
+                "posti_letto": 5,
+                "telaio_alko": false,
+                "doppio_pavimento": false,
+                "cambio_automatico": true,
+                "emissioni_euro6": false,
+                "pannelli_solari": true,
+                "batterie_litio": false,
+                "sospensioni_aria": false,
+                "predisposizione_invernale": false,
+                "doppia_batteria": false,
+                "aria_condizionata": false,
+                "riscaldamento_gasolio": false,
+                "riscaldatore_gasolio": false,
+                "riscaldamento_alde": false,
+                "piedini_autolivellanti": false,
+                "letto_nautico": false,
+                "letti_gemelli": true,
+                "letti_a_castello": false
+            },
+            "punteggio_totale": 46.5,
+            "dettaglio_punteggi": {
+                "telaio": 35.0,
+                "meccanica": 65.0,
+                "stato": 100.0,
+                "interni": 65.0,
+                "accessori": 15.0,
+                "prezzo": 10.0
+            },
+            "status": "VALIDO",
+            "motivo_scarto": "",
+            "data_scoperta": "2026-10-29",
+            "data_ultimo_aggiornamento": "2026-10-29",
+            "url_immagine": "https://www.giorgiogatti.info/wp-content/uploads/2026/10/Elnagh-Magnum-530-1-798x466.jpg",
+            "ai_usata": false,
+            "testo_originale": "--- DETTAGLI ---\nCamper motorhome Elnagh Magnum 530 in vendita ad Alessandria\n Dal Martedi al Venerdi 9.00 - 12.30 / 15.00-18.30 - Sabato 9.00-12.30 e 14.30-18.00- Chiuso domenica e lunedì\n email: \n[email protected]\n +39 (0131) 619820\n Service \n 878-3971-3223 \n Parts \n 878-0910-0770 \n Telefono \n +39 (0131) 619820 \n Via Piacenza, 1 - San Giuliano Vecchio - Alessandria (AL) \n Visualizza sulla mappa \nHome\nL’azienda\nI nostri brand\nPronta consegna\nUsato\nOFFERTE\nRICERCA VEICOLI\nVendi il tuo mezzo\nL’officina\nContatti\nGiorgio Gatti Camper\n > \nListings\n > \nNuovi e Pronta Consegna\n > \nElnagh Magnum 530\n Elnagh Magnum 530\n Disponibile \nInformazioni generali\nDettagli\nRichiedi informazioni\nPanoramica 360°\nMarca\n : Elnagh\nModello\n : Magnum 530\nPrima immatricolazione: veicolo nuovo\nPrezzo del veicolo esposto\n : € 90.185 (esclusi immatricolazione e trasporto)\nComprensivo delle Dotazioni di serie: PACK MAGNUM\n valore € 2.700 compreso nel prezzo (Fari fendinebbia · Cerchi in lega da 16″ bicolore · Porta con 2 punti di chiusura, finestrino e chiusura centralizzata · Pannello solare da 200 W con regolatore MPPT · Oscurante cabina plissettato · Braccio di supporto per TV da 32″ · Copri · lavello · Sedili Foderati)\nPack Expo compreso nel prezzo (valore € 3.900): fendinebbia – paraurti anteriore in tinta con la carrozzeria – piastra paramotore nera – cerchi in lega 16” bicolore – volante e pomello del cambio in pelle- plancia Techno -controllo automatico della pressione pneumatici – freno a mano elettrico – RADIO 9” PIONEER Bluetooth/apple car play/android auto  -RETROCAMERA – PANNELLO SOLARE 200W con regolatore MPPT – oscuranti plissettati\nPACK PLEIN AIR\n (Veranda antracite 4,5 mT-Presa esterna per gas Promo · Doccia nel garage)\nMAGGIORAZIONE PER MECCANICA 160CV\nMeccanica\n: Fiat Ducato 2.2 Mjet 160cv\nPeso massimo complessivo (kg)\n: 3500\nAltezza (cm)\n: 295\nLunghezza (cm)\n: 745\nLarghezza (cm)\n: 235\nPosti letto\n: 5\nPosti omologati\n: 5\nAlimentazione\n: diesel\nCilindrata (cc)\n: 2.200\nTrazione\n: Anteriore\nRiscaldamento\n : Truma Combi 4D\nIlluminazione interna\n : totalmente a led\nFrigorifero a compressore\n : 84 lt\nSerbatoio acqua\n : 90 lt\nSerbatoio recupero\n : 75 lt\nWC\n : cassetta estraibile 18 lt\nPossibilità di finanziamento a tasso agevolato fino a 180 mesi\nPossibilità di ritiro e permuta auto/moto\nDETTAGLI VEICOLO\nCamper motorhome con letti gemelli su garage e letto basculante anteriore. Veicolo omologato 5 posti viaggio con meccanica Fiat Ducato 2.2 Mjet 160cv\nACCESSORI VEICOLO\nPACK MAGNUM  (Fari fendinebbia · Cerchi in lega da 16″ bicolore · Porta con 2 punti di chiusura, finestrino e chiusura centralizzata · Pannello solare da 200 W con regolatore MPPT · Oscurante cabina plissettato · Braccio di supporto per TV da 32″ · Copri · lavello · Sedili Foderati)\n-Pack Expo compreso nel prezzo (valore € 3.900): fendinebbia – paraurti anteriore in tinta con la carrozzeria – piastra paramotore nera – cerchi in lega 16” bicolore – volante e pomello del cambio in pelle- plancia Techn"
+        },
+        "https://www.giorgiogatti.info/listings/elnagh-baron-560/": {
+            "sito": "Giorgio Gatti",
+            "marca": "Elnagh",
+            "modello": "Baron",
+            "allestimento": "22",
+            "distanza_seregno": 130,
+            "prezzo_attuale": 69060.0,
+            "storico_prezzi": [
+                {
+                    "data": "2026-10-29",
+                    "prezzo": 69060.0
+                }
+            ],
+            "dati_tecnici": {
+                "marca": "Elnagh",
+                "modello": "Baron",
+                "allestimento": "22",
+                "prezzo": 69060,
+                "anno": null,
+                "chilometri": 0,
+                "nuovo": true,
+                "peso": 3500,
+                "tipo_furgonato": false,
+                "tipo_mansardato": false,
+                "tipo_motorhome": false,
+                "tipo_semintegrale": false,
+                "lunghezza": 9.0,
+                "potenza": 165,
+                "posti_omologati": 5,
+                "posti_letto": 5,
+                "telaio_alko": false,
+                "doppio_pavimento": false,
+                "cambio_automatico": false,
+                "emissioni_euro6": false,
+                "pannelli_solari": true,
+                "batterie_litio": false,
+                "sospensioni_aria": false,
+                "predisposizione_invernale": true,
+                "doppia_batteria": false,
+                "aria_condizionata": false,
+                "riscaldamento_gasolio": false,
+                "riscaldatore_gasolio": false,
+                "riscaldamento_alde": false,
+                "piedini_autolivellanti": false,
+                "letto_nautico": false,
+                "letti_gemelli": false,
+                "letti_a_castello": false
+            },
+            "punteggio_totale": 41.8,
+            "dettaglio_punteggi": {
+                "telaio": 20.0,
+                "meccanica": 55.0,
+                "stato": 100.0,
+                "interni": 40.0,
+                "accessori": 45.0,
+                "prezzo": 20.0
+            },
+            "status": "VALIDO",
+            "motivo_scarto": "",
+            "data_scoperta": "2026-10-29",
+            "data_ultimo_aggiornamento": "2026-10-29",
+            "url_immagine": "https://www.giorgiogatti.info/wp-content/uploads/2026/10/Elnagh-Baron-560-1-798x466.jpg",
+            "ai_usata": false,
+            "testo_originale": "--- DETTAGLI ---\nCamper semintegrale Elnagh Baron 560 in vendita ad Alessandria\n Dal Martedi al Venerdi 9.00 - 12.30 / 15.00-18.30 - Sabato 9.00-12.30 e 14.30-18.00- Chiuso domenica e lunedì\n email: \n[email protected]\n +39 (0131) 619820\n Service \n 878-3971-3223 \n Parts \n 878-0910-0770 \n Telefono \n +39 (0131) 619820 \n Via Piacenza, 1 - San Giuliano Vecchio - Alessandria (AL) \n Visualizza sulla mappa \nHome\nL’azienda\nI nostri brand\nPronta consegna\nUsato\nOFFERTE\nRICERCA VEICOLI\nVendi il tuo mezzo\nL’officina\nContatti\nGiorgio Gatti Camper\n > \nListings\n > \nNuovi e Pronta Consegna\n > \nElnagh Baron 560\n Elnagh Baron 560\n Disponibile \nInformazioni generali\nDettagli\nRichiedi informazioni\nPanoramica 360°\nMarca\n : Elnagh\nModello\n : Baron 560\nPrima immatricolazione: veicolo nuovo\nPrezzo del veicolo esposto\n : € 69.060 (esclusi immatricolazione e trasporto)\nComprensivo delle Dotazioni di serie: PACK ELNAGH FORD valore € 3.600 compreso nel prezzo (Ford Transit 2,0 l 165 CV-Paraurti verniciato in tinta con la carrozzeria · Porta XL con 2 punti di chiusura,finestrino e chiusura centralizzata · Pannello solare da 200 W con regolatore MPPT · Pannello di controllo CP Plus · Braccio porta TV da 32″ · Tetto apribile · Copri lavello · Fodere sedili cabina · Oscurante cabina plissettato)\nPACK PLEIN AIR\n (Veranda 4mt-Presa gas esterna · Doccia in garage)\nWINTER PACK\n (Serbatoio acque grigie coibentato e riscaldato · Isolamento del gradino d’ingresso)\nMeccanica\n: Ford Transit 2.0 165cv\nPeso massimo complessivo (kg)\n: 3500\nAltezza (cm)\n: 285\nLunghezza (cm)\n: 699\nLarghezza (cm)\n: 235\nPosti letto:\n 5\nPosti omologati\n: 5\nAlimentazione\n: diesel\nCilindrata (cc)\n: 2.000\nTrazione\n: Anteriore\nRiscaldamento\n : Truma Combi 4D\nIlluminazione interna\n : totalmente a led\nFrigorifero a compressore\n : 84 lt\nSerbatoio acqua\n : 90 lt\nSerbatoio recupero\n : 75 lt\nWC\n : cassetta estraibile 18 lt\nPossibilità di finanziamento a tasso agevolato fino a 180 mesi\nPossibilità di ritiro e permuta auto/moto\nDETTAGLI VEICOLO\nCamper semintegrale con letto matrimoniale trasversale su garage e letto basculante anteriore. Veicolo omologato 5 posti viaggio\nACCESSORI VEICOLO\nPACK ELNAGH FORD  (Ford Transit 2,0 l 165 CV-Paraurti verniciato in tinta con la carrozzeria · Porta XL con 2 punti di chiusura,finestrino e chiusura centralizzata · Pannello solare da 200 W con regolatore MPPT · Pannello di controllo CP Plus · Braccio porta TV da 32″ · Tetto apribile · Copri lavello · Fodere sedili cabina · Oscurante cabina plissettato)\nPACK PLEIN AIR (Veranda 4mt-Presa gas esterna · Doccia in garage)\nWINTER PACK (Serbatoio acque grigie coibentato e riscaldato · Isolamento del gradino d’ingresso)\nContatta il venditore\nNome*\nCognome*\nEmail*\nNumero di Telefono\nVoglio ricevere aggiornamenti e rimanere sempre aggiornato\nMessaggio\nAccetto il trattamento dei dati descritti sulla privacy policy di questo sito\n €69 ,060 \nDettagli prezzo sulla descrizione annuncio\nMotore\nFord Transit 165cv\nNumero posti\n5\n Richiedi un preventivo \n "
+        },
+        "https://www.caravanmarket.com/camper-usati/ci-magis-elite-67-xt-2023": {
+            "sito": "Caravan Market",
+            "marca": "Sconosciuto",
+            "modello": "",
+            "allestimento": "",
+            "distanza_seregno": 190,
+            "prezzo_attuale": null,
+            "storico_prezzi": [
+                {
+                    "data": "2026-10-29",
+                    "prezzo": null
+                }
+            ],
+            "dati_tecnici": {
+                "marca": "Sconosciuto",
+                "modello": "",
+                "allestimento": "",
+                "prezzo": null,
+                "anno": 2023,
+                "chilometri": 7200,
+                "nuovo": false,
+                "peso": 3500,
+                "tipo_furgonato": false,
+                "tipo_mansardato": false,
+                "tipo_motorhome": false,
+                "tipo_semintegrale": true,
+                "lunghezza": 7.35,
+                "potenza": 170,
+                "posti_omologati": 4,
+                "posti_letto": 4,
+                "telaio_alko": false,
+                "doppio_pavimento": false,
+                "cambio_automatico": true,
+                "emissioni_euro6": false,
+                "pannelli_solari": false,
+                "batterie_litio": false,
+                "sospensioni_aria": false,
+                "predisposizione_invernale": false,
+                "doppia_batteria": false,
+                "aria_condizionata": false,
+                "riscaldamento_gasolio": false,
+                "riscaldatore_gasolio": false,
+                "riscaldamento_alde": false,
+                "piedini_autolivellanti": false,
+                "letto_nautico": false,
+                "letti_gemelli": false,
+                "letti_a_castello": false
+            },
+            "punteggio_totale": 31.0,
+            "dettaglio_punteggi": {
+                "telaio": 40.0,
+                "meccanica": 65.0,
+                "stato": 0.0,
+                "interni": 40.0,
+                "accessori": 0.0,
+                "prezzo": 0.0
+            },
+            "status": "VALIDO",
+            "motivo_scarto": "",
+            "data_scoperta": "2026-10-29",
+            "data_ultimo_aggiornamento": "2026-10-29",
+            "url_immagine": "https://www.caravanmarket.com/image/cache/catalog/CAMPER%20USATI/2026/Ci%20Magis%20Elite%2067%20XT%20-%202023/ci-magis-elite-67-xt-1-1200x1000w.jpg",
+            "ai_usata": false,
+            "testo_originale": "--- DETTAGLI ---\nNew\nPronta Consegna\nCi Magis Elite 67 XT - 2023 | Automatico\nProdotto in evidenza\nRichiedi info\nWhatsApp\n×\nDisponibilità:\nDisponibile\nCodice Prodotto:\n6298\nCi\nBasato su 0 recensioni.\n-\nScrivi una recensione\ntrattativa riservata\nRichiedi Info\nSCRIVICI SU WHATSAPP\nAggiungi alla lista dei desideri\nConfronta questo prodotto\nFinanziamento con rate da\n € \n0\nal mese\n Personalizza anticipo e durata →\n→\n ×\nPersonalizza il tuo finanziamento\nAcconto iniziale\n€ 0\nDurata totale\n10 anni\nRata mensile stimata\n € \n0\nal mese\n Parliamone insieme\n Simulazione indicativa · TAN 7,95% fisso · Importi e condizioni soggetti ad approvazione\nDescrizione\nDotazioni e Accessori\nScheda Tecnica\nCi Magis Elite 67 XT - 2023: semintegrale usato con 7.200 km e cambio automatico\nIl \nCI Magis Elite 67 XT\n è un \nsemintegrale\n del 2023 su meccanica \nFord da 170 CV con cambio automatico\n, che ha percorso appena \n7.200 km\n. Lungo 7,35 m e largo 2,35 m, è omologato per \n4 posti\n in viaggio e offre \n4 posti letto\n.\nLa dotazione comprende \nveranda\n, \nportamoto Goldschmitt\n, \npannello fotovoltaico\n, \nfrigorifero trivalente da 135 litri\n e \nraffrescatore evaporativo Viesa\n, mentre l'\noblò Sky View\n sul cupolino porta più luce a bordo. Alla guida ci sono retrocamera, cruise control e autoradio doppio DIN Alpine; completano l'allestimento la porta cellula con finestra, la porta zanzariera, gli oscuranti plissettati in cabina e la cabina in grigio Silver.\nDOTAZIONE OPTIONAL\nVeranda\nPortamoto Goldschmitt\nRetrocamera\nPorta cellula con finestra\nPorta zanzariera\nAutoradio doppio DIN Alpine\nCruise control\nOscuranti plissettati cabina\nOblò anteriore Sky View sul cupolino\nRaffrescatore evaporativo Viesa\nFrigorifero trivalente da 135 L\nPannello fotovoltaico\nCabina grigio Silver\nGARANZIA LEGALE DI CONFORMITA':\nMeccanica: 12 mesi\nInfiltrazioni: 12 mesi\nN.B. Nota bene la dotazione tecnica e gli accessori indicati nella presente scheda potrebbero non coincidere con l’effettivo equipaggiamento del veicolo, a causa della non uniformità dei dati pubblicati dai diversi portali. Ci scusiamo per l’inconveniente e vi invitiamo a verificare le caratteristiche dello specifico veicolo.\nBeltrani Camper&Caravan declina ogni responsabilità per eventuali involontarie incongruenze, che non rappresentano in alcun modo un impegno contrattuale\nCaratteristiche\nAnno\n2023\nChilometri\n7.200 km\nMeccanica\nFord - 170 CV | Automatico\nStato\nUsato\nTipologia\nSemintegrale\nDimensioni\nLarghezza\n2.35\nLunghezza\n7.35\nPosti\nPosti Letto\n4\nPosti Omologati\n4\nTags:\nCI Magis Elite 67 XT usato\n,\nsemintegrale usato\n,\nCI usato\n,\ncamper automatico usato\n,\n4 posti letto\n,\nFord 170 CV"
+        },
+        "https://www.caravanmarket.com/camper-usati/hymer-t-678-cl-2019": {
+            "sito": "Caravan Market",
+            "marca": "Sconosciuto",
+            "modello": "",
+            "allestimento": "",
+            "distanza_seregno": 190,
+            "prezzo_attuale": null,
+            "storico_prezzi": [
+                {
+                    "data": "2026-10-29",
+                    "prezzo": null
+                }
+            ],
+            "dati_tecnici": {
+                "marca": "Sconosciuto",
+                "modello": "",
+                "allestimento": "",
+                "prezzo": null,
+                "anno": 2019,
+                "chilometri": 10300,
+                "nuovo": false,
+                "peso": 3500,
+                "tipo_furgonato": false,
+                "tipo_mansardato": false,
+                "tipo_motorhome": false,
+                "tipo_semintegrale": true,
+                "lunghezza": 7.35,
+                "potenza": 150,
+                "posti_omologati": 4,
+                "posti_letto": 4,
+                "telaio_alko": false,
+                "doppio_pavimento": false,
+                "cambio_automatico": false,
+                "emissioni_euro6": true,
+                "pannelli_solari": false,
+                "batterie_litio": false,
+                "sospensioni_aria": false,
+                "predisposizione_invernale": false,
+                "doppia_batteria": false,
+                "aria_condizionata": false,
+                "riscaldamento_gasolio": false,
+                "riscaldatore_gasolio": false,
+                "riscaldamento_alde": false,
+                "piedini_autolivellanti": false,
+                "letto_nautico": false,
+                "letti_gemelli": false,
+                "letti_a_castello": false,
+                "riassunto_ia": "Accessori presenti sul veicolo:\n- Tendalino\n- Staffa supporto TV\n- Zanzariera scorrevole\n- Oscuranti plissettati\n- Climatizzatore cabina\n- Cruise control\n- Traction Plus\n- Hill Descent Control\n- Skyroof\n- Frigorifero 150 lt con freezer separato\n- Letto basculante\n- Riscaldamento Truma a gas"
+            },
+            "punteggio_totale": 33.0,
+            "dettaglio_punteggi": {
+                "telaio": 40.0,
+                "meccanica": 75.0,
+                "stato": 0.0,
+                "interni": 40.0,
+                "accessori": 0.0,
+                "prezzo": 0.0
+            },
+            "status": "VALIDO",
+            "motivo_scarto": "",
+            "data_scoperta": "2026-10-29",
+            "data_ultimo_aggiornamento": "2026-10-29",
+            "url_immagine": "https://www.caravanmarket.com/image/cache/catalog/CAMPER%20USATI/2026/Hymer%20T%20678%20CL%20-%202019/hymer-t-678-cl-2-1200x1000w.jpg",
+            "ai_usata": true,
+            "testo_originale": "--- DETTAGLI ---\nPronta Consegna\nHymer T 678 CL - 2019\nProdotto in evidenza\nRichiedi info\nWhatsApp\n×\nDisponibilità:\nDisponibile\nCodice Prodotto:\n6264\nSKU:\n FV773AJ\nHymer\nBasato su 0 recensioni.\n-\nScrivi una recensione\ntrattativa riservata\nRichiedi Info\nSCRIVICI SU WHATSAPP\nAggiungi alla lista dei desideri\nConfronta questo prodotto\nFinanziamento con rate da\n € \n0\nal mese\n Personalizza anticipo e durata →\n→\n ×\nPersonalizza il tuo finanziamento\nAcconto iniziale\n€ 0\nDurata totale\n10 anni\nRata mensile stimata\n € \n0\nal mese\n Parliamone insieme\n Simulazione indicativa · TAN 7,95% fisso · Importi e condizioni soggetti ad approvazione\nDescrizione\nDotazioni e Accessori\nScheda Tecnica\nHymer T 678 CL - 2019: semintegrale usato con 10.300 km\nL'\nHymer T 678 CL\n è un \nsemintegrale\n del 2019 su \nFiat Ducato 2.3 da 150 CV\n con cambio manuale (Euro 6C), che ha percorso appena \n10.300 km\n. Lungo 7,35 m e largo 2,35 m, è omologato per \n4 posti\n in viaggio e offre \n4 posti letto\n, compreso il \nletto basculante\n.\nA bordo ci sono il \nfrigorifero da 150 litri con freezer separato\n, il riscaldamento \nTruma a gas\n, gli oscuranti plissettati, la zanzariera scorrevole e lo \nSkyroof\n, che porta più luce a bordo. Alla guida si apprezzano climatizzatore cabina, \ncruise control\n, \nTraction Plus\n e \nHill Descent Control\n, utili su fondi scivolosi e nelle discese. Completano la dotazione il tendalino e la staffa supporto TV.\nDOTAZIONE OPTIONAL\nTendalino\nClimatizzatore cabina\nStaffa supporto TV\nZanzariera scorrevole\nOscuranti plissettati\nCruise control\nTraction Plus\nHill Descent Control\nSkyroof\nFrigorifero 150 lt con freezer separato\nLetto basculante\nRiscaldamento Truma a gas\nGARANZIA LEGALE DI CONFORMITA':\nMeccanica: 12 mesi\nInfiltrazioni: 12 mesi\nN.B. Nota bene la dotazione tecnica e gli accessori indicati nella presente scheda potrebbero non coincidere con l’effettivo equipaggiamento del veicolo, a causa della non uniformità dei dati pubblicati dai diversi portali. Ci scusiamo per l’inconveniente e vi invitiamo a verificare le caratteristiche dello specifico veicolo.\nBeltrani Camper&Caravan declina ogni responsabilità per eventuali involontarie incongruenze, che non rappresentano in alcun modo un impegno contrattuale\nCaratteristiche\nAnno\n2019\nChilometri\n10.300 km\nMeccanica\nFiat Ducato 2.3 - 150 CV | Manuale\nStato\nUsato\nTipologia\nSemintegrale\nDimensioni\nLarghezza\n2.35\nLunghezza\n7.35\nPosti\nLetto Basculante\nSi\nPosti Letto\n4\nPosti Omologati\n4\nTags:\nHymer T 678 CL usato\n,\nsemintegrale usato\n,\nHymer usato\n,\nletto basculante\n,\n4 posti letto\n,\nFiat Ducato 150 CV"
+        },
+        "https://www.caravanmarket.com/semintegrali-usati/ci-magis-elite-67-xt-2023": {
+            "sito": "Caravan Market",
+            "marca": "Sconosciuto",
+            "modello": "",
+            "allestimento": "",
+            "distanza_seregno": 190,
+            "prezzo_attuale": null,
+            "storico_prezzi": [
+                {
+                    "data": "2026-10-29",
+                    "prezzo": null
+                }
+            ],
+            "dati_tecnici": {
+                "marca": "Sconosciuto",
+                "modello": "",
+                "allestimento": "",
+                "prezzo": null,
+                "anno": 2023,
+                "chilometri": 7200,
+                "nuovo": false,
+                "peso": 3500,
+                "tipo_furgonato": false,
+                "tipo_mansardato": false,
+                "tipo_motorhome": false,
+                "tipo_semintegrale": true,
+                "lunghezza": 7.35,
+                "potenza": 170,
+                "posti_omologati": 4,
+                "posti_letto": 4,
+                "telaio_alko": false,
+                "doppio_pavimento": false,
+                "cambio_automatico": true,
+                "emissioni_euro6": false,
+                "pannelli_solari": false,
+                "batterie_litio": false,
+                "sospensioni_aria": false,
+                "predisposizione_invernale": false,
+                "doppia_batteria": false,
+                "aria_condizionata": false,
+                "riscaldamento_gasolio": false,
+                "riscaldatore_gasolio": false,
+                "riscaldamento_alde": false,
+                "piedini_autolivellanti": false,
+                "letto_nautico": false,
+                "letti_gemelli": false,
+                "letti_a_castello": false,
+                "riassunto_ia": "Accessori presenti sul veicolo:\n- Pannello fotovoltaico\n- Portamoto Goldschmitt\n- Frigorifero trivalente da 135 L\n- Raffrescatore evaporativo Viesa\n- Oblò Sky View sul cupolino\n- Autoradio doppio DIN Alpine\n- Oscuranti plissettati cabina\n- Cabina grigio Silver\n- Porta cellula con finestra\n- Porta zanzariera\n- Retrocamera\n- Cruise control"
+            },
+            "punteggio_totale": 31.0,
+            "dettaglio_punteggi": {
+                "telaio": 40.0,
+                "meccanica": 65.0,
+                "stato": 0.0,
+                "interni": 40.0,
+                "accessori": 0.0,
+                "prezzo": 0.0
+            },
+            "status": "VALIDO",
+            "motivo_scarto": "",
+            "data_scoperta": "2026-10-29",
+            "data_ultimo_aggiornamento": "2026-10-29",
+            "url_immagine": "https://www.caravanmarket.com/image/cache/catalog/CAMPER%20USATI/2026/Ci%20Magis%20Elite%2067%20XT%20-%202023/ci-magis-elite-67-xt-1-1200x1000w.jpg",
+            "ai_usata": true,
+            "testo_originale": "--- DETTAGLI ---\nNew\nPronta Consegna\nCi Magis Elite 67 XT - 2023 | Automatico\nProdotto in evidenza\nRichiedi info\nWhatsApp\n×\nDisponibilità:\nDisponibile\nCodice Prodotto:\n6298\nCi\nBasato su 0 recensioni.\n-\nScrivi una recensione\ntrattativa riservata\nRichiedi Info\nSCRIVICI SU WHATSAPP\nAggiungi alla lista dei desideri\nConfronta questo prodotto\nFinanziamento con rate da\n € \n0\nal mese\n Personalizza anticipo e durata →\n→\n ×\nPersonalizza il tuo finanziamento\nAcconto iniziale\n€ 0\nDurata totale\n10 anni\nRata mensile stimata\n € \n0\nal mese\n Parliamone insieme\n Simulazione indicativa · TAN 7,95% fisso · Importi e condizioni soggetti ad approvazione\nDescrizione\nDotazioni e Accessori\nScheda Tecnica\nCi Magis Elite 67 XT - 2023: semintegrale usato con 7.200 km e cambio automatico\nIl \nCI Magis Elite 67 XT\n è un \nsemintegrale\n del 2023 su meccanica \nFord da 170 CV con cambio automatico\n, che ha percorso appena \n7.200 km\n. Lungo 7,35 m e largo 2,35 m, è omologato per \n4 posti\n in viaggio e offre \n4 posti letto\n.\nLa dotazione comprende \nveranda\n, \nportamoto Goldschmitt\n, \npannello fotovoltaico\n, \nfrigorifero trivalente da 135 litri\n e \nraffrescatore evaporativo Viesa\n, mentre l'\noblò Sky View\n sul cupolino porta più luce a bordo. Alla guida ci sono retrocamera, cruise control e autoradio doppio DIN Alpine; completano l'allestimento la porta cellula con finestra, la porta zanzariera, gli oscuranti plissettati in cabina e la cabina in grigio Silver.\nDOTAZIONE OPTIONAL\nVeranda\nPortamoto Goldschmitt\nRetrocamera\nPorta cellula con finestra\nPorta zanzariera\nAutoradio doppio DIN Alpine\nCruise control\nOscuranti plissettati cabina\nOblò anteriore Sky View sul cupolino\nRaffrescatore evaporativo Viesa\nFrigorifero trivalente da 135 L\nPannello fotovoltaico\nCabina grigio Silver\nGARANZIA LEGALE DI CONFORMITA':\nMeccanica: 12 mesi\nInfiltrazioni: 12 mesi\nN.B. Nota bene la dotazione tecnica e gli accessori indicati nella presente scheda potrebbero non coincidere con l’effettivo equipaggiamento del veicolo, a causa della non uniformità dei dati pubblicati dai diversi portali. Ci scusiamo per l’inconveniente e vi invitiamo a verificare le caratteristiche dello specifico veicolo.\nBeltrani Camper&Caravan declina ogni responsabilità per eventuali involontarie incongruenze, che non rappresentano in alcun modo un impegno contrattuale\nCaratteristiche\nAnno\n2023\nChilometri\n7.200 km\nMeccanica\nFord - 170 CV | Automatico\nStato\nUsato\nTipologia\nSemintegrale\nDimensioni\nLarghezza\n2.35\nLunghezza\n7.35\nPosti\nPosti Letto\n4\nPosti Omologati\n4\nTags:\nCI Magis Elite 67 XT usato\n,\nsemintegrale usato\n,\nCI usato\n,\ncamper automatico usato\n,\n4 posti letto\n,\nFord 170 CV"
         }
     }
 }
